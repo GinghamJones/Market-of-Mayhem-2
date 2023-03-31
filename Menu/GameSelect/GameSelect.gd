@@ -25,8 +25,8 @@ func _on_start_pressed():
 	character.add_child(player_movement)
 	character.controller = player_movement
 	new_world.add_child(character)
-	character.set_player_controlled(true)
-	character.global_position = new_world.find_child("SpawnPoint").global_position
+	#character.set_player_controlled(true)
+	character.global_position = get_tree().get_first_node_in_group("PlayerSpawn").global_position
 	
 	# Spawn opponent characters
 	var spawn_points = get_tree().get_nodes_in_group("Spawn")
@@ -36,7 +36,7 @@ func _on_start_pressed():
 			print(j)
 			var new_character = characters[i].instantiate()
 			print(characters[i])
-			new_character.set_player_controlled(false)
+			#new_character.set_player_controlled(false)
 			new_world.add_child(new_character)
 			if new_character is Baker:
 				print("baker")

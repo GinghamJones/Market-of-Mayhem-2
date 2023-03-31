@@ -4,8 +4,8 @@ extends CharacterBody3D
 @export var character_stats : CharacterData
 
 @onready var anims : AnimationTree = $AnimationTree
-@onready var anim_mode = $AnimationTree.get("parameters/playback")
-@onready var camera_control : Marker3D = $CamPositionHelper
+@onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
+#@onready var camera_control : Marker3D = $CamPositionHelper
 
 var look_speed : float = 0.2
 const MAX_LOOK_ANGLE : int = 60
@@ -16,10 +16,12 @@ var new_rotation : float
 
 var mouse_delta : Vector2
 var is_paused : bool = false
+var is_moving : bool = false : set = set_is_moving
+	
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
 
-var player_controlled : bool : set = set_player_controlled
+#var player_controlled : bool : set = set_player_controlled
 var controller
 
 
@@ -54,11 +56,14 @@ func move_my_ass(delta):
 		target_velocity.y = 0
 		
 	velocity = lerp(velocity, target_velocity, character_stats.acceleration)
-	if velocity.length() > 1.0:
-		var anim_speed : float = velocity.length() * delta + 2
-		anim_mode.travel("Character_Walk")
+	if velocity.length() > 2.0:
+		is_moving = true
+		var anim_speed : float = velocity.length() * delta + 1.5
+		anims.set("parameters/TimeScale/scale", anim_speed)
 	else:
-		anim_mode.travel("Character_Idle")
+		is_moving = false
+		anims["parameters/Movement/playback"].travel("Character_Idle")
+		anims.set("parameters/TimeScale/scale", 1.1)
 		
 	move_and_slide()
 
@@ -67,21 +72,34 @@ func get_new_rotation(cam_rotation : float):
 
 
 func jump():
-	anim_mode.travel("Character_Backflip")
+	set_oneshot("parameters/JumpShot/request")
 
 func punch():
-	anim_mode.travel("Character_Attack")
-	
+	set_oneshot("parameters/PunchShot/request")
+
 func block():
-	anim_mode.travel("Character_Block")
+	set_oneshot("parameters/BlockShot/request")
+
+
+func set_oneshot(anim : String):
+	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/JumpShot/active"], anims["parameters/PunchShot/active"]]
+	for oneshot in oneshot_anims:
+		if oneshot == true:
+			return
 	
-		
-
-func set_anims(anim : String, anim_speed : float):
-	pass
+	anims.set(anim, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 
 
-func set_player_controlled(how_bout_it : bool):
-	if not how_bout_it:
-		$CamPositionHelper.queue_free()
+func set_is_moving(value : bool):
+	if is_moving != value:
+		is_moving = value
+	if is_moving:
+		anims["parameters/Movement/playback"].travel("Character_Walk")
+	else:
+		anims["parameters/Movement/playback"].travel("Character_Idle")
+		anims.set("parameters/TimeScale/scale", 1.1)
+
+#func set_player_controlled(how_bout_it : bool):
+#	if not how_bout_it:
+#		$CamPositionHelper.queue_free()
 	
