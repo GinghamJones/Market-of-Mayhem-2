@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3qwsbgpvcqv"]
+
+[ext_resource type="Script" path="res://Characters/Resources/PlayerMovement.gd" id="1_wydpy"]
+
+[node name="PlayerMovement" type="Node3D"]
+top_level = true
+script = ExtResource("1_wydpy")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.413, 1.998, 1.5)
+spring_length = 2.808
+
+[node name="Camera3D" type="Camera3D" parent="SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.57976)
+current = true
