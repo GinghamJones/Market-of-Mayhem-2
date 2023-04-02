@@ -1,0 +1,66 @@
+[gd_scene load_steps=15 format=3 uid="uid://dwlxfwet22vsm"]
+
+[ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_whhyr"]
+[ext_resource type="Script" path="res://Projectile/Food/fast_food.gd" id="2_5sca2"]
+[ext_resource type="Texture2D" uid="uid://cg4auhtmic8jx" path="res://addons/kenney_prototype_textures/orange/texture_06.png" id="2_qc6ue"]
+[ext_resource type="Texture2D" uid="uid://sxofjejox8a6" path="res://addons/kenney_prototype_textures/purple/texture_03.png" id="3_7xr8h"]
+[ext_resource type="Texture2D" uid="uid://cje4yjefwc5t4" path="res://addons/kenney_prototype_textures/green/texture_06.png" id="4_mg8p8"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_o826d"]
+radius = 0.0439365
+height = 0.17912
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_klp33"]
+albedo_texture = ExtResource("2_qc6ue")
+
+[sub_resource type="BoxMesh" id="BoxMesh_i4op5"]
+material = SubResource("StandardMaterial3D_klp33")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_700y5"]
+albedo_texture = ExtResource("2_qc6ue")
+
+[sub_resource type="BoxMesh" id="BoxMesh_sthag"]
+material = SubResource("StandardMaterial3D_700y5")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ym4d7"]
+albedo_texture = ExtResource("3_7xr8h")
+
+[sub_resource type="SphereMesh" id="SphereMesh_ev5ps"]
+material = SubResource("StandardMaterial3D_ym4d7")
+radius = 0.054
+height = 0.12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4dshm"]
+albedo_texture = ExtResource("4_mg8p8")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5w3v2"]
+material = SubResource("StandardMaterial3D_4dshm")
+radius = 0.034
+height = 0.173
+
+[node name="FastFood" instance=ExtResource("1_whhyr")]
+script = ExtResource("2_5sca2")
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CapsuleShape3D_o826d")
+
+[node name="MeshInstance3D" parent="." index="1"]
+visible = false
+mesh = SubResource("BoxMesh_i4op5")
+
+[node name="FoodPieces" type="Node3D" parent="." index="3"]
+
+[node name="Food1" type="MeshInstance3D" parent="FoodPieces" index="0"]
+visible = false
+mesh = SubResource("BoxMesh_sthag")
+skeleton = NodePath("../../MeshInstance3D")
+
+[node name="Food2" type="MeshInstance3D" parent="FoodPieces" index="1"]
+visible = false
+mesh = SubResource("SphereMesh_ev5ps")
+
+[node name="Food3" type="MeshInstance3D" parent="FoodPieces" index="2"]
+visible = false
+mesh = SubResource("CapsuleMesh_5w3v2")

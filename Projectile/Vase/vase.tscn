@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwxvknjlk6sb2"]
+
+[ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_88o6w"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_oi1v1"]
+height = 0.25
+radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qmgci"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(1, 1, 1, 0.341176)
+roughness = 0.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_eaak1"]
+material = SubResource("StandardMaterial3D_qmgci")
+top_radius = 0.05
+bottom_radius = 0.1
+height = 0.25
+
+[node name="Vase" instance=ExtResource("1_88o6w")]
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CylinderShape3D_oi1v1")
+
+[node name="MeshInstance3D" parent="." index="1"]
+mesh = SubResource("CylinderMesh_eaak1")

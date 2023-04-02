@@ -1,15 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://c3qwsbgpvcqv"]
+[gd_scene load_steps=3 format=3 uid="uid://c3qwsbgpvcqv"]
 
 [ext_resource type="Script" path="res://Characters/Resources/PlayerMovement.gd" id="1_wydpy"]
 
-[node name="PlayerMovement" type="Node3D"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i1jcn"]
+
+[node name="PlayerMovement" type="Node3D" groups=["Controller"]]
 top_level = true
 script = ExtResource("1_wydpy")
 
 [node name="SpringArm3D" type="SpringArm3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.413, 1.998, 4.65908)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.82828, 2.105, 0)
+shape = SubResource("CapsuleShape3D_i1jcn")
 spring_length = 2.808
+margin = 0.976
 
 [node name="Camera3D" type="Camera3D" parent="SpringArm3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.57976)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.74504)
 current = true
