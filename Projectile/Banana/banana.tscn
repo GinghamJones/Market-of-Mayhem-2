@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://bn6sd3oo5jas0"]
+
+[ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_43paw"]
+[ext_resource type="Script" path="res://Projectile/Banana/banana.gd" id="2_t3675"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oevhg"]
+radius = 0.0719583
+height = 0.415261
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a5ylj"]
+albedo_color = Color(0.52549, 0.584314, 0, 1)
+emission_enabled = true
+emission = Color(0.768627, 0.698039, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ir88d"]
+material = SubResource("StandardMaterial3D_a5ylj")
+radius = 0.069
+height = 0.414
+
+[node name="Banana" instance=ExtResource("1_43paw")]
+script = ExtResource("2_t3675")
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("CapsuleShape3D_oevhg")
+
+[node name="MeshInstance3D" parent="." index="1"]
+mesh = SubResource("CapsuleMesh_ir88d")

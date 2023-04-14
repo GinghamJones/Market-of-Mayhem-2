@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://wdn4h3sv3ee1"]
+
+[ext_resource type="Script" path="res://Projectile/projectile.gd" id="1_an4cv"]
+
+[node name="Projectile" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 7
+continuous_cd = true
+max_contacts_reported = 3
+contact_monitor = true
+script = ExtResource("1_an4cv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="LifespanTimer" type="Timer" parent="."]
+wait_time = 27.081
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="LifespanTimer" to="." method="_on_lifespan_timer_timeout"]

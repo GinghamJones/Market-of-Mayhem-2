@@ -2,31 +2,37 @@ class_name Character
 extends CharacterBody3D
 
 @export var character_stats : CharacterData
+@export var projectile : PackedScene
 
 @onready var anims : AnimationTree = $AnimationTree
-@onready var anim_mode = $AnimationTree.get("parameters/playback")
-@onready var camera_control : Marker3D = $CamPositionHelper
+@onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
+@onready var right_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/RightHookBone/RightHook
+@onready var left_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/LeftHookBone/LeftHook
 
-var look_speed : float = 0.2
-const MAX_LOOK_ANGLE : int = 60
-const MIN_LOOK_ANGLE : int = -60
-const MAX_ZOOM: float = 5
-const MIN_ZOOM : float = -1
-var new_rotation : float 
+@onready var projectile_timer : Timer = $Timers/ProjectileTimer
+@onready var special_timer : Timer = $Timers/SpecialMeleeTimer
+@onready var jump_timer : Timer = $Timers/JumpTimer
+#@onready var camera_control : Marker3D = $CamPositionHelper
 
 var mouse_delta : Vector2
 var is_paused : bool = false
+var is_moving : bool = false : set = set_is_moving
+var is_firing : bool = false : set = set_is_firing
+var blocking : bool = false
+var hit_detected : bool = false
+var i_been_walloped : bool = false
+var hit_direction : Vector3 = Vector3.ZERO
+	
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
 
-var player_controlled : bool : set = set_player_controlled
-var controller
+var player_controlled : bool 
+var controller : Node3D
 
 
 func _ready() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	$Human_Template_Male.rotation_degrees.y = 180.0
-
+	#$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
+	pass
 
 func _process(delta: float) -> void:
 	if not controller:
@@ -35,9 +41,15 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-#	set_cam_position()
+	if is_firing:
+		_handle_firing()
+		if character_stats.single_fire:
+			is_firing = false
+			
 	move_my_ass(delta)
 
+
+#### Movement functions ####
 
 func move_my_ass(delta):
 	if not controller:
@@ -52,36 +64,168 @@ func move_my_ass(delta):
 #			set_is_jumping(false)
 	else:
 		target_velocity.y = 0
-		
-	velocity = lerp(velocity, target_velocity, character_stats.acceleration)
-	if velocity.length() > 1.0:
-		var anim_speed : float = velocity.length() * delta + 2
-		anim_mode.travel("Character_Walk")
+	
+	if i_been_walloped:
+		velocity = hit_direction * character_stats.move_speed * 3.5
+		hit_direction = Vector3.ZERO
+		i_been_walloped = false
 	else:
-		anim_mode.travel("Character_Idle")
-		
+		velocity = lerp(velocity, target_velocity, character_stats.acceleration)
+		handle_movement_anims(delta)
+
 	move_and_slide()
 
-func get_new_rotation(cam_rotation : float):
-	new_rotation = cam_rotation
 
+func handle_movement_anims(delta : float):
+	if velocity.length() > 2.0:
+		set_is_moving(true)
+		var anim_speed : float = velocity.length() * delta + 1.5
+		anims.set("parameters/TimeScale/scale", anim_speed)
+	else:
+		set_is_moving(false)
+		anims["parameters/Movement/playback"].travel("Character_Idle")
+		anims.set("parameters/TimeScale/scale", 1.1)
+
+
+#### Action functions ####
 
 func jump():
-	anim_mode.travel("Character_Backflip")
+	set_oneshot("parameters/JumpShot/request")
 
 func punch():
-	anim_mode.travel("Character_Attack")
-	
-func block():
-	anim_mode.travel("Character_Block")
-	
-		
+	if set_oneshot("parameters/PunchShot/request"):
+		hit_detected = false
+		right_hook.monitoring = true
+		left_hook.monitoring = true
 
-func set_anims(anim : String, anim_speed : float):
+func block():
+	if set_oneshot("parameters/BlockShot/request"):
+		blocking = true
+		
+func _handle_firing():
+	# Overridden if projectile is particle based
+	if projectile_timer.is_stopped() and character_stats.current_ammo > 0:
+		projectile_timer.start()
+		spawn_projectile()
+		character_stats.current_ammo -= 1
+	
+func use_super_move():
 	pass
 
 
-func set_player_controlled(how_bout_it : bool):
-	if not how_bout_it:
-		$CamPositionHelper.queue_free()
+func spawn_projectile():
+	var p : Projectile = projectile.instantiate()
+	get_tree().root.add_child(p)
+	p.global_transform = $Human_Template_Male/ProjectilePlacement.global_transform
+	p.initiate(character_stats.projectile_speed, character_stats.projectile_damage, self)
+	p.fire()
+
+#### Damage related functions ####
+
+func take_damage(damage : int, direction : Vector3):
+	if blocking:
+		character_stats.current_health -= damage - 5
+	else:
+		character_stats.current_health -= damage
+		i_been_walloped = true
+		hit_direction = direction
+		update_health()
 	
+	if character_stats.current_health <= 0:
+		die()
+
+
+func take_projectile_damage(damage : int, status_effect):
+	character_stats.current_health -= damage
+	
+	update_health()
+	if character_stats.current_health <= 0:
+		die()
+
+
+func die():
+	set_physics_process(false)
+	set_process(false)
+	$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
+
+
+#### Setter functions ####
+
+func set_oneshot(anim : String) -> bool:
+	# This checks if a oneshot is already playing and returns false if so. A false return stops the requested action from taking place.
+	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/JumpShot/active"], anims["parameters/PunchShot/active"]]
+	for oneshot in oneshot_anims:
+		if oneshot == true:
+			return false
+	
+	anims.set(anim, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+	return true
+
+
+func set_is_moving(value : bool):
+	# A function to make sure movement anims are set only when move state changes, not every frame
+	if is_moving != value:
+		is_moving = value
+	if is_moving:
+		anims["parameters/Movement/playback"].travel("Character_Walk")
+	else:
+		anims["parameters/Movement/playback"].travel("Character_Idle")
+		anims.set("parameters/TimeScale/scale", 1.1)
+
+
+func set_is_firing(value): 
+	is_firing = value
+
+
+#### Signal functions ####
+
+func _on_left_hook_body_entered(body):
+	if body == self:
+		return
+	if body.has_method("take_damage"):
+		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		left_hook.set_deferred("monitoring", false)
+
+
+func _on_right_hook_body_entered(body):
+	if body == self:
+		return
+	if body.has_method("take_damage") and not hit_detected:
+		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		hit_detected = true
+		right_hook.set_deferred("monitoring", false)
+
+
+func _on_animation_tree_animation_finished(anim_name):
+	if anim_name == "Character_Attack":
+		left_hook.set_deferred("monitoring", false)
+		right_hook.set_deferred("monitoring", false)
+	elif anim_name == "Character_Block":
+		blocking = false
+
+
+#### Misc functions ####
+
+func initiate():
+	for node in get_children():
+		if node.is_in_group("Controller"):
+			controller = node
+			$ControllerPositioner.remote_path = node.get_path()
+			break
+	
+	if player_controlled:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		
+	$Human_Template_Male.rotation_degrees.y = 180.0
+	
+	right_hook.monitoring = false
+	left_hook.monitoring = false
+	
+	character_stats.current_health = character_stats.max_health
+	character_stats.current_ammo = character_stats.max_ammo
+	
+	$Label3D.text = str(get_class()) + ": health = " + str(character_stats.current_health)
+
+
+func update_health():
+	$Label3D.text = str(get_class()) + ": health = " + str(character_stats.current_health)
