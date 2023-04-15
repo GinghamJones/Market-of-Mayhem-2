@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 @export var character_stats : CharacterData
 @export var projectile : PackedScene
+@onready var projectile_placement : Node3D = $Human_Template_Male/ProjectilePlacement
 
 @onready var anims : AnimationTree = $AnimationTree
 @onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
@@ -12,7 +13,6 @@ extends CharacterBody3D
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
 @onready var special_timer : Timer = $Timers/SpecialMeleeTimer
 @onready var jump_timer : Timer = $Timers/JumpTimer
-#@onready var camera_control : Marker3D = $CamPositionHelper
 
 var mouse_delta : Vector2
 var is_paused : bool = false
@@ -22,22 +22,24 @@ var blocking : bool = false
 var hit_detected : bool = false
 var i_been_walloped : bool = false
 var hit_direction : Vector3 = Vector3.ZERO
+var spawn_point : Vector3 = Vector3.ZERO
+var is_dead : bool = false
 	
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
+var punch_force : float = 15
 
 var player_controlled : bool 
 var controller : Node3D
 
 
 func _ready() -> void:
-	#$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
-	pass
+	update_health()
 
 func _process(delta: float) -> void:
 	if not controller:
 		return
-	rotation.y = lerp_angle(rotation.y, controller.get_y_rotation(), 0.1)
+	rotation.y = lerp_angle(rotation.y, controller.get_y_rotation(), 0.2)
 
 
 func _physics_process(delta: float) -> void:
@@ -54,23 +56,24 @@ func _physics_process(delta: float) -> void:
 func move_my_ass(delta):
 	if not controller:
 		return
-	var target_velocity : Vector3 = controller.get_velocity(character_stats.move_speed)
+	var direction : Vector3 = controller.get_direction()
 	
 	if not is_on_floor():# and not is_jumping:
-		target_velocity.y -= character_stats.gravity 
+		direction.y -= character_stats.gravity 
 #	elif is_jumping and is_on_floor():
 #		target_velocity.y += jump_force
 #		if $JumpTimer.is_stopped():
 #			set_is_jumping(false)
 	else:
-		target_velocity.y = 0
+		direction.y = 0
 	
 	if i_been_walloped:
-		velocity = hit_direction * character_stats.move_speed * 3.5
+		# Hit direction comes from the take_damage functiion
+		velocity = hit_direction * punch_force
 		hit_direction = Vector3.ZERO
 		i_been_walloped = false
 	else:
-		velocity = lerp(velocity, target_velocity, character_stats.acceleration)
+		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
 		handle_movement_anims(delta)
 
 	move_and_slide()
@@ -79,7 +82,7 @@ func move_my_ass(delta):
 func handle_movement_anims(delta : float):
 	if velocity.length() > 2.0:
 		set_is_moving(true)
-		var anim_speed : float = velocity.length() * delta + 1.5
+		var anim_speed : float = velocity.length() * delta + 2.0
 		anims.set("parameters/TimeScale/scale", anim_speed)
 	else:
 		set_is_moving(false)
@@ -104,7 +107,7 @@ func block():
 		
 func _handle_firing():
 	# Overridden if projectile is particle based
-	if projectile_timer.is_stopped() and character_stats.current_ammo > 0:
+	if projectile_timer.is_stopped(): #and character_stats.current_ammo > 0:
 		projectile_timer.start()
 		spawn_projectile()
 		character_stats.current_ammo -= 1
@@ -118,7 +121,7 @@ func spawn_projectile():
 	get_tree().root.add_child(p)
 	p.global_transform = $Human_Template_Male/ProjectilePlacement.global_transform
 	p.initiate(character_stats.projectile_speed, character_stats.projectile_damage, self)
-	p.fire()
+	p.fire(velocity)
 
 #### Damage related functions ####
 
@@ -143,10 +146,22 @@ func take_projectile_damage(damage : int, status_effect):
 		die()
 
 
+func begin_slow_effect():
+	$Timers/SlowTimer.start()
+	character_stats.move_speed -= 5
+
+func end_slow_effect():
+	character_stats.move_speed += 5
+
+
 func die():
 	set_physics_process(false)
 	set_process(false)
+	$CollisionShape3D.call_deferred("set_disabled", true)
 	$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
+	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = false
+	$Timers/RespawnTimer.start()
+	is_dead = true
 
 
 #### Setter functions ####
@@ -182,8 +197,9 @@ func set_is_firing(value):
 func _on_left_hook_body_entered(body):
 	if body == self:
 		return
-	if body.has_method("take_damage"):
+	if body.has_method("take_damage") and not hit_detected:
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
 
 
@@ -215,6 +231,8 @@ func initiate():
 	
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		controller.actor = self
 		
 	$Human_Template_Male.rotation_degrees.y = 180.0
 	
@@ -223,9 +241,24 @@ func initiate():
 	
 	character_stats.current_health = character_stats.max_health
 	character_stats.current_ammo = character_stats.max_ammo
+	global_position = spawn_point
 	
 	$Label3D.text = str(get_class()) + ": health = " + str(character_stats.current_health)
 
 
 func update_health():
-	$Label3D.text = str(get_class()) + ": health = " + str(character_stats.current_health)
+	$Label3D.text = str(character_stats.Team) + ": health = " + str(character_stats.current_health)
+
+
+func respawn():
+	global_position = spawn_point
+	set_physics_process(true)
+	set_process(true)
+	$CollisionShape3D.call_deferred("set_disabled", false)
+	character_stats.current_ammo = character_stats.max_ammo
+	character_stats.current_health = character_stats.max_health
+	is_dead = false
+	$Human_Template_Male/metarig/Skeleton3D.physical_bones_stop_simulation()
+	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = true
+	$Human_Template_Male/metarig/Skeleton3D.reset_bone_poses()
+	update_health()

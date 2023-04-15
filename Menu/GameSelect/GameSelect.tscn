@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxvdlx08i8sox"]
+[gd_scene load_steps=3 format=3 uid="uid://bxvdlx08i8sox"]
 
 [ext_resource type="Script" path="res://Menu/GameSelect/GameSelect.gd" id="1_pumnm"]
+[ext_resource type="Texture2D" uid="uid://b3x8bq7iicmyj" path="res://mom2 splash.png" id="2_lunac"]
 
 [node name="GameSelect" type="Control"]
 layout_mode = 3
@@ -10,6 +11,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_pumnm")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1918.0
+offset_bottom = 1082.0
+color = Color(0.482353, 0.00392157, 0.890196, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
@@ -50,6 +57,11 @@ offset_bottom = 1052.0
 [node name="QuitButton" type="Button" parent="CenterContainer"]
 layout_mode = 2
 text = "Fuck off?"
+
+[node name="Mom2Splash" type="Sprite2D" parent="."]
+position = Vector2(1126, 428)
+scale = Vector2(0.558333, 0.558333)
+texture = ExtResource("2_lunac")
 
 [connection signal="item_selected" from="VBoxContainer/CharacterSelect" to="." method="_on_character_select_item_selected"]
 [connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]

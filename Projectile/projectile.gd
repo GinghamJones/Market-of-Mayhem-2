@@ -12,8 +12,8 @@ var did_i_hit : bool = false
 var who_fired_me : Character = null
 
 
-func fire():
-	apply_central_impulse(transform.basis.z * speed)
+func fire(velocity : Vector3):
+	apply_central_impulse(transform.basis.z  * speed)
 
 
 func initiate(new_speed : float, new_damage : int, requester : Character):
@@ -23,7 +23,7 @@ func initiate(new_speed : float, new_damage : int, requester : Character):
 
 
 func _on_body_entered(body):
-	if body == who_fired_me:
+	if body == who_fired_me or linear_velocity.length() < 8:
 		pass
 	else:
 		if body.has_method("take_projectile_damage") and not did_i_hit:

@@ -1,1 +1,2 @@
+class_name KitchenDude
 extends Character

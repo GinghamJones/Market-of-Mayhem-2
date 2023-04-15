@@ -1,3 +1,4 @@
+class_name Freight
 extends Character
 @onready var lazer_timer : Timer = $Lazer/LazerTimer
 

@@ -4,17 +4,18 @@
 [ext_resource type="PackedScene" uid="uid://degfbyxwsm2vc" path="res://Projectile/Knife/KNIFE.glb" id="2_nqhok"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_dvse7"]
-bounce = 0.25
+bounce = 0.07
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qfg2y"]
 size = Vector3(0.0318678, 0.143201, 0.694351)
 
 [node name="Knife" instance=ExtResource("1_l7yjw")]
 physics_material_override = SubResource("PhysicsMaterial_dvse7")
+gravity_scale = 0.5
 angular_damp = 2.976
 
 [node name="CollisionShape3D" parent="." index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.32179)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.285793)
 shape = SubResource("BoxShape3D_qfg2y")
 
 [node name="KNIFE" parent="." index="3" instance=ExtResource("2_nqhok")]

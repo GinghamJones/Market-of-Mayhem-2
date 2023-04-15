@@ -6,7 +6,11 @@ extends Character
 
 func _handle_firing():
 	if projectile_timer.is_stopped():
+		projectile_timer.start()
 		frosting_gun.fire()
 		character_stats.current_ammo -= 1
-		projectile_timer.start()
 
+
+func slather_em(target):
+	target.take_damage(character_stats.projectile_damage, Vector3.ZERO)
+	target.begin_slow_effect()
