@@ -8,6 +8,8 @@ const MIN_LOOK_ANGLE : int = -60
 const MAX_ZOOM: float = 5
 const MIN_ZOOM : float = -1
 
+var actor : Character
+
 signal im_jumping
 signal punch_em
 signal block_me
@@ -15,15 +17,18 @@ signal unblock_me
 signal fire_projectile
 signal use_super_move
 signal quit_firing
+signal dodge_em
 
-func _ready():
-	im_jumping.connect(Callable(get_parent(), "jump"))
-	punch_em.connect(Callable(get_parent(), "punch"))
-	block_me.connect(Callable(get_parent(), "block"))
-	unblock_me.connect(Callable(get_parent(), "unblock"))
-	fire_projectile.connect(Callable(get_parent(), "set_is_firing"))
-	use_super_move.connect(Callable(get_parent(), "use_super_move"))
-	quit_firing.connect(Callable(get_parent(), "set_is_firing"))
+
+func initiate():
+	im_jumping.connect(Callable(actor, "jump"))
+	punch_em.connect(Callable(actor, "punch"))
+	block_me.connect(Callable(actor, "block"))
+	unblock_me.connect(Callable(actor, "unblock"))
+	fire_projectile.connect(Callable(actor, "set_is_firing"))
+	use_super_move.connect(Callable(actor, "use_super_move"))
+	quit_firing.connect(Callable(actor, "set_is_firing"))
+	dodge_em.connect(Callable(actor, "start_dodge"))
 
 
 func _unhandled_input(event):
@@ -35,6 +40,8 @@ func _unhandled_input(event):
 	if event.is_action_pressed("Pause"):
 		handle_pause()
 	
+	if event.is_action_pressed("Dodge"):
+		emit_signal("dodge_em", get_direction())
 	if event.is_action_pressed("Jump"):
 		emit_signal("im_jumping")
 
@@ -78,7 +85,7 @@ func get_direction() -> Vector3:
 	var input_dir : Vector2 = Input.get_vector("MoveLeft", "MoveRight", "MoveForward", "MoveBack")
 	var direction : Vector3
 
-	direction = (get_parent().transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	direction = (actor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	#var target_velocity : Vector3 = direction
 
 	return direction

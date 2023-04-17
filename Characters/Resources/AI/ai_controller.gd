@@ -1,3 +1,4 @@
+class_name Controller
 extends Node3D
 
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
@@ -21,30 +22,58 @@ func _physics_process(delta):
 	if actor:
 		if not actor.is_dead:
 			direction = Vector3.ZERO
-			y_rotation = 0
+			#y_rotation = 0
 			ai_tree.tick()
+	else:
+		pass
 
 
 func move_to_target():
 	direction = (nav_agent.get_next_path_position() - actor.global_position).normalized()
 	if target:
+		nav_agent.set_target_position(target.global_position)
 		face_enemy()
 	else:
-		set_y_rotation(atan2(-direction.x, -direction.z))
+		face_move_direction()
 
 
 func flee_from_target():
-	if flee_target:
-		var test_direction = (actor.global_position - flee_target.global_position).normalized()
-		nav_agent.set_velocity(test_direction)
+	if target:
+		nav_agent.set_target_position(-flee_target.global_position)
+		var test_direction = (nav_agent.get_next_path_position() - actor.global_position).normalized()
 		face_enemy()
-	
+
+
+func dodge(dodge_direction : Vector3):
+	face_enemy()
+	actor.start_dodge(dodge_direction)
+
+
+func strafe_left():
+	face_enemy()
+	direction = -actor.transform.basis.x
+
+func strafe_right():
+	face_enemy()
+	direction = actor.transform.basis.x
+
+
+func stop_moving():
+	actor.velocity = Vector3.ZERO
+
 
 func face_enemy():
 	if target:
 		var new_direction = target.global_position - actor.global_position
 		var angle = atan2(-new_direction.x, -new_direction.z)
 		set_y_rotation(angle)
+	else:
+		face_move_direction()
+
+
+func face_move_direction():
+	var new_rotation : float = atan2(-direction.x, -direction.z)
+	set_y_rotation(new_rotation)
 
 
 func get_direction() -> Vector3:
@@ -71,7 +100,8 @@ func _on_detection_area_body_entered(body):
 			target = test_body
 			TargetTracker.set_target(actor, target)
 	elif body is Projectile:
-		incoming_projectile = body
+		if body.who_fired_me != actor:
+			incoming_projectile = body
 
 
 func _on_detection_area_body_exited(body):
@@ -80,3 +110,4 @@ func _on_detection_area_body_exited(body):
 	if body == target:
 		TargetTracker.remove_target(actor)
 		target = null
+

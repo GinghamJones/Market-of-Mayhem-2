@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://demw2n7mfjvj6"]
+[gd_scene load_steps=23 format=3 uid="uid://demw2n7mfjvj6"]
 
 [ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Base/selector.gd" id="1_6uybo"]
 [ext_resource type="Script" path="res://Characters/Resources/AI/aggressive_ai.gd" id="1_bvsud"]
@@ -6,7 +6,10 @@
 [ext_resource type="Script" path="res://IsEnemyVisible.gd" id="3_ot7u3"]
 [ext_resource type="Script" path="res://Characters/Resources/AI/AmIGangBanged.gd" id="4_0mjo5"]
 [ext_resource type="Script" path="res://IsSpecialAvailable.gd" id="4_atshi"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/IsProjectileIncoming.gd" id="4_kgquk"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/IsRandomDodgeTimeDone.gd" id="5_5c46p"]
 [ext_resource type="Script" path="res://Characters/Resources/AI/Flee.gd" id="5_h71og"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/DodgeProjectile.gd" id="5_wj1ml"]
 [ext_resource type="Script" path="res://IsOpponentInSpecialRange.gd" id="5_yswep"]
 [ext_resource type="Script" path="res://UseSpecialAttack.gd" id="6_a77qr"]
 [ext_resource type="Script" path="res://IsOpponentInPunchRange.gd" id="7_euxmi"]
@@ -15,12 +18,28 @@
 [ext_resource type="Script" path="res://Characters/Resources/AI/WanderRound.gd" id="11_4m6ix"]
 [ext_resource type="Script" path="res://Characters/Resources/AI/FireShot.gd" id="11_7jwkn"]
 [ext_resource type="PackedScene" uid="uid://dxa4sqk13qepw" path="res://Characters/Resources/AI/Tasks/Actions/move_to_target.tscn" id="14_jkrqe"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/StopMoving.gd" id="14_rglnv"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/ShouldIMoveToEnemy.gd" id="16_5dwfk"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/IsEnemyTooClose.gd" id="19_fusld"]
+[ext_resource type="Script" path="res://Characters/Resources/AI/DoStrafe.gd" id="20_v61a5"]
 
 [node name="AggressiveAI" type="Node"]
 script = ExtResource("1_bvsud")
 
 [node name="MainRunner" type="Node" parent="."]
 script = ExtResource("1_6uybo")
+
+[node name="ProjectileIncoming" type="Node" parent="MainRunner"]
+script = ExtResource("2_b6ch3")
+
+[node name="IsProjectileIncoming" type="Node" parent="MainRunner/ProjectileIncoming"]
+script = ExtResource("4_kgquk")
+
+[node name="IsRandomDodgeTimeDone" type="Node" parent="MainRunner/ProjectileIncoming"]
+script = ExtResource("5_5c46p")
+
+[node name="DodgeProjectile" type="Node" parent="MainRunner/ProjectileIncoming"]
+script = ExtResource("5_wj1ml")
 
 [node name="HandleGangBanged" type="Node" parent="MainRunner"]
 script = ExtResource("2_b6ch3")
@@ -36,6 +55,29 @@ script = ExtResource("2_b6ch3")
 
 [node name="IsEnemyVisible" type="Node" parent="MainRunner/Hunt"]
 script = ExtResource("3_ot7u3")
+
+[node name="Movement" type="Node" parent="MainRunner/Hunt"]
+script = ExtResource("1_6uybo")
+
+[node name="MoveTowardEnemy" type="Node" parent="MainRunner/Hunt/Movement"]
+script = ExtResource("2_b6ch3")
+
+[node name="ShouldIMoveToEnemy" type="Node" parent="MainRunner/Hunt/Movement/MoveTowardEnemy"]
+script = ExtResource("16_5dwfk")
+
+[node name="MoveToTarget" parent="MainRunner/Hunt/Movement/MoveTowardEnemy" instance=ExtResource("14_jkrqe")]
+
+[node name="Strafe" type="Node" parent="MainRunner/Hunt/Movement"]
+script = ExtResource("2_b6ch3")
+
+[node name="IsEnemyTooClose" type="Node" parent="MainRunner/Hunt/Movement/Strafe"]
+script = ExtResource("19_fusld")
+
+[node name="DoStrafe" type="Node" parent="MainRunner/Hunt/Movement/Strafe"]
+script = ExtResource("20_v61a5")
+
+[node name="StopMoving" type="Node" parent="MainRunner/Hunt/Movement"]
+script = ExtResource("14_rglnv")
 
 [node name="Attack" type="Node" parent="MainRunner/Hunt"]
 script = ExtResource("1_6uybo")
@@ -69,8 +111,6 @@ script = ExtResource("10_3ilru")
 
 [node name="FireShot" type="Node" parent="MainRunner/Hunt/Attack/Fire"]
 script = ExtResource("11_7jwkn")
-
-[node name="MoveToTarget" parent="MainRunner/Hunt/Attack" instance=ExtResource("14_jkrqe")]
 
 [node name="Wander" type="Node" parent="MainRunner"]
 script = ExtResource("1_6uybo")

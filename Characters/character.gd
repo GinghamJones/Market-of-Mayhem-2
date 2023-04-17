@@ -13,9 +13,12 @@ extends CharacterBody3D
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
 @onready var special_timer : Timer = $Timers/SpecialMeleeTimer
 @onready var jump_timer : Timer = $Timers/JumpTimer
+@onready var dodge_timer : Timer = $Timers/DodgeTimer
+@onready var dodge_cooldown : Timer = $Timers/DodgeCooldown
 
 var mouse_delta : Vector2
 var is_paused : bool = false
+var is_dodging : bool = false
 var is_moving : bool = false : set = set_is_moving
 var is_firing : bool = false : set = set_is_firing
 var blocking : bool = false
@@ -28,6 +31,7 @@ var is_dead : bool = false
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
 var punch_force : float = 15
+var dodge_direction : Vector3 = Vector3.ZERO
 
 var player_controlled : bool 
 var controller : Node3D
@@ -74,6 +78,8 @@ func move_my_ass(delta):
 		i_been_walloped = false
 	else:
 		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
+		if is_dodging:
+			velocity = dodge_direction * 30
 		handle_movement_anims(delta)
 
 	move_and_slide()
@@ -92,6 +98,16 @@ func handle_movement_anims(delta : float):
 
 #### Action functions ####
 
+func start_dodge(new_direction : Vector3):
+	if dodge_cooldown.is_stopped():
+		dodge_timer.start()
+		dodge_direction = new_direction
+		is_dodging = true
+
+func stop_dodge():
+	dodge_cooldown.start()
+	is_dodging = false
+		
 func jump():
 	set_oneshot("parameters/JumpShot/request")
 
@@ -199,6 +215,7 @@ func _on_left_hook_body_entered(body):
 		return
 	if body.has_method("take_damage") and not hit_detected:
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
 
@@ -208,8 +225,10 @@ func _on_right_hook_body_entered(body):
 		return
 	if body.has_method("take_damage") and not hit_detected:
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		right_hook.set_deferred("monitoring", false)
+		
 
 
 func _on_animation_tree_animation_finished(anim_name):
@@ -231,8 +250,9 @@ func initiate():
 	
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	else:
-		controller.actor = self
+	
+	controller.actor = self
+	controller.initiate()
 		
 	$Human_Template_Male.rotation_degrees.y = 180.0
 	

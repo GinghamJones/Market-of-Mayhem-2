@@ -1,8 +1,14 @@
 extends Node
 
 var actor : Character = null
-var controller
+@onready var child = get_child(0)
+var controller : Controller
+
+
+func _ready():
+	randomize()
+
 
 func tick():
 	if actor:
-		get_child(0).run(actor, controller)
+		child.run(actor, controller)

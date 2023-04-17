@@ -47,6 +47,10 @@ popup/item_6/id = 6
 layout_mode = 2
 text = "Start"
 
+[node name="SpawnOneEnemy" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Spawn one enemy?"
+
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 0
 offset_left = 61.0
@@ -65,4 +69,5 @@ texture = ExtResource("2_lunac")
 
 [connection signal="item_selected" from="VBoxContainer/CharacterSelect" to="." method="_on_character_select_item_selected"]
 [connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="toggled" from="VBoxContainer/SpawnOneEnemy" to="." method="_on_check_button_toggled"]
 [connection signal="pressed" from="CenterContainer/QuitButton" to="." method="_on_quit_button_pressed"]
