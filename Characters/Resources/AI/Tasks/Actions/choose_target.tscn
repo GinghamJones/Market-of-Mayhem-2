@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bphhlg3yjjy7v"]
+
+[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Actions/ChooseTarget.gd" id="1_ip4ph"]
+
+[node name="ChooseTarget" type="Node"]
+script = ExtResource("1_ip4ph")

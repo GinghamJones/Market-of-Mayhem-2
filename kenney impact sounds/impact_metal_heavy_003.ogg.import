@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b5qnakc3f0r0s"
+path="res://.godot/imported/impact_metal_heavy_003.ogg-db2709d368b207ae3a951915be092d2e.oggvorbisstr"
+
+[deps]
+
+source_file="res://kenney impact sounds/impact_metal_heavy_003.ogg"
+dest_files=["res://.godot/imported/impact_metal_heavy_003.ogg-db2709d368b207ae3a951915be092d2e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

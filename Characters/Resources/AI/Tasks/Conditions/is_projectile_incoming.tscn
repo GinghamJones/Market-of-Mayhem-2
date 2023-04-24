@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsi40o81x8fhi"]
+
+[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Conditions/IsProjectileIncoming.gd" id="1_iiu2q"]
+
+[node name="IsProjectileIncoming" type="Node"]
+script = ExtResource("1_iiu2q")

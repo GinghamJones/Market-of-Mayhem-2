@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cv7xrkx7agbyv"]
+
+[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Conditions/IsEnemyVisible.gd" id="1_885ar"]
+
+[node name="IsEnemyVisible" type="Node"]
+script = ExtResource("1_885ar")

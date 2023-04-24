@@ -1,10 +1,11 @@
-class_name Controller
+class_name AIController
 extends Node3D
 
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
 @onready var ai_tree = preload("res://Characters/Resources/AI/aggressive_ai.tscn").instantiate()
 
 var actor : Character = null
+var opponents_in_sight : Array[Character]
 var target : Character = null
 var flee_target : Character = null
 var incoming_projectile : Projectile = null
@@ -18,7 +19,7 @@ func initiate():
 	ai_tree.controller = self
 	
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if actor:
 		if not actor.is_dead:
 			direction = Vector3.ZERO
@@ -40,7 +41,7 @@ func move_to_target():
 func flee_from_target():
 	if target:
 		nav_agent.set_target_position(-flee_target.global_position)
-		var test_direction = (nav_agent.get_next_path_position() - actor.global_position).normalized()
+		direction = (nav_agent.get_next_path_position() - actor.global_position).normalized()
 		face_enemy()
 
 
@@ -76,6 +77,10 @@ func face_move_direction():
 	set_y_rotation(new_rotation)
 
 
+func back_up():
+	direction = transform.basis.z
+
+
 func get_direction() -> Vector3:
 	return direction
 
@@ -87,6 +92,21 @@ func set_y_rotation(value : float):
 	y_rotation = value
 
 
+func choose_target():
+	var potential_target : Character = opponents_in_sight[0]
+	for i in opponents_in_sight:
+		if i.character_stats.current_health < potential_target.character_stats.current_health:
+			potential_target = i
+	
+	target = potential_target
+
+
+func forget_target():
+	opponents_in_sight.erase(target)
+	target = null
+
+
+
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 	direction = safe_velocity
 
@@ -94,11 +114,29 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 func _on_detection_area_body_entered(body):
 	if body is Character and target == null:
 		var test_body : Character = body
+		# Check if sighted character is on same team
 		if test_body.character_stats.Team == actor.character_stats.Team:
 			pass
 		else:
-			target = test_body
-			TargetTracker.set_target(actor, target)
+			# If no opponents in sight, add sighted opponent
+			if opponents_in_sight.size() == 0:
+				opponents_in_sight.push_back(test_body)
+				print(opponents_in_sight)
+				print(opponents_in_sight.size())
+			else:
+				# Check if array already includes opponent
+				for i in opponents_in_sight:
+					if i == test_body:
+						if i == target:
+							$ForgetTarget.stop()
+						break
+				
+				opponents_in_sight.push_back(test_body)
+				
+#				if not target:
+#					target = test_body
+	#			TargetTracker.set_target(actor, target)
+	
 	elif body is Projectile:
 		if body.who_fired_me != actor:
 			incoming_projectile = body
@@ -107,7 +145,13 @@ func _on_detection_area_body_entered(body):
 func _on_detection_area_body_exited(body):
 	if body is Projectile:
 		incoming_projectile = null
-	if body == target:
-		TargetTracker.remove_target(actor)
-		target = null
+	if body is Character:
+		if opponents_in_sight.has(body):
+			if body == target:
+				$ForgetTarget.start()
+			else:
+				opponents_in_sight.erase(body)
+#	if body == target:
+##		TargetTracker.remove_target(actor)
+#		target = null
 

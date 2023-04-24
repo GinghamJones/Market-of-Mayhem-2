@@ -1,3 +1,4 @@
+class_name PlayerController
 extends Node3D
 
 var mouse_delta : Vector2 = Vector2.ZERO

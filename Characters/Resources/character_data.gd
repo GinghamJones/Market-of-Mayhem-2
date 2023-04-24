@@ -12,6 +12,6 @@ var current_health : int
 @export var max_ammo : int
 var current_ammo : int
 
-@export var move_speed : float = 10
-@export var acceleration : float = 0.2
+@export var move_speed : float = 5
+@export var acceleration : float = 0.1
 @export var gravity : float = 30

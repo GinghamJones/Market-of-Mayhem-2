@@ -2,7 +2,7 @@ extends Node
 
 var actor : Character = null
 @onready var child = get_child(0)
-var controller : Controller
+var controller : AIController
 
 
 func _ready():

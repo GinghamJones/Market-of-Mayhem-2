@@ -21,9 +21,9 @@ var is_paused : bool = false
 var is_dodging : bool = false
 var is_moving : bool = false : set = set_is_moving
 var is_firing : bool = false : set = set_is_firing
-var blocking : bool = false
+var is_blocking : bool = false
 var hit_detected : bool = false
-var i_been_walloped : bool = false
+var im_walloped : bool = false
 var hit_direction : Vector3 = Vector3.ZERO
 var spawn_point : Vector3 = Vector3.ZERO
 var is_dead : bool = false
@@ -34,13 +34,13 @@ var punch_force : float = 15
 var dodge_direction : Vector3 = Vector3.ZERO
 
 var player_controlled : bool 
-var controller : Node3D
+var controller
 
 
 func _ready() -> void:
 	update_health()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not controller:
 		return
 	rotation.y = lerp_angle(rotation.y, controller.get_y_rotation(), 0.2)
@@ -71,11 +71,11 @@ func move_my_ass(delta):
 	else:
 		direction.y = 0
 	
-	if i_been_walloped:
+	if im_walloped:
 		# Hit direction comes from the take_damage functiion
 		velocity = hit_direction * punch_force
 		hit_direction = Vector3.ZERO
-		i_been_walloped = false
+		im_walloped = false
 	else:
 		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
 		if is_dodging:
@@ -119,7 +119,7 @@ func punch():
 
 func block():
 	if set_oneshot("parameters/BlockShot/request"):
-		blocking = true
+		is_blocking = true
 		
 func _handle_firing():
 	# Overridden if projectile is particle based
@@ -142,11 +142,11 @@ func spawn_projectile():
 #### Damage related functions ####
 
 func take_damage(damage : int, direction : Vector3):
-	if blocking:
+	if is_blocking:
 		character_stats.current_health -= damage - 5
 	else:
 		character_stats.current_health -= damage
-		i_been_walloped = true
+		im_walloped = true
 		hit_direction = direction
 		update_health()
 	
@@ -154,7 +154,7 @@ func take_damage(damage : int, direction : Vector3):
 		die()
 
 
-func take_projectile_damage(damage : int, status_effect):
+func take_projectile_damage(damage : int, _status_effect):
 	character_stats.current_health -= damage
 	
 	update_health()
@@ -236,7 +236,7 @@ func _on_animation_tree_animation_finished(anim_name):
 		left_hook.set_deferred("monitoring", false)
 		right_hook.set_deferred("monitoring", false)
 	elif anim_name == "Character_Block":
-		blocking = false
+		is_blocking = false
 
 
 #### Misc functions ####

@@ -59,7 +59,7 @@ func spawn_ai(new_world):
 		
 	else:
 		for i in characters.size():
-			for j in 1:
+			for j in 3:
 				var new_character = characters[i].instantiate()
 				new_character.player_controlled = false
 				var new_controller = ai_controller.instantiate()
