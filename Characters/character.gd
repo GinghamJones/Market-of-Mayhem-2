@@ -16,7 +16,7 @@ extends CharacterBody3D
 @onready var dodge_timer : Timer = $Timers/DodgeTimer
 @onready var dodge_cooldown : Timer = $Timers/DodgeCooldown
 
-var mouse_delta : Vector2
+var mouse_delta : Vector2 = Vector2.ZERO
 var is_paused : bool = false
 var is_dodging : bool = false
 var is_moving : bool = false : set = set_is_moving
@@ -30,15 +30,22 @@ var is_dead : bool = false
 	
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
-var punch_force : float = 15
 var dodge_direction : Vector3 = Vector3.ZERO
 
-var player_controlled : bool 
-var controller
+var player_controlled : bool = false
+var controller = null
 
+var score : int = 0 : 
+	set(score_to_add): 
+		score += score_to_add
+		emit_signal("score_changed")
+
+signal score_changed
 
 func _ready() -> void:
+	character_stats.current_ammo = character_stats.max_ammo
 	update_health()
+	
 
 func _process(_delta: float) -> void:
 	if not controller:
@@ -73,13 +80,13 @@ func move_my_ass(delta):
 	
 	if im_walloped:
 		# Hit direction comes from the take_damage functiion
-		velocity = hit_direction * punch_force
+		velocity = hit_direction * character_stats.punch_force
 		hit_direction = Vector3.ZERO
 		im_walloped = false
 	else:
 		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
 		if is_dodging:
-			velocity = dodge_direction * 30
+			velocity = dodge_direction * character_stats.dodge_force
 		handle_movement_anims(delta)
 
 	move_and_slide()
@@ -123,25 +130,29 @@ func block():
 		
 func _handle_firing():
 	# Overridden if projectile is particle based
-	if projectile_timer.is_stopped(): #and character_stats.current_ammo > 0:
+	if projectile_timer.is_stopped() and character_stats.current_ammo > 0:
 		projectile_timer.start()
 		spawn_projectile()
 		character_stats.current_ammo -= 1
-	
+		if player_controlled:
+			controller.hud.update_ammo()
+
 func use_super_move():
 	pass
 
 
 func spawn_projectile():
 	var p : Projectile = projectile.instantiate()
-	get_tree().root.add_child(p)
+#	get_tree().root.add_child(p)
+	add_child(p)
+	p.set_as_top_level(true)
 	p.global_transform = $Human_Template_Male/ProjectilePlacement.global_transform
 	p.initiate(character_stats.projectile_speed, character_stats.projectile_damage, self)
 	p.fire(velocity)
 
 #### Damage related functions ####
 
-func take_damage(damage : int, direction : Vector3):
+func take_damage(damage : int, direction : Vector3, who_dunnit : Character):
 	if is_blocking:
 		character_stats.current_health -= damage - 5
 	else:
@@ -151,14 +162,19 @@ func take_damage(damage : int, direction : Vector3):
 		update_health()
 	
 	if character_stats.current_health <= 0:
+		who_dunnit.set("score", 1)
 		die()
 
 
-func take_projectile_damage(damage : int, _status_effect):
+func take_projectile_damage(damage : int, status_effect, who_dunnit : Character):
 	character_stats.current_health -= damage
+	
+	if status_effect:
+		print(status_effect)
 	
 	update_health()
 	if character_stats.current_health <= 0:
+		who_dunnit.set("score", 1)
 		die()
 
 
@@ -214,7 +230,7 @@ func _on_left_hook_body_entered(body):
 	if body == self:
 		return
 	if body.has_method("take_damage") and not hit_detected:
-		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
 		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
@@ -224,7 +240,7 @@ func _on_right_hook_body_entered(body):
 	if body == self:
 		return
 	if body.has_method("take_damage") and not hit_detected:
-		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized())
+		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
 		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		right_hook.set_deferred("monitoring", false)
@@ -242,6 +258,8 @@ func _on_animation_tree_animation_finished(anim_name):
 #### Misc functions ####
 
 func initiate():
+	CharacterTracker.add_character(character_stats.Team, self)
+	
 	for node in get_children():
 		if node.is_in_group("Controller"):
 			controller = node
@@ -250,6 +268,8 @@ func initiate():
 	
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		character_stats.name = NameGenerator.get_new_name()
 	
 	controller.actor = self
 	controller.initiate()
@@ -263,11 +283,12 @@ func initiate():
 	character_stats.current_ammo = character_stats.max_ammo
 	global_position = spawn_point
 	
-	$Label3D.text = str(get_class()) + ": health = " + str(character_stats.current_health)
+	update_health()
 
 
 func update_health():
-	$Label3D.text = str(character_stats.Team) + ": health = " + str(character_stats.current_health)
+	if player_controlled and controller:
+		controller.hud.update_health()
 
 
 func respawn():

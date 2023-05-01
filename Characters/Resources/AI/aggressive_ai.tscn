@@ -76,9 +76,9 @@ script = ExtResource("12_4gjxp")
 
 [node name="IsEnemyTooClose" parent="MainRunner/Hunt/Movement/Strafe" instance=ExtResource("14_p7ecm")]
 
-[node name="DoStrafe" parent="MainRunner/Hunt/Movement/Strafe" instance=ExtResource("15_yblx0")]
+[node name="StopMoving" parent="MainRunner/Hunt/Movement/Strafe" instance=ExtResource("19_8y0l7")]
 
-[node name="StopMoving" parent="MainRunner/Hunt/Movement" instance=ExtResource("19_8y0l7")]
+[node name="DoStrafe" parent="MainRunner/Hunt/Movement" instance=ExtResource("15_yblx0")]
 
 [node name="Attack" parent="MainRunner/Hunt" instance=ExtResource("11_o2gic")]
 

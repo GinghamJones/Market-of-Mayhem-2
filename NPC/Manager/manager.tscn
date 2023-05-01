@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4g7o6e0nllbr"]
+
+[ext_resource type="PackedScene" uid="uid://cm1or1idd2aj8" path="res://NPC/Manager/Assets/NPC_Manager.glb" id="1_mmh7y"]
+
+[node name="Manager" type="CharacterBody3D"]
+
+[node name="NPC_Manager" parent="." instance=ExtResource("1_mmh7y")]
+
+[node name="Skeleton3D" parent="NPC_Manager/Npc_Manager" index="0"]
+bones/0/position = Vector3(7.22481e-09, -0.0887917, -0.0968734)
+bones/6/rotation = Quaternion(0.0420723, -8.4526e-05, -0.000379985, 0.999115)
+bones/7/position = Vector3(0.0301434, 0.226209, 0.128935)
+bones/8/rotation = Quaternion(-0.279813, 0.435982, -0.665689, 0.537106)
+bones/9/rotation = Quaternion(0.2949, 0.0741631, -0.108357, 0.946463)
+bones/10/rotation = Quaternion(-0.0318853, -0.0251584, 0.100778, 0.99408)
+bones/11/rotation = Quaternion(-0.213393, -0.881618, -0.370726, 0.199438)
+bones/12/rotation = Quaternion(0.264279, -0.0904573, 0.00304941, 0.96019)
+bones/13/position = Vector3(-0.0198268, 0.0545011, 0.00157878)
+bones/13/rotation = Quaternion(0.0618093, 0.69853, -0.0882027, 0.707429)
+bones/14/position = Vector3(0.00143677, 0.118732, -0.000403155)
+bones/14/rotation = Quaternion(0.376569, -0.117309, -0.08342, 0.915137)
+bones/15/position = Vector3(-0.0301435, 0.226209, 0.128935)
+bones/16/rotation = Quaternion(-0.414807, -0.787885, 0.350064, 0.29091)
+bones/17/rotation = Quaternion(0.121658, -0.0572241, 0.119163, 0.98373)
+bones/18/rotation = Quaternion(-0.156229, 0.0135422, -0.0962122, 0.982931)
+bones/19/rotation = Quaternion(-0.213393, 0.881618, 0.370726, 0.199438)
+bones/20/rotation = Quaternion(0.26428, 0.0904573, -0.00304935, 0.96019)
+bones/21/position = Vector3(0.0198268, 0.0545012, 0.00157869)
+bones/21/rotation = Quaternion(-0.01662, -0.699662, 0.164113, 0.695172)
+bones/22/position = Vector3(-0.00143674, 0.118732, -0.000403045)
+bones/22/rotation = Quaternion(0.438172, 0.0742226, -0.0375036, 0.895036)
+bones/25/rotation = Quaternion(-0.997023, -0.0633151, 0.00406084, 0.0438153)
+bones/26/rotation = Quaternion(0.246025, 0.0305242, 0.0303165, 0.968308)
+bones/27/rotation = Quaternion(-0.625548, -0.0196277, 0.0230907, 0.779597)
+bones/28/rotation = Quaternion(-0.0278959, 0.869106, -0.493834, 0.00239209)
+bones/29/rotation = Quaternion(0.941267, -0.0572191, 0.0274097, 0.331649)
+bones/30/rotation = Quaternion(0.0175041, -0.00935293, -0.032703, 0.999268)
+bones/31/rotation = Quaternion(-0.704818, 0.0219693, -0.0208753, 0.708741)
+bones/32/rotation = Quaternion(7.39874e-08, 0.988501, -0.151216, 4.22942e-07)
+
+[editable path="NPC_Manager"]

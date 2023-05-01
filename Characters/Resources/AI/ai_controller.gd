@@ -3,6 +3,7 @@ extends Node3D
 
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
 @onready var ai_tree = preload("res://Characters/Resources/AI/aggressive_ai.tscn").instantiate()
+@onready var forget_timer : Timer = $ForgetTarget
 
 var actor : Character = null
 var opponents_in_sight : Array[Character]
@@ -121,14 +122,14 @@ func _on_detection_area_body_entered(body):
 			# If no opponents in sight, add sighted opponent
 			if opponents_in_sight.size() == 0:
 				opponents_in_sight.push_back(test_body)
-				print(opponents_in_sight)
-				print(opponents_in_sight.size())
+#				print(opponents_in_sight)
+#				print(opponents_in_sight.size())
 			else:
 				# Check if array already includes opponent
 				for i in opponents_in_sight:
 					if i == test_body:
 						if i == target:
-							$ForgetTarget.stop()
+							forget_timer.stop()
 						break
 				
 				opponents_in_sight.push_back(test_body)
@@ -148,10 +149,8 @@ func _on_detection_area_body_exited(body):
 	if body is Character:
 		if opponents_in_sight.has(body):
 			if body == target:
-				$ForgetTarget.start()
+				forget_timer.start()
 			else:
 				opponents_in_sight.erase(body)
-#	if body == target:
-##		TargetTracker.remove_target(actor)
-#		target = null
+
 

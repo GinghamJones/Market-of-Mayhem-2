@@ -43,13 +43,9 @@ popup/item_5/id = 5
 popup/item_6/text = "Produce Clerk"
 popup/item_6/id = 6
 
-[node name="Start" type="Button" parent="VBoxContainer"]
+[node name="DevModeStart" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "Start"
-
-[node name="SpawnOneEnemy" type="CheckButton" parent="VBoxContainer"]
-layout_mode = 2
-text = "Spawn one enemy?"
+text = "Dev Mode"
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 0
@@ -68,6 +64,5 @@ scale = Vector2(0.558333, 0.558333)
 texture = ExtResource("2_lunac")
 
 [connection signal="item_selected" from="VBoxContainer/CharacterSelect" to="." method="_on_character_select_item_selected"]
-[connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]
-[connection signal="toggled" from="VBoxContainer/SpawnOneEnemy" to="." method="_on_check_button_toggled"]
+[connection signal="pressed" from="VBoxContainer/DevModeStart" to="." method="_on_devmode_pressed"]
 [connection signal="pressed" from="CenterContainer/QuitButton" to="." method="_on_quit_button_pressed"]

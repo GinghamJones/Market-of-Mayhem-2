@@ -1,0 +1,90 @@
+[gd_scene load_steps=3 format=3 uid="uid://ci10prtvv375s"]
+
+[ext_resource type="PackedScene" uid="uid://drn3guvtuxnsh" path="res://Menu/GameSelect/GameModes/game_mode.tscn" id="1_iyko6"]
+[ext_resource type="Script" path="res://Menu/GameSelect/GameModes/dev_mode.gd" id="2_erike"]
+
+[node name="DevMode" instance=ExtResource("1_iyko6")]
+script = ExtResource("2_erike")
+
+[node name="DevMenu" type="Control" parent="." index="0"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DevMenu" index="0"]
+layout_mode = 1
+offset_left = 59.0
+offset_top = 32.0
+offset_right = 529.0
+offset_bottom = 407.0
+
+[node name="CharacterTitle" type="Label" parent="DevMenu/VBoxContainer" index="0"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Characters Available"
+horizontal_alignment = 1
+
+[node name="ButcherButton" type="Button" parent="DevMenu/VBoxContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Butcher"
+
+[node name="CookButton" type="Button" parent="DevMenu/VBoxContainer" index="2"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Cook"
+
+[node name="FloristButton" type="Button" parent="DevMenu/VBoxContainer" index="3"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Florist"
+
+[node name="ProduceButton" type="Button" parent="DevMenu/VBoxContainer" index="4"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Produce Clerk"
+
+[node name="FreightButton" type="Button" parent="DevMenu/VBoxContainer" index="5"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Freight Clerk"
+
+[node name="CashierButton" type="Button" parent="DevMenu/VBoxContainer" index="6"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Cashier"
+
+[node name="BakerButton" type="Button" parent="DevMenu/VBoxContainer" index="7"]
+layout_mode = 2
+size_flags_vertical = 7
+text = "Baker"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="DevMenu" index="1"]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 556.0
+offset_right = 529.0
+offset_bottom = 904.0
+
+[node name="NPC" type="Label" parent="DevMenu/VBoxContainer2" index="0"]
+layout_mode = 2
+text = "NPC's"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Manager" type="Button" parent="DevMenu/VBoxContainer2" index="1"]
+layout_mode = 2
+text = "Manager"
+
+[node name="Customer" type="Button" parent="DevMenu/VBoxContainer2" index="2"]
+layout_mode = 2
+text = "Customer"
+
+[connection signal="pressed" from="DevMenu/VBoxContainer/ButcherButton" to="." method="_on_butcher_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer/CookButton" to="." method="_on_cook_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer/FloristButton" to="." method="_on_florist_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer/ProduceButton" to="." method="_on_produce_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer/FreightButton" to="." method="_on_freight_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer/CashierButton" to="." method="_on_cashier_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer/BakerButton" to="." method="_on_baker_button_pressed"]

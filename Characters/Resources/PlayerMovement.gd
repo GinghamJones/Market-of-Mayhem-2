@@ -3,6 +3,9 @@ extends Node3D
 
 var mouse_delta : Vector2 = Vector2.ZERO
 
+@onready var hud = $HUD
+@onready var raycast : RayCast3D = $RayCast3D
+
 var look_speed : float = 0.2
 const MAX_LOOK_ANGLE : int = 60
 const MIN_LOOK_ANGLE : int = -60
@@ -30,6 +33,10 @@ func initiate():
 	use_super_move.connect(Callable(actor, "use_super_move"))
 	quit_firing.connect(Callable(actor, "set_is_firing"))
 	dodge_em.connect(Callable(actor, "start_dodge"))
+	
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	hud.actor = actor
+	hud.initiate()
 
 
 func _unhandled_input(event):
@@ -80,6 +87,11 @@ func _process(delta: float) -> void:
 	rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
 
 	mouse_delta = Vector2()
+	
+	if raycast.is_colliding():
+		var dude = raycast.get_collider()
+		if dude is Character:
+			hud.update_enemy_stats(dude)
 
 
 func get_direction() -> Vector3:
@@ -94,14 +106,15 @@ func get_direction() -> Vector3:
 
 func handle_pause():
 	SceneLoader.load_character_select()
-	
-	
+
+
 func handle_cursor():
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
-	
+
+
 func get_y_rotation() -> float:
 	return rotation.y
+

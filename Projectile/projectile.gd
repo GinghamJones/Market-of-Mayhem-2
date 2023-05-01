@@ -8,7 +8,6 @@ var speed : float = 0
 var damage : int = 0
 var status_effect
 
-var did_i_hit : bool = false
 var is_active : bool = true
 var who_fired_me : Character = null
 var previous_velocity : Vector3 = Vector3.ZERO
@@ -25,26 +24,19 @@ func initiate(new_speed : float, new_damage : int, requester : Character):
 
 
 func _physics_process(delta):
-	if not did_i_hit:
+	if is_active:
 		previous_velocity = linear_velocity
 #		print(previous_velocity.length())
 
 
 func _on_body_entered(body):
-	did_i_hit = true
 	if body.is_in_group("Floor"):
 		is_active = false
-	else:
-		if body == who_fired_me or not is_active:
-			did_i_hit = false
-			return
-		else:
-#			print(previous_velocity.length())
-#			print(linear_velocity.length())
-			if body.has_method("take_projectile_damage") and not did_i_hit:
-				body.take_projectile_damage(damage, status_effect)
-				did_i_hit = true
-
+	elif body == who_fired_me:
+		pass
+	elif body.has_method("take_projectile_damage") and is_active:
+		body.take_projectile_damage(damage, status_effect, who_fired_me)
+		is_active = false
 
 
 func _on_lifespan_timer_timeout():

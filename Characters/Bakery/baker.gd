@@ -12,5 +12,5 @@ func _handle_firing():
 
 
 func slather_em(target):
-	target.take_damage(character_stats.projectile_damage, Vector3.ZERO)
+	target.take_projectile_damage(character_stats.projectile_damage, null, self)
 	target.begin_slow_effect()
