@@ -1,8 +1,8 @@
 class_name CharacterData
 extends Resource
 
-@export_enum("MEAT", "BAKERY", "CASHIER", "FLORAL", "FREIGHT", "KITCHEN", "PRODUCE") var Team: String
-var name : String = ""
+@export_enum("Meat", "Bakery", "Cashier", "Floral", "Freight", "Kitchen", "Produce") var Team: String
+var my_name : String = ""
 
 @export var max_health : int = 100
 var current_health : int
@@ -20,5 +20,5 @@ var current_ammo : int
 @export var move_speed : float = 5
 @export var acceleration : float = 0.1
 @export var gravity : float = 30
-@export var dodge_force : float = 20
+@export var dodge_force : float = 15
 @export var punch_force : float = 10

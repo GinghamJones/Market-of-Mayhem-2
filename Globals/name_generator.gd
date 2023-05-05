@@ -11,9 +11,9 @@ func get_new_name() -> String:
 	randomize()
 	var available_num_names : int = names.size()
 	var index : int = randi() % available_num_names
-	var name : String = names[index]
-	names.erase(name)
-	return name
+	var my_name : String = names[index]
+	names.erase(my_name)
+	return my_name
 
 
 func populate_names():

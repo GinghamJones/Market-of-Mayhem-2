@@ -13,15 +13,7 @@ extends Node
 @onready var ai_controller = preload("res://Characters/Resources/AI/ai_controller.tscn")
 
 var spawn_points : Dictionary = {}
-#var spawned_characters : Dictionary = {
-#	"baker" : [],
-#	"cashier" : [],
-#	"florist" : [],
-#	"cook" : [],
-#	"butcher" : [],
-#	"freight" : [],
-#	"produce" : []
-#}
+
 
 
 
@@ -30,23 +22,16 @@ func get_new_character(character_type : String, player_controlled : bool, spawn_
 	
 	if player_controlled:
 		var new_controller = player_movement.instantiate()
+		new_character.player_controlled = true
 		new_character.add_child(new_controller)
 	else:
 		# Add code for choosing random personality. Maybe weighted based on class chosen
 		var new_controller = ai_controller.instantiate()
 		new_character.add_child(new_controller)
 	
-#	var spawn_point_number : int = spawned_characters[team].size()
-#	if spawn_point_number > 2:
-#		# >2 will return invalid get index on spawn_points array. Abort mission.
-#		new_character.queue_free()
-#		printerr("Too many characters on this team")
-#		return null
 		
 	new_character.spawn_point = spawn_points[character_type][spawn_point_number].global_position
-#	spawned_characters[team].push_back(new_character)
-#	new_character.call_deferred("initiate")
-#	new_character.initiate()
+
 	return new_character
 
 

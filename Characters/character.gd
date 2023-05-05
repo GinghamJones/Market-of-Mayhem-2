@@ -1,6 +1,9 @@
 class_name Character
 extends CharacterBody3D
 
+## You may find:
+## Name generation in "initiate"
+
 @export var character_stats : CharacterData
 @export var projectile : PackedScene
 @onready var projectile_placement : Node3D = $Human_Template_Male/ProjectilePlacement
@@ -27,6 +30,7 @@ var im_walloped : bool = false
 var hit_direction : Vector3 = Vector3.ZERO
 var spawn_point : Vector3 = Vector3.ZERO
 var is_dead : bool = false
+var is_respawning : bool = true
 	
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
@@ -38,13 +42,12 @@ var controller = null
 var score : int = 0 : 
 	set(score_to_add): 
 		score += score_to_add
-		emit_signal("score_changed")
+		emit_signal("score_changed", character_stats.my_name, score)
 
 signal score_changed
 
 func _ready() -> void:
 	character_stats.current_ammo = character_stats.max_ammo
-	update_health()
 	
 
 func _process(_delta: float) -> void:
@@ -135,6 +138,7 @@ func _handle_firing():
 		spawn_projectile()
 		character_stats.current_ammo -= 1
 		if player_controlled:
+			print("ammo update reached")
 			controller.hud.update_ammo()
 
 func use_super_move():
@@ -173,6 +177,7 @@ func take_projectile_damage(damage : int, status_effect, who_dunnit : Character)
 		print(status_effect)
 	
 	update_health()
+		
 	if character_stats.current_health <= 0:
 		who_dunnit.set("score", 1)
 		die()
@@ -190,9 +195,10 @@ func die():
 	set_physics_process(false)
 	set_process(false)
 	$CollisionShape3D.call_deferred("set_disabled", true)
-	$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
-	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = false
-	$Timers/RespawnTimer.start()
+#	$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
+#	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = false
+	if is_respawning:
+		$Timers/RespawnTimer.start()
 	is_dead = true
 
 
@@ -257,6 +263,7 @@ func _on_animation_tree_animation_finished(anim_name):
 
 #### Misc functions ####
 
+# One time function called on creation to set up character
 func initiate():
 	CharacterTracker.add_character(character_stats.Team, self)
 	
@@ -269,7 +276,8 @@ func initiate():
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
-		character_stats.name = NameGenerator.get_new_name()
+		character_stats.my_name = NameGenerator.get_new_name()
+		name = character_stats.my_name + character_stats.Team
 	
 	controller.actor = self
 	controller.initiate()
@@ -288,6 +296,7 @@ func initiate():
 
 func update_health():
 	if player_controlled and controller:
+		print("update reached")
 		controller.hud.update_health()
 
 
@@ -299,7 +308,7 @@ func respawn():
 	character_stats.current_ammo = character_stats.max_ammo
 	character_stats.current_health = character_stats.max_health
 	is_dead = false
-	$Human_Template_Male/metarig/Skeleton3D.physical_bones_stop_simulation()
-	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = true
-	$Human_Template_Male/metarig/Skeleton3D.reset_bone_poses()
+#	$Human_Template_Male/metarig/Skeleton3D.physical_bones_stop_simulation()
+#	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = true
+#	$Human_Template_Male/metarig/Skeleton3D.reset_bone_poses()
 	update_health()

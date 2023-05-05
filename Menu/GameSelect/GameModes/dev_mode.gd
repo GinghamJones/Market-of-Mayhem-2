@@ -20,9 +20,6 @@ func _unhandled_input(event):
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
-func score_changed():
-	
-
 func check_available_classes():
 	# In theory, should check which character classes are full of players and disable button if so
 	pass
