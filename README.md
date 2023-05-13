@@ -22,7 +22,7 @@ Controls:
   WASD : Movement
   LMB : Normal Attack
   RMB : Projectile Attack
-  E : Special Melee (Not yet implemented)
+  E : Debug Cam(Eventually will be Special Melee)
   Q : Block(Meh, not worth using yet)
   Shift : Dodge
   C : Show scoreboard(will be changed to tab eventually)
