@@ -81,6 +81,15 @@ text = "Manager"
 layout_mode = 2
 text = "Customer"
 
+[node name="IntermissionText" parent="GUI" index="2"]
+process_mode = 3
+
+[node name="StartRoundTimer" parent="Timers" index="0"]
+process_mode = 3
+
+[node name="IntermissionTimer" parent="Timers" index="1"]
+wait_time = 2.0
+
 [connection signal="pressed" from="DevMenu/VBoxContainer/ButcherButton" to="." method="_on_butcher_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/CookButton" to="." method="_on_cook_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/FloristButton" to="." method="_on_florist_button_pressed"]
@@ -88,3 +97,4 @@ text = "Customer"
 [connection signal="pressed" from="DevMenu/VBoxContainer/FreightButton" to="." method="_on_freight_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/CashierButton" to="." method="_on_cashier_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/BakerButton" to="." method="_on_baker_button_pressed"]
+[connection signal="pressed" from="DevMenu/VBoxContainer2/Manager" to="." method="_on_manager_pressed"]

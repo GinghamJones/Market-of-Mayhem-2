@@ -12,25 +12,28 @@ extends CharacterBody3D
 @onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
 @onready var right_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/RightHookBone/RightHook
 @onready var left_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/LeftHookBone/LeftHook
+@onready var skeleton : Skeleton3D = $Human_Template_Male/metarig/Skeleton3D
 
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
 @onready var special_timer : Timer = $Timers/SpecialMeleeTimer
 @onready var jump_timer : Timer = $Timers/JumpTimer
 @onready var dodge_timer : Timer = $Timers/DodgeTimer
 @onready var dodge_cooldown : Timer = $Timers/DodgeCooldown
+@onready var invincibility_timer : Timer = $Timers/InvincibilityTimer
 
 var mouse_delta : Vector2 = Vector2.ZERO
-var is_paused : bool = false
+var is_paused : bool = false : set = set_is_paused
 var is_dodging : bool = false
 var is_moving : bool = false : set = set_is_moving
 var is_firing : bool = false : set = set_is_firing
 var is_blocking : bool = false
 var hit_detected : bool = false
 var im_walloped : bool = false
+var is_invincible : bool = false
 var hit_direction : Vector3 = Vector3.ZERO
 var spawn_point : Vector3 = Vector3.ZERO
 var is_dead : bool = false
-var is_respawning : bool = true
+var should_respawn : bool = true
 	
 #var is_jumping : bool = false : set = set_is_jumping
 var jump_force : float = 30
@@ -45,18 +48,23 @@ var score : int = 0 :
 		emit_signal("score_changed", character_stats.my_name, score)
 
 signal score_changed
+signal respawn_complete
+
 
 func _ready() -> void:
 	character_stats.current_ammo = character_stats.max_ammo
 	
 
 func _process(_delta: float) -> void:
-	if not controller:
+	if not controller or is_paused:
 		return
 	rotation.y = lerp_angle(rotation.y, controller.get_y_rotation(), 0.2)
 
 
 func _physics_process(delta: float) -> void:
+	if is_paused:
+		return
+		
 	if is_firing:
 		_handle_firing()
 		if character_stats.single_fire:
@@ -90,6 +98,7 @@ func move_my_ass(delta):
 		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
 		if is_dodging:
 			velocity = dodge_direction * character_stats.dodge_force
+		
 		handle_movement_anims(delta)
 
 	move_and_slide()
@@ -102,8 +111,8 @@ func handle_movement_anims(delta : float):
 		anims.set("parameters/TimeScale/scale", anim_speed)
 	else:
 		set_is_moving(false)
-		anims["parameters/Movement/playback"].travel("Character_Idle")
-		anims.set("parameters/TimeScale/scale", 1.1)
+#		anims["parameters/Movement/playback"].travel("Character_Idle")
+#		anims.set("parameters/TimeScale/scale", 1.1)
 
 
 #### Action functions ####
@@ -117,9 +126,11 @@ func start_dodge(new_direction : Vector3):
 func stop_dodge():
 	dodge_cooldown.start()
 	is_dodging = false
-		
+
+
 func jump():
 	set_oneshot("parameters/JumpShot/request")
+
 
 func punch():
 	if set_oneshot("parameters/PunchShot/request"):
@@ -127,10 +138,12 @@ func punch():
 		right_hook.monitoring = true
 		left_hook.monitoring = true
 
+
 func block():
 	if set_oneshot("parameters/BlockShot/request"):
 		is_blocking = true
-		
+
+
 func _handle_firing():
 	# Overridden if projectile is particle based
 	if projectile_timer.is_stopped() and character_stats.current_ammo > 0:
@@ -138,7 +151,6 @@ func _handle_firing():
 		spawn_projectile()
 		character_stats.current_ammo -= 1
 		if player_controlled:
-			print("ammo update reached")
 			controller.hud.update_ammo()
 
 func use_super_move():
@@ -147,22 +159,28 @@ func use_super_move():
 
 func spawn_projectile():
 	var p : Projectile = projectile.instantiate()
-#	get_tree().root.add_child(p)
 	add_child(p)
 	p.set_as_top_level(true)
-	p.global_transform = $Human_Template_Male/ProjectilePlacement.global_transform
+	p.global_transform = projectile_placement.global_transform
 	p.initiate(character_stats.projectile_speed, character_stats.projectile_damage, self)
 	p.fire(velocity)
+
 
 #### Damage related functions ####
 
 func take_damage(damage : int, direction : Vector3, who_dunnit : Character):
+	if is_invincible:
+		return
+	
 	if is_blocking:
 		character_stats.current_health -= damage - 5
 	else:
 		character_stats.current_health -= damage
+		
+		# Set im_walloped so phys_process can calculate punched velocity
 		im_walloped = true
 		hit_direction = direction
+		
 		update_health()
 	
 	if character_stats.current_health <= 0:
@@ -171,6 +189,9 @@ func take_damage(damage : int, direction : Vector3, who_dunnit : Character):
 
 
 func take_projectile_damage(damage : int, status_effect, who_dunnit : Character):
+	if is_invincible:
+		return
+	
 	character_stats.current_health -= damage
 	
 	if status_effect:
@@ -185,19 +206,26 @@ func take_projectile_damage(damage : int, status_effect, who_dunnit : Character)
 
 func begin_slow_effect():
 	$Timers/SlowTimer.start()
-	character_stats.move_speed -= 5
+	character_stats.move_speed -= 2
 
 func end_slow_effect():
-	character_stats.move_speed += 5
+	character_stats.move_speed += 2
 
 
 func die():
 	set_physics_process(false)
 	set_process(false)
+	
+	if controller is AIController:
+		controller.set_detection(false)
+	
 	$CollisionShape3D.call_deferred("set_disabled", true)
-#	$Human_Template_Male/metarig/Skeleton3D.physical_bones_start_simulation()
-#	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = false
-	if is_respawning:
+	
+	# Activate ragdoll
+	skeleton.physical_bones_start_simulation()
+	skeleton.animate_physical_bones = false
+	
+	if should_respawn:
 		$Timers/RespawnTimer.start()
 	is_dead = true
 
@@ -228,6 +256,15 @@ func set_is_moving(value : bool):
 
 func set_is_firing(value): 
 	is_firing = value
+	
+
+func set_is_paused(value):
+	is_paused = value
+	if value == true:
+		set_is_moving(false)
+		is_invincible = true
+	if value == false:
+		is_invincible = false
 
 
 #### Signal functions ####
@@ -250,7 +287,6 @@ func _on_right_hook_body_entered(body):
 		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		right_hook.set_deferred("monitoring", false)
-		
 
 
 func _on_animation_tree_animation_finished(anim_name):
@@ -265,23 +301,17 @@ func _on_animation_tree_animation_finished(anim_name):
 
 # One time function called on creation to set up character
 func initiate():
-	CharacterTracker.add_character(character_stats.Team, self)
-	
 	for node in get_children():
 		if node.is_in_group("Controller"):
 			controller = node
 			$ControllerPositioner.remote_path = node.get_path()
 			break
 	
+	controller.initiate(self)
+	
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	else:
-		character_stats.my_name = NameGenerator.get_new_name()
-		name = character_stats.my_name + character_stats.Team
-	
-	controller.actor = self
-	controller.initiate()
-		
+
 	$Human_Template_Male.rotation_degrees.y = 180.0
 	
 	right_hook.monitoring = false
@@ -296,19 +326,33 @@ func initiate():
 
 func update_health():
 	if player_controlled and controller:
-		print("update reached")
 		controller.hud.update_health()
 
 
 func respawn():
-	global_position = spawn_point
+	var tween : Tween = create_tween()
+	tween.tween_property(self, "global_position", spawn_point, 0.5)
+	is_invincible = true
+	invincibility_timer.start()
+	await tween.finished
+#	global_position = spawn_point
 	set_physics_process(true)
 	set_process(true)
 	$CollisionShape3D.call_deferred("set_disabled", false)
 	character_stats.current_ammo = character_stats.max_ammo
 	character_stats.current_health = character_stats.max_health
 	is_dead = false
-#	$Human_Template_Male/metarig/Skeleton3D.physical_bones_stop_simulation()
-#	$Human_Template_Male/metarig/Skeleton3D.animate_physical_bones = true
-#	$Human_Template_Male/metarig/Skeleton3D.reset_bone_poses()
+	
+	# Reset skeleton
+	skeleton.physical_bones_stop_simulation()
+	skeleton.animate_physical_bones = true
+	skeleton.reset_bone_poses()
+	
+	if not player_controlled:
+		controller.reset_ai()
+	respawn_complete.emit()
 	update_health()
+
+
+func _on_invincibility_timer_timeout():
+	is_invincible = false

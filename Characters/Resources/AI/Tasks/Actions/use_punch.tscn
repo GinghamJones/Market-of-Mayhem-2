@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Actions/UsePunch.gd" id="1_2lb2w"]
-
-[node name="UsePunch" type="Node"]
-script = ExtResource("1_2lb2w")

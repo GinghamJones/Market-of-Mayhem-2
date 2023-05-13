@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://buo1w1ta8h7ky"]
-
-[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Conditions/Base/condition.gd" id="1_qutyr"]
-
-[node name="IsTargetChosen" type="Node"]
-script = ExtResource("1_qutyr")

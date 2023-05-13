@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://b4lvhdqtmq4q4"]
-
-[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Base/behavior_tree.gd" id="1_85blj"]
-
-[node name="BehaviorTree" type="Node"]
-script = ExtResource("1_85blj")

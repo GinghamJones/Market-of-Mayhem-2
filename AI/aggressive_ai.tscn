@@ -1,0 +1,139 @@
+[gd_scene load_steps=33 format=3 uid="uid://b7rf58fa5tf7c"]
+
+[ext_resource type="Script" path="res://AI/aggressive_ai.gd" id="1_n2a7x"]
+[ext_resource type="Script" path="res://AI/Tasks/Base/selector.gd" id="2_b4vee"]
+[ext_resource type="Script" path="res://AI/Tasks/Base/sequence.gd" id="3_1oaia"]
+[ext_resource type="Script" path="res://AI/Tasks/Conditions/IsProjectileIncoming.gd" id="4_c0562"]
+[ext_resource type="Script" path="res://AI/Tasks/Conditions/IsRandomDodgeTimeDone.gd" id="5_5v4qq"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/dodge_projectile.tscn" id="6_rskec"]
+[ext_resource type="PackedScene" uid="uid://bdrstcu6k7t77" path="res://AI/Tasks/Base/sequence.tscn" id="7_bufpn"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/am_i_gang_banged.tscn" id="8_8kntj"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/flee.tscn" id="9_g1m6x"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_enemy_visible.tscn" id="10_obmaw"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_target_chosen.tscn" id="11_d4o7n"]
+[ext_resource type="Script" path="res://AI/Tasks/Conditions/is_target_chosen.gd" id="12_jiapv"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/choose_target.tscn" id="13_645om"]
+[ext_resource type="Script" path="res://AI/IsTargetTooHealthy.gd" id="14_fvo03"]
+[ext_resource type="PackedScene" uid="uid://8d63bjf44urw" path="res://AI/Tasks/Base/selector.tscn" id="14_mahhb"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/should_i_move_to_enemy.tscn" id="15_1q1lr"]
+[ext_resource type="Script" path="res://AI/Tasks/Actions/CheckProximities.gd" id="15_ukhqi"]
+[ext_resource type="Script" path="res://AI/Tasks/Conditions/IsTargetDead.gd" id="16_kvwlb"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/move_to_target.tscn" id="16_l2ufd"]
+[ext_resource type="Script" path="res://AI/Tasks/Actions/ForgetTarget.gd" id="17_fktun"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_enemy_too_close.tscn" id="17_heveo"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/stop_moving.tscn" id="18_55b02"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/do_strafe.tscn" id="19_o1br5"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_special_available.tscn" id="20_ducho"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_opponent_in_special_range.tscn" id="21_3ca0x"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/use_special_attack.tscn" id="22_g0a11"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_opponent_in_punch_range.tscn" id="23_2okbl"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/use_punch.tscn" id="24_3jk7u"]
+[ext_resource type="Script" path="res://AI/Tasks/Actions/BackTheFuckUp.gd" id="25_hkbmk"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Conditions/is_ammo_available.tscn" id="26_p4es6"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/fire_shot.tscn" id="27_fcqh3"]
+[ext_resource type="PackedScene" path="res://AI/Tasks/Actions/choose_wander_point.tscn" id="28_x65qm"]
+
+[node name="AggressiveAI" type="Node"]
+script = ExtResource("1_n2a7x")
+
+[node name="MainRunner" type="Node" parent="."]
+script = ExtResource("2_b4vee")
+
+[node name="ProjectileIncoming" type="Node" parent="MainRunner"]
+script = ExtResource("3_1oaia")
+
+[node name="IsProjectileIncoming" type="Node" parent="MainRunner/ProjectileIncoming"]
+script = ExtResource("4_c0562")
+
+[node name="IsRandomDodgeTimeDone" type="Node" parent="MainRunner/ProjectileIncoming"]
+script = ExtResource("5_5v4qq")
+
+[node name="DodgeProjectile" parent="MainRunner/ProjectileIncoming" instance=ExtResource("6_rskec")]
+
+[node name="HandleGangBang" parent="MainRunner" instance=ExtResource("7_bufpn")]
+
+[node name="AmIGangBanged" parent="MainRunner/HandleGangBang" instance=ExtResource("8_8kntj")]
+
+[node name="Flee" parent="MainRunner/HandleGangBang" instance=ExtResource("9_g1m6x")]
+
+[node name="Hunt" parent="MainRunner" instance=ExtResource("7_bufpn")]
+
+[node name="IsEnemyVisible" parent="MainRunner/Hunt" instance=ExtResource("10_obmaw")]
+
+[node name="HandleTargetSelection" type="Node" parent="MainRunner/Hunt"]
+script = ExtResource("3_1oaia")
+
+[node name="NewTarget" type="Node" parent="MainRunner/Hunt/HandleTargetSelection"]
+script = ExtResource("2_b4vee")
+
+[node name="IsTargetChosen" parent="MainRunner/Hunt/HandleTargetSelection/NewTarget" instance=ExtResource("11_d4o7n")]
+script = ExtResource("12_jiapv")
+
+[node name="ChooseTarget" parent="MainRunner/Hunt/HandleTargetSelection/NewTarget" instance=ExtResource("13_645om")]
+
+[node name="CheckProximities" type="Node" parent="MainRunner/Hunt/HandleTargetSelection"]
+script = ExtResource("15_ukhqi")
+
+[node name="TargetTooHealthy" type="Node" parent="MainRunner/Hunt/HandleTargetSelection"]
+script = ExtResource("2_b4vee")
+
+[node name="IsTargetTooHealthy" type="Node" parent="MainRunner/Hunt/HandleTargetSelection/TargetTooHealthy"]
+script = ExtResource("14_fvo03")
+
+[node name="ChooseTarget2" parent="MainRunner/Hunt/HandleTargetSelection/TargetTooHealthy" instance=ExtResource("13_645om")]
+
+[node name="DeadTarget" type="Node" parent="MainRunner/Hunt/HandleTargetSelection"]
+script = ExtResource("2_b4vee")
+
+[node name="IsTargetDead" type="Node" parent="MainRunner/Hunt/HandleTargetSelection/DeadTarget"]
+script = ExtResource("16_kvwlb")
+
+[node name="ForgetTarget" type="Node" parent="MainRunner/Hunt/HandleTargetSelection/DeadTarget"]
+script = ExtResource("17_fktun")
+
+[node name="Movement" parent="MainRunner/Hunt" instance=ExtResource("14_mahhb")]
+
+[node name="MoveToEnemy" parent="MainRunner/Hunt/Movement" instance=ExtResource("7_bufpn")]
+
+[node name="ShouldIMoveToEnemy" parent="MainRunner/Hunt/Movement/MoveToEnemy" instance=ExtResource("15_1q1lr")]
+
+[node name="MoveToTarget" parent="MainRunner/Hunt/Movement/MoveToEnemy" instance=ExtResource("16_l2ufd")]
+
+[node name="Strafe" parent="MainRunner/Hunt/Movement" instance=ExtResource("7_bufpn")]
+
+[node name="IsEnemyTooClose" parent="MainRunner/Hunt/Movement/Strafe" instance=ExtResource("17_heveo")]
+
+[node name="StopMoving" parent="MainRunner/Hunt/Movement/Strafe" instance=ExtResource("18_55b02")]
+
+[node name="DoStrafe" parent="MainRunner/Hunt/Movement" instance=ExtResource("19_o1br5")]
+
+[node name="Attack" parent="MainRunner/Hunt" instance=ExtResource("14_mahhb")]
+
+[node name="SpecialAttack" parent="MainRunner/Hunt/Attack" instance=ExtResource("7_bufpn")]
+
+[node name="IsSpecialAvailable" parent="MainRunner/Hunt/Attack/SpecialAttack" instance=ExtResource("20_ducho")]
+
+[node name="IsOpponentInSpecialRange" parent="MainRunner/Hunt/Attack/SpecialAttack" instance=ExtResource("21_3ca0x")]
+
+[node name="UseSpecialAttack" parent="MainRunner/Hunt/Attack/SpecialAttack" instance=ExtResource("22_g0a11")]
+
+[node name="UsePunch" parent="MainRunner/Hunt/Attack" instance=ExtResource("7_bufpn")]
+
+[node name="IsOpponentInPunchRange" parent="MainRunner/Hunt/Attack/UsePunch" instance=ExtResource("23_2okbl")]
+
+[node name="UsePunch" parent="MainRunner/Hunt/Attack/UsePunch" instance=ExtResource("24_3jk7u")]
+
+[node name="BackTheFuckUp" type="Node" parent="MainRunner/Hunt/Attack/UsePunch"]
+script = ExtResource("25_hkbmk")
+
+[node name="FireProjectile" parent="MainRunner/Hunt/Attack" instance=ExtResource("7_bufpn")]
+
+[node name="IsAmmoAvailable" parent="MainRunner/Hunt/Attack/FireProjectile" instance=ExtResource("26_p4es6")]
+
+[node name="FireShot" parent="MainRunner/Hunt/Attack/FireProjectile" instance=ExtResource("27_fcqh3")]
+
+[node name="Wander" parent="MainRunner" instance=ExtResource("14_mahhb")]
+
+[node name="ChooseWanderPoint" parent="MainRunner/Wander" instance=ExtResource("28_x65qm")]
+
+[node name="MoveToTarget2" parent="MainRunner/Wander" instance=ExtResource("16_l2ufd")]

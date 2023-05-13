@@ -16,9 +16,19 @@ func score_changed(my_name : String, new_score : int):
 
 
 func populate_scoreboard(current_characters : Dictionary):
+	scoreboard.clear()
+	
 	for key in current_characters.keys():
+		if current_characters[key].size() < 1:
+			pass
 		var board_to_add_to = get_node("ScoreBoard/" + key + "/" + key + "Scores")
-		for i in 3:
+		
+		# Delete previous score nodes if dev mode
+		for child in board_to_add_to.get_children():
+			child.queue_free()
+			
+		for i in current_characters[key].size():
+			
 			var current_character : Character = current_characters[key][i]
 			
 			var name_label : Label = Label.new()

@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqla3dwfjcw3b"]
-
-[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Base/selector.gd" id="1_b5u6x"]
-
-[node name="Selector" type="Node"]
-script = ExtResource("1_b5u6x")

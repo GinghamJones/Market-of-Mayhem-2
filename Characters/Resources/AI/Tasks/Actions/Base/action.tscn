@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://drurc2s7clie4"]
-
-[ext_resource type="Script" path="res://Characters/Resources/AI/Tasks/Actions/Base/action.gd" id="1_kh28b"]
-
-[node name="Action" type="Node"]
-script = ExtResource("1_kh28b")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://drn3guvtuxnsh"]
+[gd_scene load_steps=5 format=3 uid="uid://drn3guvtuxnsh"]
 
 [ext_resource type="Script" path="res://Menu/GameSelect/GameModes/GameMode.gd" id="1_4ikh1"]
 [ext_resource type="Script" path="res://Menu/GameSelect/GameModes/GUI.gd" id="2_sifct"]
@@ -9,7 +9,12 @@ font_color = Color(0.756863, 0, 0.239216, 0.721569)
 outline_size = 6
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_0ryhr"]
+font_size = 40
+font_color = Color(0.886275, 0, 0.886275, 1)
+
 [node name="GameMode" type="Node"]
+process_mode = 3
 script = ExtResource("1_4ikh1")
 
 [node name="GUI" type="Control" parent="."]
@@ -162,12 +167,26 @@ label_settings = SubResource("LabelSettings_4ngxw")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="IntermissionText" type="Label" parent="GUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 26.0
+grow_horizontal = 2
+text = "dicks"
+label_settings = SubResource("LabelSettings_0ryhr")
+
 [node name="Timers" type="Node" parent="."]
 
 [node name="StartRoundTimer" type="Timer" parent="Timers"]
-process_mode = 3
+process_mode = 1
 wait_time = 5.0
 one_shot = true
 
 [node name="IntermissionTimer" type="Timer" parent="Timers"]
 wait_time = 10.0
+one_shot = true

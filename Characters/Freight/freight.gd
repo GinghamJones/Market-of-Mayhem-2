@@ -1,31 +1,21 @@
 class_name Freight
 extends Character
-@onready var lazer_timer : Timer = $Lazer/LazerTimer
-@onready var damage_limiter : Timer = $Lazer/DamFrequencyLimit
-@onready var lazer : RayCast3D = $Lazer/LazerHitDetect
+@onready var lazer_tree = $Lazer
 
 
 func _ready():
 	super()
-	lazer.enabled = false
+	lazer_tree.connect("colliding", Callable(self, "deal_lazer_damage"))
+
 
 func _handle_firing():
-	$Lazer/LazerBeamRight.show()
-	$Lazer/LazerBeamLeft.show()
-	lazer.enabled = true
-	lazer_timer.start()
-	damage_limiter.start()
-	
-	
+	lazer_tree.activate(0.3)
+
+
 func stop_firing():
-	$Lazer/LazerBeamRight.hide()
-	$Lazer/LazerBeamLeft.hide()
-	lazer.enabled = false
+	lazer_tree.deactivate(0.3)
 
 
-func deal_lazer_damage():
-	if lazer.is_colliding():
-		var collider : Character = lazer.get_collider()
-		if collider.character_stats.Team != "Freight":
-			collider.take_projectile_damage(character_stats.projectile_damage, null, self)
-			damage_limiter.start()
+func deal_lazer_damage(enemy : Character):
+	if enemy.character_stats.Team != "Freight":
+		enemy.take_projectile_damage(character_stats.projectile_damage, null, self)

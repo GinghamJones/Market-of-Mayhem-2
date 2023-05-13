@@ -12,7 +12,7 @@ const MIN_LOOK_ANGLE : int = -60
 const MAX_ZOOM: float = 5
 const MIN_ZOOM : float = -1
 
-var actor : Character
+var actor : Character = null
 
 signal im_jumping
 signal punch_em
@@ -24,7 +24,9 @@ signal quit_firing
 signal dodge_em
 
 
-func initiate():
+func initiate(new_actor : Character):
+	actor = new_actor
+	
 	im_jumping.connect(Callable(actor, "jump"))
 	punch_em.connect(Callable(actor, "punch"))
 	block_me.connect(Callable(actor, "block"))
@@ -35,8 +37,7 @@ func initiate():
 	dodge_em.connect(Callable(actor, "start_dodge"))
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	hud.actor = actor
-	hud.initiate()
+	hud.initiate(actor)
 
 
 func _unhandled_input(event):
@@ -44,9 +45,6 @@ func _unhandled_input(event):
 		mouse_delta = event.relative
 	if event is InputEventJoypadMotion:
 		mouse_delta = Vector2(JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y)
-	
-	if event.is_action_pressed("Pause"):
-		handle_pause()
 	
 	if event.is_action_pressed("Dodge"):
 		emit_signal("dodge_em", get_direction())
@@ -82,17 +80,19 @@ func _unhandled_input(event):
 
 
 func _process(delta: float) -> void:
-	#Rotate camera
-	rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
-	rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
+	if actor:
+		#Rotate camera
+		rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
+		rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
 
-	mouse_delta = Vector2()
-	
-	if raycast.is_colliding():
-		var dude = raycast.get_collider()
-		if dude is Character:
-			hud.update_enemy_stats(dude)
-
+		mouse_delta = Vector2()
+		
+		if raycast.is_colliding():
+			var dude = raycast.get_collider()
+			if dude is Character:
+				hud.set_char_to_track(dude)
+	else:
+		pass
 
 func get_direction() -> Vector3:
 	var input_dir : Vector2 = Input.get_vector("MoveLeft", "MoveRight", "MoveForward", "MoveBack")
@@ -102,10 +102,6 @@ func get_direction() -> Vector3:
 	#var target_velocity : Vector3 = direction
 
 	return direction
-
-
-func handle_pause():
-	SceneLoader.load_character_select()
 
 
 func handle_cursor():
