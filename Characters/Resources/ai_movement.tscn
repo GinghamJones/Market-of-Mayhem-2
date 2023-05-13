@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cdx3xajkbhdok"]
-
-[ext_resource type="Script" path="res://Characters/Resources/ai_movement.gd" id="1_ikwmx"]
-
-[node name="AIMovement" type="Node3D" groups=["Controller"]]
-script = ExtResource("1_ikwmx")

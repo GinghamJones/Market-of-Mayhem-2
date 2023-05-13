@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmhao75rkvqoh"]
+
+[ext_resource type="Script" path="res://AI/Tasks/Base/behavior_tree.gd" id="1_85blj"]
+
+[node name="BehaviorTree" type="Node"]
+script = ExtResource("1_85blj")

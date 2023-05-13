@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ckonsxbkugybr"
+path="res://.godot/imported/footstep_concrete_000.ogg-2a9f05967f34acb225fb864cc61bdfbd.oggvorbisstr"
+
+[deps]
+
+source_file="res://kenney impact sounds/footstep_concrete_000.ogg"
+dest_files=["res://.godot/imported/footstep_concrete_000.ogg-2a9f05967f34acb225fb864cc61bdfbd.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

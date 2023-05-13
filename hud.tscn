@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://TargetTrackerData.gd" id="1_8x226"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_okhbe"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_plgpc"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TargetTrackerData" type="Label" parent="." groups=["HUD"]]
+layout_mode = 0
+offset_left = 1066.0
+offset_top = 38.0
+offset_right = 1885.0
+offset_bottom = 819.0
+text = "Hi Bill"
+label_settings = SubResource("LabelSettings_okhbe")
+script = ExtResource("1_8x226")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+layout_mode = 2
+offset_left = 51.0
+offset_top = 933.0
+offset_right = 438.0
+offset_bottom = 1041.0
+size_flags_vertical = 1
+
+[node name="AmmoCounter" type="Label" parent="."]
+layout_mode = 2
+offset_left = 1703.0
+offset_top = 973.0
+offset_right = 1887.0
+offset_bottom = 1041.0
+text = "fuck"
+label_settings = SubResource("LabelSettings_plgpc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpecialCooldown" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 1510.0
+offset_top = 983.0
+offset_right = 1681.0
+offset_bottom = 1034.0

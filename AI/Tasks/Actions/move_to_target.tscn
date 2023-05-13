@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://AI/Tasks/Actions/MoveToOpponent.gd" id="1_2fd27"]
+
+[node name="MoveToTarget" type="Node"]
+script = ExtResource("1_2fd27")
