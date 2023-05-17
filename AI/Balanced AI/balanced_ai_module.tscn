@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://dqjjbnjl8gnuy"]
+
+[ext_resource type="Script" path="res://AI/Balanced AI/balanced_ai_module.gd" id="1_hbnqr"]
+[ext_resource type="Script" path="res://AI/Balanced AI/incoming_projectiles.gd" id="1_pv6mg"]
+[ext_resource type="Script" path="res://AI/Balanced AI/handle_target_selection.gd" id="2_cfnom"]
+[ext_resource type="Script" path="res://AI/Balanced AI/movement.gd" id="4_llf6o"]
+[ext_resource type="Script" path="res://AI/Balanced AI/Attack.gd" id="5_je1g7"]
+
+[node name="BalancedAIModule" type="Node"]
+script = ExtResource("1_hbnqr")
+
+[node name="IncomingProjectiles" type="Node" parent="."]
+script = ExtResource("1_pv6mg")
+
+[node name="HandleTargetSelection" type="Node" parent="."]
+script = ExtResource("2_cfnom")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("4_llf6o")
+
+[node name="StrafeDirTimer" type="Timer" parent="Movement"]
+wait_time = 5.0
+one_shot = true
+
+[node name="Attack" type="Node" parent="."]
+script = ExtResource("5_je1g7")

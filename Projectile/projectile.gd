@@ -23,21 +23,24 @@ func initiate(new_speed : float, new_damage : int, requester : Character):
 	who_fired_me = requester
 
 
-func _physics_process(delta):
-	if is_active:
-		previous_velocity = linear_velocity
-#		print(previous_velocity.length())
+#func _physics_process(delta):
+#	if is_active:
+#		previous_velocity = linear_velocity
+##		print(previous_velocity.length())
 
 
 func _on_body_entered(body):
 	if body.is_in_group("Floor"):
 		is_active = false
+		queue_free()
 	elif body == who_fired_me:
 		pass
 	elif body.has_method("take_projectile_damage") and is_active:
 		body.take_projectile_damage(damage, status_effect, who_fired_me)
 		is_active = false
-
+		queue_free()
+	else:
+		queue_free()
 
 func _on_lifespan_timer_timeout():
 	queue_free()

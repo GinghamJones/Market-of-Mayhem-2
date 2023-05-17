@@ -8,6 +8,11 @@ extends Control
 var actor : Character
 var char_to_track : Character = null : set = set_char_to_track
 
+signal dude_forgotten
+
+func _ready() -> void:
+	dude_forgotten.connect(Callable(get_parent(), "set_target"))
+
 
 func _physics_process(delta):
 	if char_to_track:
@@ -44,6 +49,7 @@ func hide_enemy_stats():
 	enemy_stats.hide()
 	char_to_track = null
 	enemy_stats.text = "suck my dingus"
+	dude_forgotten.emit(null)
 
 
 func set_char_to_track(character : Character):

@@ -81,17 +81,17 @@ func spawn_players():
 	add_character(player_character_type, true, player_name)
 	
 	for t in teams:
-		var chars_to_spawn : int = 3
-		if player_character_type == t:
-			chars_to_spawn = 2
+		var chars_to_spawn : int = 2
+		if player_character_type ==t:
+			chars_to_spawn = 1
 			
 		for i in chars_to_spawn:
 			add_character(t, false)
 	
 	# Delete this for real game
-	manager = SpawnManager.get_new_manager()
-	add_child(manager)
-	manager.initiate()
+#	manager = SpawnManager.get_new_manager()
+#	add_child(manager)
+#	manager.initiate()
 
 
 func time_convert(time_in_sec) -> String:

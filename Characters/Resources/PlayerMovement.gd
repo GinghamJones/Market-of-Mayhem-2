@@ -13,6 +13,9 @@ const MAX_ZOOM: float = 5
 const MIN_ZOOM : float = -1
 
 var actor : Character = null
+var target : Character = null
+# Maybe I could figure out how to detect if player is fleeing??
+var fleeing : bool = false
 
 signal im_jumping
 signal punch_em
@@ -90,9 +93,11 @@ func _process(delta: float) -> void:
 		if raycast.is_colliding():
 			var dude = raycast.get_collider()
 			if dude is Character:
+				set_target(dude)
 				hud.set_char_to_track(dude)
 	else:
 		pass
+
 
 func get_direction() -> Vector3:
 	var input_dir : Vector2 = Input.get_vector("MoveLeft", "MoveRight", "MoveForward", "MoveBack")
@@ -114,3 +119,10 @@ func handle_cursor():
 func get_y_rotation() -> float:
 	return rotation.y
 
+
+func set_target(new_target : Character):
+	target = new_target
+
+
+func get_fleeing() -> bool:
+	return fleeing

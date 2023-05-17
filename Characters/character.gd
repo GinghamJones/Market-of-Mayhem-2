@@ -52,6 +52,7 @@ signal respawn_complete
 
 
 func _ready() -> void:
+	randomize()
 	character_stats.current_ammo = character_stats.max_ammo
 	
 
@@ -95,10 +96,18 @@ func move_my_ass(delta):
 		hit_direction = Vector3.ZERO
 		im_walloped = false
 	else:
+		
 		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
+		
+		if not player_controlled:
+			var nav_agent : NavigationAgent3D = controller.nav_agent
+			nav_agent.set_velocity(velocity)
+			await nav_agent.velocity_computed
+			velocity = controller.get_velocity()
+			
 		if is_dodging:
 			velocity = dodge_direction * character_stats.dodge_force
-		
+	
 		handle_movement_anims(delta)
 
 	move_and_slide()
@@ -265,6 +274,20 @@ func set_is_paused(value):
 		is_invincible = true
 	if value == false:
 		is_invincible = false
+
+####### Getter Functions ######
+
+func get_health() -> int:
+	return character_stats.current_health
+
+func get_ammo() -> int:
+	return character_stats.current_ammo
+
+func get_speed() -> float:
+	return character_stats.move_speed
+
+func get_team() -> String:
+	return character_stats.Team
 
 
 #### Signal functions ####

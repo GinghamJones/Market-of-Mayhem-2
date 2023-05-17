@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7fwx56n0jnkd"]
+
+[ext_resource type="Script" path="res://AI/Base/ai_controller.gd" id="1_617uw"]
+[ext_resource type="Shape3D" uid="uid://dpvuqlxwkw00e" path="res://detection_shape.tres" id="2_krexa"]
+[ext_resource type="Script" path="res://AI/Base/DetectionCast.gd" id="3_kxssb"]
+[ext_resource type="Script" path="res://AI/Base/DetectionArea.gd" id="4_uobrm"]
+
+[node name="AIController" type="Node3D" groups=["Controller"]]
+script = ExtResource("1_617uw")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+avoidance_enabled = true
+
+[node name="DetectionCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61223, 1.84894)
+enabled = false
+shape = ExtResource("2_krexa")
+target_position = Vector3(0, 0, 0)
+collision_mask = 6
+script = ExtResource("3_kxssb")
+
+[node name="ForgetTarget" type="Timer" parent="."]
+one_shot = true
+
+[node name="DetectionArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39248, 1.8495)
+collision_layer = 0
+collision_mask = 6
+monitorable = false
+script = ExtResource("4_uobrm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = ExtResource("2_krexa")
+
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
+[connection signal="body_entered" from="DetectionArea" to="DetectionArea" method="_on_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="body_exited" from="DetectionArea" to="DetectionArea" method="_on_body_exited"]

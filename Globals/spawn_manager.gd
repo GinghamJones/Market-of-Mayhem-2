@@ -10,7 +10,9 @@ extends Node
 	"Produce" : preload("res://Characters/Produce/produce_clerk.tscn")
 }
 @onready var player_movement = preload("res://Characters/Resources/player_movement.tscn")
-@onready var ai_controller = preload("res://AI/ai_controller.tscn")
+@onready var ai_controller = preload("res://AI/Base/ai_controller.tscn")
+@onready var balanced_ai : PackedScene = preload("res://AI/Balanced AI/balanced_ai_controller.tscn")
+@onready var aggressive_ai : PackedScene = preload("res://AI/aggressive_ai.tscn")
 @onready var manager : PackedScene = preload("res://NPC/Manager/manager.tscn")
 
 var spawn_points : Dictionary = {}
@@ -25,7 +27,7 @@ func get_new_character(character_type : String, player_controlled : bool, spawn_
 		new_character.player_controlled = true
 	else:
 		# Add code for choosing random personality. Maybe weighted based on class chosen
-		new_controller = ai_controller.instantiate()
+		new_controller = balanced_ai.instantiate()
 		new_character.player_controlled = false
 
 	new_character.add_child(new_controller)

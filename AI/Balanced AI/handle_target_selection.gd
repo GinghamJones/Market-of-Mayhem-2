@@ -1,0 +1,101 @@
+extends Node
+
+enum {
+	SUCCESS,
+	MOVEON,
+	STOP,
+}
+
+#####################################################################################
+############################## Main Function ########################################
+#####################################################################################
+
+func run(controller : AIController):
+	var detection_cast : Area3D = controller.detection_area
+	var check : bool = false
+	var my_health : int = controller.get_actor_health()
+	var my_speed : float = controller.get_actor_speed()
+	var current_target : Character = controller.target
+	
+	######################### Important checks ##########################################
+	# Check if anyone in sight
+	check = detection_cast.is_anyone_in_sight()
+	if not check:
+		# No one in sight, no need to select targets
+		controller.set_flee_target(null)
+		return 
+	
+	# Check for managers
+	var manager : Manager = detection_cast.get_manager_in_sight()
+	if manager != null:
+		# Oh shit, manager in sight. Fuck everything else, better run...
+		controller.set_flee_target(manager)
+		return 
+	
+	# Check if being targetted
+	var targetter : Character = detection_cast.am_i_targetted()
+	if targetter != null:
+		check = should_i_fight(targetter, my_health, my_speed)
+	
+		if not check:
+			controller.set_flee_target(targetter)
+		else:
+			controller.set_target(targetter)
+			return 
+	
+	#####################################################################################
+	
+	# Check if they dead or if no target chosen yet
+	if current_target == null or current_target.is_dead :
+		controller.set_target(detection_cast.get_closest_opponent())
+		return 
+	
+	# Check target health
+	check = check_health_difference(my_health, current_target.character_stats.current_health)
+	if not check:
+		controller.set_flee_target(controller.target)
+		return 
+	
+
+	
+	if current_target.controller.get_fleeing():
+		check = check_speed_difference(my_speed, current_target.character_stats.move_speed)
+		if not check:
+			controller.set_target(detection_cast.get_closest_opponent())
+	return 
+
+
+#####################################################################################
+#####################################################################################
+#####################################################################################
+
+
+func should_i_fight(targetter : Character, my_health : int, my_speed : float) -> bool:
+
+	var health_ok : bool = check_health_difference(my_health, targetter.character_stats.current_health)
+	var speed_ok : bool = check_speed_difference(my_speed, targetter.character_stats.move_speed)
+	
+	if speed_ok and not health_ok:
+		return false
+	else:
+		return true
+
+
+func check_health_difference(my_health : int, target_health : int) -> bool:
+	var max_tolerance : int = 50
+	var health_difference : int = target_health - my_health
+	
+	if health_difference > max_tolerance:
+		return false
+	
+	return true
+
+
+func check_speed_difference(my_speed : float, targetter_speed : float) -> bool:
+	var max_tolerance : float = 1.0
+	var speed_difference : float = targetter_speed - my_speed
+	
+	if speed_difference > max_tolerance:
+		return false
+	
+	return true

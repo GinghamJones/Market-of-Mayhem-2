@@ -19,7 +19,9 @@ func _ready():
 	settings.hide()
 	settings.connect("main_menu_request", Callable(self, "load_character_select"))
 	world.hide()
-
+	for i in 10:
+		var rand = randi() % 2
+		print(rand)
 
 func load_character_select():
 	destroy_cur_scene()

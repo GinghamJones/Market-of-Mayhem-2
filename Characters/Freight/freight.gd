@@ -9,10 +9,14 @@ func _ready():
 
 
 func _handle_firing():
+	if is_paused:
+		return
 	lazer_tree.activate(0.3)
 
 
 func stop_firing():
+	if is_paused:
+		return
 	lazer_tree.deactivate(0.3)
 
 
