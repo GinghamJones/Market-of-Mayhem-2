@@ -77,6 +77,7 @@ func add_character(character_type : String, player_controlled : bool, character_
 		return
 	else:
 		var new_character : Character = SpawnManager.get_new_character(character_type, player_controlled, spawn_number)
+		new_character.name = character_name
 		new_character.character_stats.my_name = character_name
 		current_characters[character_type].push_back(new_character)
 		add_child(new_character)

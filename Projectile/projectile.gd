@@ -32,15 +32,14 @@ func initiate(new_speed : float, new_damage : int, requester : Character):
 func _on_body_entered(body):
 	if body.is_in_group("Floor"):
 		is_active = false
-		queue_free()
+#		queue_free()
 	elif body == who_fired_me:
 		pass
 	elif body.has_method("take_projectile_damage") and is_active:
 		body.take_projectile_damage(damage, status_effect, who_fired_me)
 		is_active = false
-		queue_free()
-	else:
-		queue_free()
+#		queue_free()
+
 
 func _on_lifespan_timer_timeout():
 	queue_free()

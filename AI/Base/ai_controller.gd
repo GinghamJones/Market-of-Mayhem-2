@@ -8,7 +8,7 @@ extends Node3D
 @onready var aggressive_ai : PackedScene = preload("res://AI/aggressive_ai.tscn")
 
 @onready var forget_timer : Timer = $ForgetTarget
-@onready var detection_cast : ShapeCast3D = $DetectionCast
+#@onready var detection_cast : ShapeCast3D = $DetectionCast
 @onready var detection_area : Area3D = $DetectionArea
 
 var ai_module_children : Array = []
@@ -24,7 +24,7 @@ var y_rotation : float = 0 : set = set_y_rotation, get = get_y_rotation
 var velocity : Vector3 = Vector3.ZERO : set = set_velocity, get = get_velocity
 
 
-func _physics_process(_delta):
+func run():
 	
 	if actor:
 		if actor.is_dead or actor.is_paused:
@@ -32,19 +32,24 @@ func _physics_process(_delta):
 
 		set_direction(Vector3.ZERO)
 		# Complete the 2 checks to populate object arrays if objects are detected
-		detection_cast.check_shapecast()
+#		detection_cast.check_shapecast()
 
 		# Run children in AI Module but stop series if false is returned
-		cur_ai_tree.tick()
+#		cur_ai_tree.tick()
 
-#		for module in ai_module_children:
-#			module.run(self)
+		for module in ai_module_children:
+			module.run(self)
 
 
 # Is this the best way of interfacing with actor?
 func punch():
 	actor.punch()
 
+func is_punch_available() -> bool:
+	if actor.punch_timer.is_stopped():
+		return true
+	
+	return false
 #func use_special():
 #	actor.use_special()
 
@@ -122,6 +127,12 @@ func is_projectile_available() -> bool:
 	return false
 
 
+func is_dodge_available() -> bool:
+	if actor.dodge_cooldown.is_stopped():
+		return true
+	
+	return false
+
 func back_up():
 	set_direction(transform.basis.z)
 
@@ -137,12 +148,15 @@ func set_direction(new_direction : Vector3):
 func get_direction() -> Vector3:
 	return direction
 
+func get_is_dodging() -> bool:
+	return actor.is_dodging
 
 func get_y_rotation() -> float:
 	return y_rotation
 
 func set_y_rotation(value : float):
-	y_rotation = lerp(y_rotation, value, 0.1)
+#	y_rotation = lerp(y_rotation, value, 0.1)
+	y_rotation = value
 
 
 func set_fleeing(what):
@@ -158,7 +172,7 @@ func get_fleeing() -> bool:
 
 func set_detection(huh : bool):
 	$DetectionArea.monitoring = huh
-	detection_cast.enabled = huh
+#	detection_cast.enabled = huh
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 	set_velocity(safe_velocity)
@@ -232,80 +246,21 @@ func initiate(new_actor):
 	actor = new_actor
 	detection_area.set_actor(actor)
 #	detection_area.add_exception(actor)
-	
-#func check_shapecast():
-#	incoming_projectiles.clear()
-#
-#	for i in shapecast.get_collision_count():
-#		var collider = shapecast.get_collider(i)
-#		if collider is Projectile:
-#			for projectile in incoming_projectiles:
-#				if collider == projectile:
-#					return
-#				else:
-#					incoming_projectiles.erase(projectile)
-#
-#			incoming_projectiles.push_back(collider)
-#		elif collider is Character:
-#			if collider.character_stats.Team == actor.character_stats.Team or collider.is_dead:
-#				return
-#			else:
-#				for body in opponents_in_sight:
-#					if body == collider:
-#						return
-#					else:
-#						opponents_in_sight.erase(body)
-#
-#				opponents_in_sight.push_back(collider)
-#
-#
-#func _on_detection_area_body_entered(body):
-#	if body is Manager:
-#		return
-#
-#	if body is Character:
-#		# Check if sighted character is on same team
-#		if body.character_stats.Team == actor.character_stats.Team:
-#			return
-#		else:
-#			# If no opponents in sight, add sighted opponent
-#			if opponents_in_sight.size() == 0:
-#				opponents_in_sight.push_back(body)
-#			else:
-#				# Check if array already includes opponent
-#				for i in opponents_in_sight:
-#					if i == body:
-#						if i == target:
-#							forget_timer.stop()
-#						break
-#
-#				opponents_in_sight.push_back(body)
-#
-##	elif body is Projectile:
-##		if body.who_fired_me != actor:
-##			incoming_projectile = body
-#
-#
-#func _on_detection_area_body_exited(body):
-##	print("body exited")
-##	if body is Projectile:
-##		incoming_projectile = null
-#	if body is Character:
-#		if opponents_in_sight.has(body):
-#			if body == target:
-#				forget_timer.start()
-#
-#			opponents_in_sight.erase(body)
-##			print(str(body) + "successfully erased" + "     " + str(opponents_in_sight.size()))
+
+
+func die():
+	detection_area.set_monitoring(false)
+	detection_area.reset()
+	target = null
+	flee_target = null
 
 
 func reset_ai():
-	target = null
-	flee_target = null
 #	incoming_projectile = null
 	direction = Vector3.ZERO
 	y_rotation = 0
 	forget_timer.stop()
+	detection_area.set_monitoring(true)
 
 
 func _on_detection_area_body_exited(body: Node3D) -> void:

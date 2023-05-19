@@ -11,7 +11,9 @@ func _ready():
 func _handle_firing():
 	if is_paused:
 		return
-	lazer_tree.activate(0.3)
+	if projectile_timer.is_stopped():
+		lazer_tree.activate(0.3)
+		projectile_timer.start()
 
 
 func stop_firing():

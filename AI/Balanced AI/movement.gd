@@ -11,6 +11,17 @@ func run(controller : AIController):
 	
 	var check : bool = false
 	
+	if controller.get_is_dodging():
+		return
+	
+	if controller.is_dodge_available():
+		check = controller.detection_area.is_projectile_comin_for_me()
+		if check:
+			controller.dodge(choose_dodge_direction())
+			return
+	
+
+	
 	############################################################################
 	########################### Wander Mode ####################################
 	
@@ -28,9 +39,6 @@ func run(controller : AIController):
 #		print("wandering")
 		return 
 	
-	############################################################################
-	############################################################################
-	
 	
 	############################################################################
 	############################# Flee Mode ####################################
@@ -39,9 +47,6 @@ func run(controller : AIController):
 		controller.flee_from_target()
 #		print("fleeing target")
 		return 
-	
-	############################################################################
-	############################################################################
 	
 	
 	############################################################################
@@ -78,7 +83,7 @@ func get_distance_to_target(actor_pos : Vector3, target_pos : Vector3) -> float:
 
 
 func should_move_to_enemy(my_pos : Vector3, target_pos : Vector3) -> bool:
-	if distance_to_target > 1.5:
+	if distance_to_target > 1.2:
 		return true
 	else:
 		return false
@@ -87,3 +92,9 @@ func get_strafe_dir() -> int:
 	var rand_int : int = randi() % 2
 	return rand_int
 	
+func choose_dodge_direction() -> Vector3:
+	var rand_int : int = randi() % 2
+	if rand_int == 0:
+		return Vector3.RIGHT
+	else:
+		return Vector3.LEFT

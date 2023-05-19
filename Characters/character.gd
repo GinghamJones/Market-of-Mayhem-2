@@ -20,6 +20,7 @@ extends CharacterBody3D
 @onready var dodge_timer : Timer = $Timers/DodgeTimer
 @onready var dodge_cooldown : Timer = $Timers/DodgeCooldown
 @onready var invincibility_timer : Timer = $Timers/InvincibilityTimer
+@onready var punch_timer : Timer = $Timers/PunchTimer
 
 var mouse_delta : Vector2 = Vector2.ZERO
 var is_paused : bool = false : set = set_is_paused
@@ -65,6 +66,9 @@ func _process(_delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if is_paused:
 		return
+	
+	if not player_controlled:
+		controller.run()
 		
 	if is_firing:
 		_handle_firing()
@@ -146,6 +150,7 @@ func punch():
 		hit_detected = false
 		right_hook.monitoring = true
 		left_hook.monitoring = true
+		punch_timer.start()
 
 
 func block():
@@ -155,7 +160,7 @@ func block():
 
 func _handle_firing():
 	# Overridden if projectile is particle based
-	if projectile_timer.is_stopped() and character_stats.current_ammo > 0:
+	if projectile_timer.is_stopped():
 		projectile_timer.start()
 		spawn_projectile()
 		character_stats.current_ammo -= 1
@@ -226,9 +231,11 @@ func die():
 	set_process(false)
 	
 	if controller is AIController:
-		controller.set_detection(false)
+		controller.die()
 	
-	$CollisionShape3D.call_deferred("set_disabled", true)
+	call_deferred("set_collision_layer_value", 2, false)
+	call_deferred("set_collision_mask_value", 2, false)
+#	$CollisionShape3D.call_deferred("set_disabled", true)
 	
 	# Activate ragdoll
 	skeleton.physical_bones_start_simulation()
@@ -361,7 +368,9 @@ func respawn():
 #	global_position = spawn_point
 	set_physics_process(true)
 	set_process(true)
-	$CollisionShape3D.call_deferred("set_disabled", false)
+#	$CollisionShape3D.call_deferred("set_disabled", false)
+	call_deferred("set_collision_layer_value", 2, true)
+	call_deferred("set_collision_mask_value", 2, true)
 	character_stats.current_ammo = character_stats.max_ammo
 	character_stats.current_health = character_stats.max_health
 	is_dead = false

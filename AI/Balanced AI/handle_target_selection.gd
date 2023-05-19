@@ -11,7 +11,7 @@ enum {
 #####################################################################################
 
 func run(controller : AIController):
-	var detection_cast : Area3D = controller.detection_area
+	var detection_area : Area3D = controller.detection_area
 	var check : bool = false
 	var my_health : int = controller.get_actor_health()
 	var my_speed : float = controller.get_actor_speed()
@@ -19,21 +19,22 @@ func run(controller : AIController):
 	
 	######################### Important checks ##########################################
 	# Check if anyone in sight
-	check = detection_cast.is_anyone_in_sight()
+	check = detection_area.is_anyone_in_sight()
 	if not check:
 		# No one in sight, no need to select targets
-		controller.set_flee_target(null)
+		if controller.flee_target:
+			controller.set_flee_target(null)
 		return 
 	
 	# Check for managers
-	var manager : Manager = detection_cast.get_manager_in_sight()
+	var manager : Manager = detection_area.get_manager_in_sight()
 	if manager != null:
 		# Oh shit, manager in sight. Fuck everything else, better run...
 		controller.set_flee_target(manager)
 		return 
 	
 	# Check if being targetted
-	var targetter : Character = detection_cast.am_i_targetted()
+	var targetter : Character = detection_area.am_i_targetted()
 	if targetter != null:
 		check = should_i_fight(targetter, my_health, my_speed)
 	
@@ -41,17 +42,23 @@ func run(controller : AIController):
 			controller.set_flee_target(targetter)
 		else:
 			controller.set_target(targetter)
-			return 
+#			return 
 	
 	#####################################################################################
 	
 	# Check if they dead or if no target chosen yet
-	if current_target == null or current_target.is_dead :
-		controller.set_target(detection_cast.get_closest_opponent())
-		return 
+	
+		
+	if current_target != null:
+		if current_target.is_dead:
+			controller.set_target(null)
+			return
+	else:
+		controller.set_target(detection_area.get_closest_opponent())
+		return
 	
 	# Check target health
-	check = check_health_difference(my_health, current_target.character_stats.current_health)
+	check = check_health_difference(my_health, current_target.get_health())
 	if not check:
 		controller.set_flee_target(controller.target)
 		return 
@@ -59,9 +66,9 @@ func run(controller : AIController):
 
 	
 	if current_target.controller.get_fleeing():
-		check = check_speed_difference(my_speed, current_target.character_stats.move_speed)
+		check = check_speed_difference(my_speed, current_target.get_speed())
 		if not check:
-			controller.set_target(detection_cast.get_closest_opponent())
+			controller.set_target(detection_area.get_closest_opponent())
 	return 
 
 
@@ -72,8 +79,8 @@ func run(controller : AIController):
 
 func should_i_fight(targetter : Character, my_health : int, my_speed : float) -> bool:
 
-	var health_ok : bool = check_health_difference(my_health, targetter.character_stats.current_health)
-	var speed_ok : bool = check_speed_difference(my_speed, targetter.character_stats.move_speed)
+	var health_ok : bool = check_health_difference(my_health, targetter.get_health())
+	var speed_ok : bool = check_speed_difference(my_speed, targetter.get_speed())
 	
 	if speed_ok and not health_ok:
 		return false

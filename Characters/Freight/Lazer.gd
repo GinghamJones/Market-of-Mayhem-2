@@ -43,7 +43,6 @@ func _process(delta):
 				Vector3(mesh_l.mesh.radius, abs(cast_point.y) / 2, mesh_l.mesh.radius)
 			)
 		else:
-			print("not colliding")
 			particles.emitting = false
 			
 			mesh_l.mesh.height = 10
