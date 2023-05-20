@@ -3,7 +3,6 @@ extends Node
 
 @onready var start_timer : Timer = $Timers/StartRoundTimer
 @onready var intermission_timer : Timer = $Timers/IntermissionTimer
-#@onready var world : PackedScene = preload("res://World/world.tscn")
 @onready var countdown_text : Label = $GUI/CountdownText
 @onready var intermission_text : Label = $GUI/IntermissionText
 @onready var scoreboard = $GUI/ScoreBoard
@@ -54,7 +53,7 @@ func _input(event):
 			fuck_the_settings.emit()
 
 
-func _process(delta):
+func _process(_delta):
 	if not start_timer.is_stopped():
 		var time_left : int = int(start_timer.time_left)
 		countdown_text.text = str(time_left)

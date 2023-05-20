@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 
 @onready var manager_anims : AnimationPlayer = $NPC_Manager/AnimationPlayer
-@onready var ai_tree = preload("res://NPC/Manager/manager_ai_tree.tscn")
+#@onready var ai_tree = preload("res://NPC/Manager/manager_ai_tree.tscn")
 
 var controller : AIController = null
 @export var character_stats : CharacterData
@@ -18,14 +18,19 @@ var is_paused : bool = false
 
 
 func _process(_delta: float) -> void:
-	if not controller:
+	if not controller or player_in_hand:
 		return
 	rotation.y = lerp_angle(rotation.y, controller.get_y_rotation(), 0.2)
 
 
 func _physics_process(delta: float) -> void:
-#	move_my_ass(delta)
-	pass
+	if is_paused:
+		return
+	
+	controller.run()
+	
+	if not player_in_hand:
+		move_my_ass(delta)
 
 
 func move_my_ass(delta : float):
@@ -33,12 +38,9 @@ func move_my_ass(delta : float):
 		return
 	var direction : Vector3 = controller.get_direction()
 	
-	if not is_on_floor():# and not is_jumping:
+	if not is_on_floor():
 		direction.y -= character_stats.gravity 
-#	elif is_jumping and is_on_floor():
-#		target_velocity.y += jump_force
-#		if $JumpTimer.is_stopped():
-#			set_is_jumping(false)
+
 	direction.y = 0
 
 	velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
@@ -48,7 +50,19 @@ func move_my_ass(delta : float):
 	move_and_slide()
 
 
-func take_damage(damage : int, direction : Vector3, who_dunnit : Character):
+func fuck_em_up(target : Character):
+	player_in_hand = true
+	target.is_paused = true
+	manager_anims.play("Npc_Manager_Ruiner")
+	manager_anims.speed_scale = 0.5
+	await manager_anims.animation_finished
+	player_in_hand = false
+	target.set_velocity(transform.basis.z * 20)
+	target.is_paused = false
+	target.take_damage(60, Vector3.ZERO, self)
+
+
+func take_damage(damage : int, _direction : Vector3, who_dunnit : Character):
 	character_stats.current_health -= damage
 	
 	if character_stats.current_health <= 0:
@@ -87,7 +101,14 @@ func respawn():
 	$NPC_Manager/Npc_Manager/Skeleton3D.animate_physical_bones = true
 	$NPC_Manager/Npc_Manager/Skeleton3D.reset_bone_poses()
 
+func get_speed() -> float:
+	return character_stats.move_speed
 
+func get_health() -> int:
+	return character_stats.current_health
+
+func get_team() -> String:
+	return character_stats.Team
 
 func initiate():
 	for node in get_children():

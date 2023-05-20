@@ -5,10 +5,8 @@ extends Node3D
 
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
 @onready var balanced_module : PackedScene = preload("res://AI/Balanced AI/balanced_ai_module.tscn")
-@onready var aggressive_ai : PackedScene = preload("res://AI/aggressive_ai.tscn")
 
 @onready var forget_timer : Timer = $ForgetTarget
-#@onready var detection_cast : ShapeCast3D = $DetectionCast
 @onready var detection_area : Area3D = $DetectionArea
 
 var ai_module_children : Array = []
@@ -171,8 +169,8 @@ func get_fleeing() -> bool:
 #	flee_target = null
 
 func set_detection(huh : bool):
-	$DetectionArea.monitoring = huh
-#	detection_cast.enabled = huh
+	detection_area.monitoring = huh
+
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 	set_velocity(safe_velocity)
@@ -263,5 +261,3 @@ func reset_ai():
 	detection_area.set_monitoring(true)
 
 
-func _on_detection_area_body_exited(body: Node3D) -> void:
-	pass # Replace with function body.

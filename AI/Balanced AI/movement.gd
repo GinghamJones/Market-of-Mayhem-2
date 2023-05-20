@@ -1,5 +1,6 @@
 extends Node
 
+## Need to add backup after punching
 
 @onready var strafe_dir_timer : Timer = $StrafeDirTimer
 
@@ -56,7 +57,7 @@ func run(controller : AIController):
 	
 	distance_to_target = get_distance_to_target(actor_pos, target_pos)
 	
-	check = should_move_to_enemy(actor_pos, target_pos)
+	check = should_move_to_enemy()
 	if check:
 		controller.move_to_target()
 #		print("moving to target")
@@ -82,7 +83,7 @@ func get_distance_to_target(actor_pos : Vector3, target_pos : Vector3) -> float:
 	return actor_pos.distance_to(target_pos)
 
 
-func should_move_to_enemy(my_pos : Vector3, target_pos : Vector3) -> bool:
+func should_move_to_enemy() -> bool:
 	if distance_to_target > 1.2:
 		return true
 	else:

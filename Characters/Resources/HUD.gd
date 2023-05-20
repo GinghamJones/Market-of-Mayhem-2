@@ -14,7 +14,7 @@ func _ready() -> void:
 	dude_forgotten.connect(Callable(get_parent(), "set_target"))
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if char_to_track:
 		update_enemy_stats()
 

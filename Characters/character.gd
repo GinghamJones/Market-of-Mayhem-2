@@ -182,7 +182,7 @@ func spawn_projectile():
 
 #### Damage related functions ####
 
-func take_damage(damage : int, direction : Vector3, who_dunnit : Character):
+func take_damage(damage : int, direction : Vector3, who_dunnit):
 	if is_invincible:
 		return
 	
@@ -198,7 +198,10 @@ func take_damage(damage : int, direction : Vector3, who_dunnit : Character):
 		update_health()
 	
 	if character_stats.current_health <= 0:
-		who_dunnit.set("score", 1)
+		if who_dunnit is Manager:
+			pass
+		else:
+			who_dunnit.set("score", 1)
 		die()
 
 
@@ -304,7 +307,7 @@ func _on_left_hook_body_entered(body):
 		return
 	if body.has_method("take_damage") and not hit_detected:
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
-		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
+		$Human_Template_Male/metarig/Skeleton3D/LeftHookBone/ParticleSpawner2.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
 

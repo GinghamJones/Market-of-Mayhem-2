@@ -21,7 +21,6 @@ config/icon="res://icon.svg"
 
 SpawnManager="*res://Globals/spawn_manager.gd"
 NameGenerator="*res://Globals/name_generator.gd"
-CharacterTracker="*res://Globals/character_tracker.gd"
 
 [display]
 

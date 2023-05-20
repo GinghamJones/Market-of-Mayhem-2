@@ -14,7 +14,7 @@ var beam_radius : float = 0.03
 
 signal colliding
 
-func _process(delta):
+func _process(_delta):
 	if is_active:
 		var cast_point : Vector3
 		raycast.force_raycast_update()

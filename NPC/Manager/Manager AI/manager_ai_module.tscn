@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://br6f0u4qfi88i"]
+
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/manager_ai_module.gd" id="1_cpcqk"]
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/HandleTargetSelection.gd" id="2_wdub4"]
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/Movement.gd" id="3_uufmu"]
+
+[node name="ManagerAIModule" type="Node"]
+script = ExtResource("1_cpcqk")
+
+[node name="HandleTargetSelection" type="Node" parent="."]
+script = ExtResource("2_wdub4")
+
+[node name="TargetWaitTimer" type="Timer" parent="HandleTargetSelection"]
+wait_time = 5.0
+one_shot = true
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("3_uufmu")

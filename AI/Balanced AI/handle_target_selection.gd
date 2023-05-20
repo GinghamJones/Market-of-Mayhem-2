@@ -1,5 +1,8 @@
 extends Node
 
+## need to add gangbang check
+
+
 enum {
 	SUCCESS,
 	MOVEON,

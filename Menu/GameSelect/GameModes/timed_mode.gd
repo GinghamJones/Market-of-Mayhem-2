@@ -10,6 +10,9 @@ func _ready():
 #	call_deferred("spawn_bots")
 	await get_tree().process_frame
 	spawn_players()
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = true
 	await get_tree().process_frame
 	$GUI.populate_scoreboard(current_characters)
 #	get_tree().paused = true
@@ -81,9 +84,9 @@ func spawn_players():
 	add_character(player_character_type, true, player_name)
 	
 	for t in teams:
-		var chars_to_spawn : int = 2
+		var chars_to_spawn : int = 3
 		if player_character_type ==t:
-			chars_to_spawn = 1
+			chars_to_spawn = 2
 			
 		for i in chars_to_spawn:
 			add_character(t, false)

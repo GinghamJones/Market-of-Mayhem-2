@@ -10,10 +10,9 @@ extends Node
 	"Produce" : preload("res://Characters/Produce/produce_clerk.tscn")
 }
 @onready var player_movement = preload("res://Characters/Resources/player_movement.tscn")
-@onready var ai_controller = preload("res://AI/Base/ai_controller.tscn")
 @onready var balanced_ai : PackedScene = preload("res://AI/Balanced AI/balanced_ai_controller.tscn")
-@onready var aggressive_ai : PackedScene = preload("res://AI/aggressive_ai.tscn")
 @onready var manager : PackedScene = preload("res://NPC/Manager/manager.tscn")
+@onready var manager_controller : PackedScene = preload("res://NPC/Manager/Manager AI/manager_controller.tscn")
 
 var spawn_points : Dictionary = {}
 var manager_spawn_point : Vector3 = Vector3.ZERO
@@ -38,7 +37,7 @@ func get_new_character(character_type : String, player_controlled : bool, spawn_
 
 func get_new_manager() -> Manager:
 	var new_character : Manager = manager.instantiate()
-	var new_controller : AIController = ai_controller.instantiate()
+	var new_controller : AIController = manager_controller.instantiate()
 	new_character.add_child(new_controller)
 	new_character.spawn_point = manager_spawn_point
 	return new_character

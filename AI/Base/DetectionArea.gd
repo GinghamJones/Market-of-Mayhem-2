@@ -5,7 +5,7 @@ var projectiles_in_sight : Array[Projectile] = []
 var manager_in_sight : Manager = null
 
 # Eh, do you think this is okay, ma?
-var actor : Character = null
+var actor = null
 
 
 func get_lowest_health_opponent() -> Character:

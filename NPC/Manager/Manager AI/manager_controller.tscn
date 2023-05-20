@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://usmutm80uorv"]
+
+[ext_resource type="PackedScene" uid="uid://b7fwx56n0jnkd" path="res://AI/Base/ai_controller.tscn" id="1_jjbur"]
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/manager_controller.gd" id="2_2qedc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_07v1h"]
+size = Vector3(15, 2, 15)
+
+[node name="ManagerController" instance=ExtResource("1_jjbur")]
+script = ExtResource("2_2qedc")
+
+[node name="DetectionArea" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39248, -2.92506)
+
+[node name="CollisionShape3D" parent="DetectionArea" index="0"]
+shape = SubResource("BoxShape3D_07v1h")
