@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dw8cyhw41604e"]
+
+[ext_resource type="PackedScene" uid="uid://drn3guvtuxnsh" path="res://Menu/GameSelect/GameModes/game_mode.tscn" id="1_yi6aa"]
+
+[node name="EliminationMode" instance=ExtResource("1_yi6aa")]
+script = null

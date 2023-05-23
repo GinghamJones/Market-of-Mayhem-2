@@ -9,8 +9,9 @@ extends Node3D
 @onready var forget_timer : Timer = $ForgetTarget
 @onready var detection_area : Area3D = $DetectionArea
 
+var projectile_timer : Timer = null
 var ai_module_children : Array = []
-var cur_ai_tree = null
+var cur_ai = null
 var actor = null
 
 var target : Character = null : set = set_target
@@ -20,40 +21,43 @@ var fleeing : bool = false : set = set_fleeing, get = get_fleeing
 var direction : Vector3 = Vector3.ZERO : set = set_direction, get = get_direction
 var y_rotation : float = 0 : set = set_y_rotation, get = get_y_rotation
 var velocity : Vector3 = Vector3.ZERO : set = set_velocity, get = get_velocity
+var dodge_direction : Vector3 = Vector3.ZERO : get = get_dodge_direction
+
+var did_i_fire : bool = false
+
+signal y_rotation_computed
+signal direction_computed
+signal request_action
+#signal request_punch
+#signal requenst_fire
+#signal request_block
+#signal request_special
 
 
-func run():
-	
+#func _process(delta: float) -> void:
+#	pass
+###################################### Main Run #####################################################
+
+func run(delta : float):
 	if actor:
+		if did_i_fire:
+			request_action.emit("StopFire")
+			did_i_fire = false
+		
 		if actor.is_dead or actor.is_paused:
 			return
-
+		
 		set_direction(Vector3.ZERO)
-		# Complete the 2 checks to populate object arrays if objects are detected
-#		detection_cast.check_shapecast()
-
-		# Run children in AI Module but stop series if false is returned
-#		cur_ai_tree.tick()
-
+		
 		for module in ai_module_children:
 			module.run(self)
+		
+		
+		
+		direction_computed.emit(delta, direction)
+#		actor.move_my_ass(delta, get_direction())
 
-
-# Is this the best way of interfacing with actor?
-func punch():
-	actor.punch()
-
-func is_punch_available() -> bool:
-	if actor.punch_timer.is_stopped():
-		return true
-	
-	return false
-#func use_special():
-#	actor.use_special()
-
-func fire():
-	actor._handle_firing()
-
+################################# Move Actions ######################################################
 
 func move_to_target():
 	set_direction((nav_agent.get_next_path_position() - actor.global_position).normalized())
@@ -64,17 +68,11 @@ func move_to_target():
 	else:
 		face_move_direction()
 
-
 func flee_from_target():
 	if flee_target:
 		set_direction((nav_agent.get_next_path_position() - actor.global_position).normalized())
 		set_nav_target(-target.position)
 		face_enemy()
-
-
-func dodge(dodge_direction : Vector3):
-	face_enemy()
-	actor.start_dodge(dodge_direction)
 
 
 func strafe_left():
@@ -87,6 +85,10 @@ func strafe_right():
 	set_direction(actor.transform.basis.x)
 	face_enemy()
 #	set_nav_target(actor.transform.basis.x + 0.5)
+
+
+func back_up():
+	set_direction(transform.basis.z)
 
 
 func stop_moving():
@@ -109,6 +111,39 @@ func face_move_direction():
 	set_y_rotation(new_rotation)
 
 
+################################ Combat Actions #####################################################
+
+func punch():
+	request_action.emit("Attack")
+
+
+#func use_special():
+#	actor.use_special(
+
+
+func fire():
+#	actor._handle_firing()
+	print("fire request received")
+	request_action.emit("Fire")
+	did_i_fire = true
+#	request_action.emit("StopFire")
+
+
+func dodge(new_dodge_direction : Vector3):
+	face_enemy()
+	dodge_direction = new_dodge_direction
+#	actor.start_dodge(dodge_direction)
+	request_action.emit("Dodge")
+
+
+#################################### Checks #########################################################
+
+func is_punch_available() -> bool:
+	if actor.punch_timer.is_stopped():
+		return true
+	
+	return false
+
 func is_special_available() -> bool:
 	var special_timer : Timer = actor.special_timer
 	if special_timer.is_stopped():
@@ -118,7 +153,6 @@ func is_special_available() -> bool:
 
 
 func is_projectile_available() -> bool:
-	var projectile_timer : Timer = actor.projectile_timer
 	if projectile_timer.is_stopped() and actor.get_ammo() > 0:
 		return true
 	
@@ -131,54 +165,52 @@ func is_dodge_available() -> bool:
 	
 	return false
 
-func back_up():
-	set_direction(transform.basis.z)
+func is_target_in_special_range() -> bool:
+	if target.global_position.length() - actor.global_position.length() < 0.5:
+			return true
+	else:
+		return false
+
+
+func is_target_in_punch_range() -> bool:
+	if (target.global_position - actor.global_position).length() < 1.3:
+		return true
+	else:
+		return false
+
+
+func is_target_aimed_at() -> bool:
+	var z_vector : Vector3 = actor.mesh.global_transform.basis.z
+	var relative_pos : Vector3 = (actor.global_position - target.global_position).normalized()
+	var dot : float = z_vector.dot(relative_pos)
+#	print(dot)
+	if dot > 0.8:
+		return true
+	else:
+		return true
+
+
+##################################### Setters #######################################################
 
 func set_velocity(new_velocity : Vector3):
 	velocity = new_velocity
 
-func get_velocity() -> Vector3:
-	return velocity
-
 func set_direction(new_direction : Vector3):
 	direction = new_direction
-
-func get_direction() -> Vector3:
-	return direction
-
-func get_is_dodging() -> bool:
-	return actor.is_dodging
-
-func get_y_rotation() -> float:
-	return y_rotation
 
 func set_y_rotation(value : float):
 #	y_rotation = lerp(y_rotation, value, 0.1)
 	y_rotation = value
-
+	emit_signal("y_rotation_computed", y_rotation)
 
 func set_fleeing(what):
 	fleeing = what
 
-func get_fleeing() -> bool:
-	return fleeing
-
-#func forget_target():
-##	await get_tree().physics_frame
-#	target = null
-#	flee_target = null
-
 func set_detection(huh : bool):
 	detection_area.monitoring = huh
 
-
-func _on_navigation_agent_3d_velocity_computed(safe_velocity):
-	set_velocity(safe_velocity)
-
-
 func set_nav_target(new_target : Vector3):
 	nav_agent.set_target_position(new_target)
-
 
 func set_target(new_target : Character):
 	if new_target == null:
@@ -199,30 +231,8 @@ func set_flee_target(new_target):
 	set_fleeing(true)
 
 
-func is_target_in_special_range() -> bool:
-	if target.global_position.length() - actor.global_position.length() < 0.5:
-			return true
-	else:
-		return false
-
-
-func is_target_in_punch_range() -> bool:
-	if (target.global_position - actor.global_position).length() < 1.3:
-		return true
-	else:
-		return false
-
-
-func is_target_aimed_at() -> bool:
-	var vector_to_target : Vector3 = actor.global_position - target.global_position
-	var dot : float = actor.velocity.dot(vector_to_target)
-	
-	if dot < 0.1:
-		return true
-	else:
-		return true
-
-
+##################################### Getters #######################################################
+# Is this the best way of interfacing with actor?
 func get_target_health() -> int:
 	return target.get_health()
 
@@ -238,11 +248,39 @@ func get_target_pos() -> Vector3:
 func get_actor_pos() -> Vector3:
 	return actor.global_position
 
+func get_dodge_direction() -> Vector3:
+	return dodge_direction
+
+func get_velocity() -> Vector3:
+	return velocity
+
+func get_direction() -> Vector3:
+	return direction
+
+func get_is_dodging() -> bool:
+	return actor.is_dodging
+
+func get_y_rotation() -> float:
+	return y_rotation
+
+func get_fleeing() -> bool:
+	return fleeing
+
+
+
+func _on_navigation_agent_3d_velocity_computed(safe_velocity):
+	set_velocity(safe_velocity)
+
 
 func initiate(new_actor):
 	# Be sure to instantiate an AIModule and set ai_module_children to its children
 	actor = new_actor
+	projectile_timer = actor.projectile_timer
+	
 	detection_area.set_actor(actor)
+	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
+	direction_computed.connect(Callable(actor, "move_my_ass"))
+	request_action.connect(Callable(actor, "request_action"))
 #	detection_area.add_exception(actor)
 
 
@@ -259,5 +297,3 @@ func reset_ai():
 	y_rotation = 0
 	forget_timer.stop()
 	detection_area.set_monitoring(true)
-
-

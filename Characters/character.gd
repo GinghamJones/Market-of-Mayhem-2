@@ -6,13 +6,20 @@ extends CharacterBody3D
 
 @export var character_stats : CharacterData
 @export var projectile : PackedScene
-@onready var projectile_placement : Node3D = $Human_Template_Male/ProjectilePlacement
+#@onready var projectile_placement : Node3D = $Human_Template_Male/ProjectilePlacement
 
-@onready var anims : AnimationTree = $AnimationTree
-@onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
-@onready var right_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/RightHookBone/RightHook
-@onready var left_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/LeftHookBone/LeftHook
-@onready var skeleton : Skeleton3D = $Human_Template_Male/metarig/Skeleton3D
+@onready var anims : AnimationTree = $CharacterAnimationTree
+#@onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
+#@onready var right_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/RightHookBone/RightHook
+#@onready var left_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/LeftHookBone/LeftHook
+#@onready var skeleton : Skeleton3D = $Human_Template_Male/metarig/Skeleton3D
+#@onready var mesh = $Human_Template_Male
+@onready var anim_player = $NPC_Meat_Female/AnimationPlayer
+@onready var right_hook = $NPC_Meat_Female/Meat_Female/Skeleton3D/RightHookAttachment/RightHook
+@onready var left_hook = $NPC_Meat_Female/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook
+@onready var skeleton = $NPC_Meat_Female/Meat_Female/Skeleton3D
+@onready var mesh = $NPC_Meat_Female/Meat_Female/Skeleton3D/Female_Meat
+@onready var projectile_placement = $ProjectilePlacement
 
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
 @onready var special_timer : Timer = $Timers/SpecialMeleeTimer
@@ -22,7 +29,7 @@ extends CharacterBody3D
 @onready var invincibility_timer : Timer = $Timers/InvincibilityTimer
 @onready var punch_timer : Timer = $Timers/PunchTimer
 
-var mouse_delta : Vector2 = Vector2.ZERO
+
 var is_paused : bool = false : set = set_is_paused
 var is_dodging : bool = false
 var is_moving : bool = false : set = set_is_moving
@@ -31,15 +38,19 @@ var is_blocking : bool = false
 var hit_detected : bool = false
 var im_walloped : bool = false
 var is_invincible : bool = false
-var hit_direction : Vector3 = Vector3.ZERO
-var spawn_point : Vector3 = Vector3.ZERO
 var is_dead : bool = false
+var is_smacked : bool = false
 var should_respawn : bool = true
-	
-#var is_jumping : bool = false : set = set_is_jumping
+
 var jump_force : float = 30
 var dodge_direction : Vector3 = Vector3.ZERO
+var hit_direction : Vector3 = Vector3.ZERO
+var mouse_delta : Vector2 = Vector2.ZERO
 
+var current_action : String = ""
+var lives_left : int = 0
+
+var spawn_point : Vector3 = Vector3.ZERO
 var player_controlled : bool = false
 var controller = null
 
@@ -55,45 +66,24 @@ signal respawn_complete
 func _ready() -> void:
 	randomize()
 	character_stats.current_ammo = character_stats.max_ammo
-	
-
-func _process(_delta: float) -> void:
-	if not controller or is_paused:
-		return
-	rotation.y = lerp_angle(rotation.y, controller.get_y_rotation(), 0.2)
 
 
 func _physics_process(delta: float) -> void:
-	if is_paused:
+	if is_paused or not controller:
 		return
 	
-	if not player_controlled:
-		controller.run()
+#	if not player_controlled:
+	controller.run(delta)
 		
 	if is_firing:
 		_handle_firing()
-		if character_stats.single_fire:
-			is_firing = false
-			
-	move_my_ass(delta)
+#		if character_stats.single_fire:
+#			is_firing = false
 
 
 #### Movement functions ####
 
-func move_my_ass(delta):
-	if not controller:
-		return
-	var direction : Vector3 = controller.get_direction()
-	
-	if not is_on_floor():# and not is_jumping:
-		direction.y -= character_stats.gravity 
-#	elif is_jumping and is_on_floor():
-#		target_velocity.y += jump_force
-#		if $JumpTimer.is_stopped():
-#			set_is_jumping(false)
-	else:
-		direction.y = 0
-	
+func move_my_ass(delta : float, direction : Vector3):
 	if im_walloped:
 		# Hit direction comes from the take_damage functiion
 		velocity = hit_direction * character_stats.punch_force
@@ -101,7 +91,7 @@ func move_my_ass(delta):
 		im_walloped = false
 	else:
 		
-		velocity = lerp(velocity, direction * character_stats.move_speed, character_stats.acceleration)
+		velocity = lerp(velocity, direction * get_speed(), get_acceleration())
 		
 		if not player_controlled:
 			var nav_agent : NavigationAgent3D = controller.nav_agent
@@ -113,14 +103,22 @@ func move_my_ass(delta):
 			velocity = dodge_direction * character_stats.dodge_force
 	
 		handle_movement_anims(delta)
-
+	
+	if is_smacked:
+		velocity = transform.basis.z * 75
+		velocity.y += 15
+	
+	if not is_on_floor():
+		velocity.y -= character_stats.gravity 
+	else:
+		velocity.y = 0
 	move_and_slide()
 
 
 func handle_movement_anims(delta : float):
 	if velocity.length() > 2.0:
 		set_is_moving(true)
-		var anim_speed : float = velocity.length() * delta + 2.0
+		var anim_speed : float = velocity.length() * delta + 1.0
 		anims.set("parameters/TimeScale/scale", anim_speed)
 	else:
 		set_is_moving(false)
@@ -141,12 +139,40 @@ func stop_dodge():
 	is_dodging = false
 
 
-func jump():
-	set_oneshot("parameters/JumpShot/request")
+func request_action(action : String):
+	print(action)
+	print(current_action)
+	if action == "StopFire":
+		is_firing = false
+		current_action = ""
+		return
+	if action == "Dodge":
+		if current_action == "Block" or current_action == "Punch":
+			return
+		
+		start_dodge(controller.get_dodge_direction())
+		return
+			
+	if current_action != "":
+		return
+	
+	if action == "Attack":
+		attack()
+	elif action == "Block":
+		block()
+	elif action == "Fire":
+		is_firing = true
+	elif action == "Special":
+		use_super_move()
+	else:
+		print("i don't understand yer action...")
+		print(action)
+	
+	current_action = action
 
 
-func punch():
-	if set_oneshot("parameters/PunchShot/request"):
+func attack():
+	if anims.set_oneshot("parameters/LeftAttackShot/request"):
 		hit_detected = false
 		right_hook.monitoring = true
 		left_hook.monitoring = true
@@ -154,21 +180,21 @@ func punch():
 
 
 func block():
-	if set_oneshot("parameters/BlockShot/request"):
+	if anims.set_oneshot("parameters/BlockShot/request"):
 		is_blocking = true
 
 
 func _handle_firing():
-	# Overridden if projectile is particle based
+	# Overridden if Character is Baker or Freight
 	if projectile_timer.is_stopped():
 		projectile_timer.start()
 		spawn_projectile()
+		anims.set_oneshot("parameters/ProjectileShot/request")
 		character_stats.current_ammo -= 1
 		if player_controlled:
 			controller.hud.update_ammo()
-
-func use_super_move():
-	pass
+		if character_stats.single_fire:
+			is_firing = false
 
 
 func spawn_projectile():
@@ -179,6 +205,9 @@ func spawn_projectile():
 	p.initiate(character_stats.projectile_speed, character_stats.projectile_damage, self)
 	p.fire(velocity)
 
+
+func use_super_move():
+	pass
 
 #### Damage related functions ####
 
@@ -210,9 +239,6 @@ func take_projectile_damage(damage : int, status_effect, who_dunnit : Character)
 		return
 	
 	character_stats.current_health -= damage
-	
-	if status_effect:
-		print(status_effect)
 	
 	update_health()
 		
@@ -251,15 +277,19 @@ func die():
 
 #### Setter functions ####
 
-func set_oneshot(anim : String) -> bool:
-	# This checks if a oneshot is already playing and returns false if so. A false return stops the requested action from taking place.
-	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/JumpShot/active"], anims["parameters/PunchShot/active"]]
-	for oneshot in oneshot_anims:
-		if oneshot == true:
-			return false
-	
-	anims.set(anim, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-	return true
+func set_y_rotation(new_rotation : float):
+	rotation.y = lerp_angle(rotation.y, new_rotation, 0.2)
+
+
+#func set_oneshot(anim : String) -> bool:
+#	# This checks if a oneshot is already playing and returns false if so. A false return stops the requested action from taking place.
+#	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/LeftAttackShot/active"], anims["parameters/RightAttackShot/active"], anims["parameters/ProjectileShot/active"], anims["parameters/SpecialShot/active"]]
+#	for oneshot in oneshot_anims:
+#		if oneshot == true:
+#			return false
+#
+#	anims.set(anim, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+#	return true
 
 
 func set_is_moving(value : bool):
@@ -269,8 +299,8 @@ func set_is_moving(value : bool):
 	if is_moving:
 		anims["parameters/Movement/playback"].travel("Character_Walk")
 	else:
-		anims["parameters/Movement/playback"].travel("Character_Idle")
-		anims.set("parameters/TimeScale/scale", 1.1)
+		anims["parameters/Movement/playback"].travel("Character_Idle2")
+		anims.set("parameters/TimeScale/scale", 1.0)
 
 
 func set_is_firing(value): 
@@ -282,7 +312,7 @@ func set_is_paused(value):
 	if value == true:
 		set_is_moving(false)
 		is_invincible = true
-	if value == false:
+	else:
 		is_invincible = false
 
 ####### Getter Functions ######
@@ -295,6 +325,9 @@ func get_ammo() -> int:
 
 func get_speed() -> float:
 	return character_stats.move_speed
+
+func get_acceleration() -> float:
+	return character_stats.acceleration
 
 func get_team() -> String:
 	return character_stats.Team
@@ -323,11 +356,13 @@ func _on_right_hook_body_entered(body):
 
 
 func _on_animation_tree_animation_finished(anim_name):
-	if anim_name == "Character_Attack":
+	if anim_name == "Character_Left_Attack":
 		left_hook.set_deferred("monitoring", false)
 		right_hook.set_deferred("monitoring", false)
 	elif anim_name == "Character_Block":
 		is_blocking = false
+	
+	current_action = ""
 
 
 #### Misc functions ####
@@ -345,7 +380,7 @@ func initiate():
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-	$Human_Template_Male.rotation_degrees.y = 180.0
+#	mesh.rotation_degrees.y = 180.0
 	
 	right_hook.monitoring = false
 	left_hook.monitoring = false
@@ -391,3 +426,7 @@ func respawn():
 
 func _on_invincibility_timer_timeout():
 	is_invincible = false
+
+
+func _on_punch_timer_timeout() -> void:
+	current_action = ""

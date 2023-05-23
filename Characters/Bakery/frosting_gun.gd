@@ -55,6 +55,8 @@ func cease_fire():
 func check_raycast():
 	if raycast.is_colliding():
 		var who_dis = raycast.get_collider()
-		if who_dis is Character and not who_dis is Baker:
+		if who_dis is Baker:
+			return
+		if who_dis is Character:
 			emit_signal("coat_with_frosting", who_dis)
 			hit_timer.start()

@@ -32,7 +32,7 @@ process_mode = 1
 process_mode = 0
 
 [node name="RoundTimer" type="Timer" parent="Timers" index="2"]
-wait_time = 30.0
+wait_time = 60.0
 one_shot = true
 
 [connection signal="timeout" from="Timers/RoundTimer" to="." method="end_round"]

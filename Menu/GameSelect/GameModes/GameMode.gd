@@ -93,5 +93,21 @@ func get_score(team : String, char_name : String) -> int:
 	return -1
 
 
+func reset_characters() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.respawn()
+			if dude.player_controlled == false:
+				dude.controller.reset_ai()
+			dude.is_paused = true
+			dude.should_respawn = true
+
+
+func unpause_character() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = false
+#			if dude.player_controlled == false:
+#				dude.controller.reset_ai()
 
 

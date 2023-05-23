@@ -14,7 +14,7 @@ var previous_velocity : Vector3 = Vector3.ZERO
 
 
 func fire(velocity : Vector3):
-	apply_central_impulse(transform.basis.z * (speed + velocity.length()))
+	apply_central_impulse(transform.basis.z * speed)
 
 
 func initiate(new_speed : float, new_damage : int, requester : Character):

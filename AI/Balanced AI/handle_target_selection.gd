@@ -15,17 +15,19 @@ enum {
 
 func run(controller : AIController):
 	var detection_area : Area3D = controller.detection_area
+	var current_target : Character = controller.target
+	var flee_target : Character = controller.flee_target
+	
 	var check : bool = false
 	var my_health : int = controller.get_actor_health()
 	var my_speed : float = controller.get_actor_speed()
-	var current_target : Character = controller.target
 	
 	######################### Important checks ##########################################
 	# Check if anyone in sight
 	check = detection_area.is_anyone_in_sight()
 	if not check:
 		# No one in sight, no need to select targets
-		if controller.flee_target:
+		if flee_target:
 			controller.set_flee_target(null)
 		return 
 	
@@ -38,15 +40,16 @@ func run(controller : AIController):
 	
 	# Check if being targetted
 	var targetter : Character = detection_area.am_i_targetted()
-	if targetter != null:
+	if targetter:
 		check = should_i_fight(targetter, my_health, my_speed)
-	
+		
 		if not check:
 			controller.set_flee_target(targetter)
 		else:
 			controller.set_target(targetter)
+			current_target = targetter
 #			return 
-	
+
 	#####################################################################################
 	
 	# Check if they dead or if no target chosen yet
@@ -63,18 +66,17 @@ func run(controller : AIController):
 	# Check target health
 	check = check_health_difference(my_health, current_target.get_health())
 	if not check:
-		controller.set_flee_target(controller.target)
+		controller.set_flee_target(current_target)
 		return 
 	
 
-	
 	if current_target.controller.get_fleeing():
 		check = check_speed_difference(my_speed, current_target.get_speed())
 		if not check:
 			controller.set_target(detection_area.get_closest_opponent())
 	return 
 
-
+	
 #####################################################################################
 #####################################################################################
 #####################################################################################

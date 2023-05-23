@@ -9,24 +9,26 @@ var distance_to_target : float = 0.0
 
 
 func run(controller : AIController):
-	
+
+	var detection_area : Area3D = controller.detection_area
+	var current_target : Character = controller.target
+	var flee_target : Character = controller.flee_target
 	var check : bool = false
 	
 	if controller.get_is_dodging():
 		return
 	
 	if controller.is_dodge_available():
-		check = controller.detection_area.is_projectile_comin_for_me()
+		check = detection_area.is_projectile_comin_for_me()
 		if check:
 			controller.dodge(choose_dodge_direction())
 			return
-	
 
-	
+
 	############################################################################
 	########################### Wander Mode ####################################
 	
-	if controller.target == null:
+	if current_target == null:
 		var nav_agent : NavigationAgent3D = controller.nav_agent
 		if nav_agent.is_navigation_finished():
 			while(true):
@@ -37,14 +39,13 @@ func run(controller : AIController):
 					break
 		
 		controller.move_to_target()
-#		print("wandering")
 		return 
-	
-	
+
+
 	############################################################################
 	############################# Flee Mode ####################################
 	
-	if controller.flee_target:
+	if flee_target:
 		controller.flee_from_target()
 #		print("fleeing target")
 		return 

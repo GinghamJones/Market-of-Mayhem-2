@@ -27,6 +27,14 @@ func get_lowest_health_opponent() -> Character:
 	return potential_target
 
 
+func am_i_facing_target(target_position : Vector3) -> bool:
+	var dot = actor.global_position.dot(target_position)
+	if dot > 0.9:
+		return true
+	
+	return false
+
+
 func is_projectile_comin_for_me() -> bool:
 	if projectiles_in_sight.size() < 1:
 		return false
