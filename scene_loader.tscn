@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dotel2g4lkd6e"]
+[gd_scene load_steps=5 format=3 uid="uid://dotel2g4lkd6e"]
 
 [ext_resource type="Script" path="res://scene_loader.gd" id="1_0e27k"]
+[ext_resource type="PackedScene" uid="uid://dw8cyhw41604e" path="res://Menu/GameSelect/GameModes/elimination_mode.tscn" id="2_5ncub"]
+[ext_resource type="PackedScene" uid="uid://ci10prtvv375s" path="res://Menu/GameSelect/GameModes/dev_mode.tscn" id="2_a460d"]
+[ext_resource type="PackedScene" uid="uid://cnl45r3qi6nut" path="res://Menu/GameSelect/GameModes/timed_mode.tscn" id="3_rh3ba"]
 
 [node name="SceneLoader" type="Node"]
 script = ExtResource("1_0e27k")
+game_modes = Array[PackedScene]([ExtResource("2_5ncub"), ExtResource("3_rh3ba"), ExtResource("2_a460d")])

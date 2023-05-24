@@ -3,11 +3,10 @@ extends Node
 @onready var game_select : PackedScene = preload("res://Menu/GameSelect/GameSelect.tscn")
 @onready var dev_mode : PackedScene = preload("res://Menu/GameSelect/GameModes/dev_mode.tscn")
 @onready var timed_mode : PackedScene = preload("res://Menu/GameSelect/GameModes/timed_mode.tscn")
+@onready var elim_mode : PackedScene = preload("res://Menu/GameSelect/GameModes/elimination_mode.tscn")
 @onready var world = preload("res://World/world.tscn").instantiate()
 @onready var settings = preload("res://Menu/Settings/settings.tscn").instantiate()
-#@export var game_select : PackedScene
-#@export var dev_mode : PackedScene
-#@export var timed_mode : PackedScene
+@export var game_modes : Array[PackedScene]
 var current_scene : Node = null
 
 
@@ -19,6 +18,7 @@ func _ready():
 	settings.hide()
 	settings.connect("main_menu_request", Callable(self, "load_character_select"))
 	world.hide()
+	
 
 
 func load_character_select():
@@ -36,9 +36,20 @@ func load_game_mode(game_mode : String, player_type : String, player_name : Stri
 	var gm : GameMode = null
 	
 	if game_mode == "DevMode":
-		gm = dev_mode.instantiate()
+		gm = game_modes[2].instantiate()
 	elif game_mode == "TimedMode":
-		gm = timed_mode.instantiate()
+		gm = game_modes[1].instantiate()
+	elif game_mode == "EliminationMode":
+		gm = game_modes[0].instantiate()
+
+#	if game_mode == "DevMode":
+#		gm = dev_mode.instantiate()
+#	elif game_mode == "TimedMode":
+#		gm = timed_mode.instantiate()
+#	elif game_mode == "EliminationMode":
+#		gm = elim_mode.instantiate()
+#	else:
+#		printerr("the fuck are you trying to load???")
 	
 	gm.connect("load_character_select", Callable(self, "load_character_select"))
 	gm.connect("need_settings", Callable(self, "show_settings"))
@@ -57,10 +68,12 @@ func show_settings():
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
+
 func hide_settings():
 	settings.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 
 func destroy_cur_scene():
 	if current_scene:

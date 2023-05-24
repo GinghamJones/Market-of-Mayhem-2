@@ -18,7 +18,7 @@ extends CharacterBody3D
 @onready var right_hook = $NPC_Meat_Female/Meat_Female/Skeleton3D/RightHookAttachment/RightHook
 @onready var left_hook = $NPC_Meat_Female/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook
 @onready var skeleton = $NPC_Meat_Female/Meat_Female/Skeleton3D
-@onready var mesh = $NPC_Meat_Female/Meat_Female/Skeleton3D/Female_Meat
+@onready var mesh : MeshInstance3D = $NPC_Meat_Female/Meat_Female/Skeleton3D/Female_Meat
 @onready var projectile_placement = $ProjectilePlacement
 
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
@@ -61,10 +61,12 @@ var score : int = 0 :
 
 signal score_changed
 signal respawn_complete
+signal i_died
 
 
 func _ready() -> void:
 	randomize()
+
 	character_stats.current_ammo = character_stats.max_ammo
 
 
@@ -140,8 +142,6 @@ func stop_dodge():
 
 
 func request_action(action : String):
-	print(action)
-	print(current_action)
 	if action == "StopFire":
 		is_firing = false
 		current_action = ""
@@ -256,6 +256,7 @@ func end_slow_effect():
 
 
 func die():
+	emit_signal("i_died", self)
 	set_physics_process(false)
 	set_process(false)
 	
@@ -283,7 +284,8 @@ func set_y_rotation(new_rotation : float):
 
 #func set_oneshot(anim : String) -> bool:
 #	# This checks if a oneshot is already playing and returns false if so. A false return stops the requested action from taking place.
-#	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/LeftAttackShot/active"], anims["parameters/RightAttackShot/active"], anims["parameters/ProjectileShot/active"], anims["parameters/SpecialShot/active"]]
+#	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/LeftAttackShot/active"], 
+#								anims["parameters/RightAttackShot/active"], anims["parameters/ProjectileShot/active"], anims["parameters/SpecialShot/active"]]
 #	for oneshot in oneshot_anims:
 #		if oneshot == true:
 #			return false

@@ -60,6 +60,11 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Timed Mode"
 
+[node name="EliminationModeStart" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Elimination Mode"
+
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 0
 offset_left = 61.0
@@ -80,4 +85,5 @@ texture = ExtResource("2_lunac")
 [connection signal="text_submitted" from="VBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="VBoxContainer/DevModeStart" to="." method="_on_devmode_pressed"]
 [connection signal="pressed" from="VBoxContainer/TimedModeStart" to="." method="_on_timed_mode_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/EliminationModeStart" to="." method="_on_elimination_mode_start_pressed"]
 [connection signal="pressed" from="CenterContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -95,6 +95,9 @@ func _unhandled_input(event):
 	if event.is_action_pressed("ToggleCursor"):
 		handle_cursor()
 	
+	if event.is_action_pressed("StartRagdoll"):
+		actor.die()
+	
 	if event.is_action_pressed("DebugCamera"):
 		if $SpringArm3D/Camera3D.current:
 			get_tree().get_first_node_in_group("DebugCam").current = true

@@ -15,6 +15,61 @@ func start_round() -> void:
 	await start_timer.timeout
 	
 	countdown_text.hide()
+	unpause_characters()
+
+
+func end_round() -> void:
+	pause_characters()
+	intermission_timer.start()
+	scoreboard.show()
+	announce_winner()
+	await intermission_timer.timeout
+	
+	if current_round == 2:
+		end_game()
+	else:
+		start_round()
+
+
+func character_died(deceased : Character) -> void:
+	deceased.lives_left -= 1
+	if deceased.lives_left == 0:
+		deceased.should_respawn = false
+		var team : String = deceased.get_team()
+		teams_in_play[team] -= 1
+		if teams_in_play[team] == 0:
+			teams_in_play.erase(team)
+			check_teams_in_play()
+
+
+func check_teams_in_play() -> void:
+	var teams_left : int = 7
+	for key in teams_in_play.keys():
+		if teams_in_play[key] == 0:
+			teams_left -= 1
+	
+	if teams_left == 1:
+		end_round()
+
+
+func end_game() -> void:
+	pass
+
+
+func announce_winner() -> void:
+	pass
+
+
+func pause_characters() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = true
+
+
+func unpause_characters() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = false
 
 
 func reset_characters() -> void:
@@ -23,6 +78,27 @@ func reset_characters() -> void:
 			dude.should_respawn = true
 			dude.lives_left = max_lives
 			dude.respawn()
+
+
+func spawn_players():
+	var teams : Array = ["Bakery", "Floral", "Meat", "Cashier", "Kitchen", "Produce", "Freight",]
+	
+	add_character(player_character_type, true, player_name)
+	
+	for t in teams:
+		var chars_to_spawn : int = 3
+		if player_character_type ==t:
+			chars_to_spawn = 2
+			
+		for i in chars_to_spawn:
+			add_character(t, false)
+	
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.i_died.connect(Callable(self, "character_died"))
+	
+	pause_characters()
+#	reset_characters()
 
 
 func reset_teams_in_play() -> void:

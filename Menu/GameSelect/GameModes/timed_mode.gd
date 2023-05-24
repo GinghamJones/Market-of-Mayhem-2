@@ -23,7 +23,7 @@ func _process(delta):
 
 func start_round(): 
 	reset_characters()
-	
+	pause_characters()
 #	get_tree().paused = true
 	current_round += 1
 	countdown_text.show()
@@ -33,6 +33,7 @@ func start_round():
 	
 	countdown_text.hide()
 	
+	unpause_characters()
 #	get_tree().paused = false
 	round_timer.start()
 	round_time_left.show()
@@ -78,7 +79,7 @@ func spawn_players():
 		for i in chars_to_spawn:
 			add_character(t, false)
 	
-	reset_characters()
+#	reset_characters()
 	# Delete this for real game
 #	manager = SpawnManager.get_new_manager()
 #	add_child(manager)
@@ -98,3 +99,26 @@ func time_convert(time_in_sec) -> String:
 	#returns a string with the format "HH:MM:SS"
 	return "%02d:%02d" % [minutes, seconds]
 
+
+func reset_characters() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.respawn()
+			if dude.player_controlled == false:
+				dude.controller.reset_ai()
+#			dude.is_paused = true
+			dude.should_respawn = true
+
+
+func pause_characters() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = true
+
+
+func unpause_characters() -> void:
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = false
+#			if dude.player_controlled == false:
+#				dude.controller.reset_ai()
