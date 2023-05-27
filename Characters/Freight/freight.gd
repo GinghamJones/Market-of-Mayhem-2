@@ -1,5 +1,6 @@
 class_name Freight
 extends Character
+
 @onready var lazer_tree = $Lazer
 
 
@@ -23,5 +24,4 @@ func stop_firing():
 
 
 func deal_lazer_damage(enemy : Character):
-	if enemy.character_stats.Team != "Freight":
-		enemy.take_projectile_damage(character_stats.projectile_damage, null, self)
+	enemy.take_projectile_damage(character_stats.projectile_damage, null, self)

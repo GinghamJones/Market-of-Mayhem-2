@@ -10,6 +10,7 @@ func _ready():
 #	call_deferred("spawn_bots")
 	await get_tree().process_frame
 	spawn_players()
+	pause_characters()
 	await get_tree().process_frame
 	$GUI.populate_scoreboard(current_characters)
 	start_round()
@@ -104,6 +105,7 @@ func reset_characters() -> void:
 	for key in current_characters.keys():
 		for dude in current_characters[key]:
 			dude.respawn()
+			dude.set_lives_left(1000)
 			if dude.player_controlled == false:
 				dude.controller.reset_ai()
 #			dude.is_paused = true

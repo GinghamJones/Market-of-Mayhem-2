@@ -1,63 +1,91 @@
-[gd_scene load_steps=42 format=3 uid="uid://dklaxvd7swq26"]
+[gd_scene load_steps=51 format=3 uid="uid://dklaxvd7swq26"]
 
 [ext_resource type="Script" path="res://Characters/character.gd" id="1_ldc1x"]
-[ext_resource type="PackedScene" uid="uid://hmtmmsp12gi1" path="res://Characters/Meat/NPC_Meat_Female.glb" id="2_p58dw"]
+[ext_resource type="PackedScene" uid="uid://dxvmimacblilw" path="res://Characters/Meat/meat_special.tscn" id="2_5d13c"]
+[ext_resource type="PackedScene" uid="uid://bd6rmhofmeww6" path="res://Characters/Meat/Meat_NPC/NPC_Meat_Female.glb" id="2_w2ctk"]
+[ext_resource type="Script" path="res://Characters/ParticleSpawner.gd" id="4_hqcqk"]
 [ext_resource type="Script" path="res://Characters/CharacterAnimationTree.gd" id="5_hokk0"]
+[ext_resource type="AudioStream" uid="uid://dykw6vkdhwpak" path="res://kenney impact sounds/impact_mining_004.ogg" id="6_b7uon"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g0x83"]
 radius = 0.360051
 height = 2.01739
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i2caa"]
-radius = 0.270542
-height = 1.0197
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kk6nv"]
+radius = 0.0251324
+height = 0.251324
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_glsxm"]
-radius = 0.207872
-height = 0.529636
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_iq3ci"]
+radius = 0.0225596
+height = 0.225596
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_db8km"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kkmaa"]
+radius = 0.0285449
+height = 0.285449
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_d7s2b"]
+radius = 0.031796
+height = 0.31796
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ibiip"]
+radius = 0.0109241
+height = 0.109241
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oqk2f"]
+radius = 0.0103524
+height = 0.103524
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aywdr"]
+radius = 0.033142
+height = 0.33142
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_652u0"]
 radius = 0.0446285
 height = 0.446285
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u7efp"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5vla1"]
 radius = 0.0493218
 height = 0.493218
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6y87d"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_k6x1d"]
+radius = 0.033143
+height = 0.33143
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8i4k4"]
 radius = 0.0446286
 height = 0.446286
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8nqla"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bxyj8"]
 radius = 0.0493218
 height = 0.493218
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_uw8s0"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_43xrd"]
 radius = 0.0858133
 height = 0.858133
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_b7rmg"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_d7lgc"]
 radius = 0.0799078
 height = 0.799078
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_a0lof"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kycol"]
 radius = 0.0219582
 height = 0.219582
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xtsvt"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_d7l3p"]
 radius = 0.0858133
 height = 0.858133
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e7swi"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mhrye"]
 radius = 0.0799078
 height = 0.799078
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_16hra"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bnrh8"]
 radius = 0.0219582
 height = 0.219582
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_x224e"]
-size = Vector3(0.193618, 0.245376, 0.219332)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jtahc"]
+radius = 0.143963
+height = 0.790994
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rgjwp"]
 animation = &"Character_Attack_Left"
@@ -73,8 +101,10 @@ filter_enabled = true
 filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_Female/Skeleton3D:forearm.L", "Meat_Female/Skeleton3D:forearm.R", "Meat_Female/Skeleton3D:hand.L", "Meat_Female/Skeleton3D:hand.R", "Meat_Female/Skeleton3D:shoulder.L", "Meat_Female/Skeleton3D:shoulder.R", "Meat_Female/Skeleton3D:spine.005", "Meat_Female/Skeleton3D:upper_arm.L", "Meat_Female/Skeleton3D:upper_arm.R", "metarig/Skeleton3D:f_index.01.L", "metarig/Skeleton3D:f_index.01.R", "metarig/Skeleton3D:f_index.02.L", "metarig/Skeleton3D:f_index.02.R", "metarig/Skeleton3D:f_index.03.L", "metarig/Skeleton3D:f_index.03.R", "metarig/Skeleton3D:f_middle.01.L", "metarig/Skeleton3D:f_middle.01.R", "metarig/Skeleton3D:f_middle.02.L", "metarig/Skeleton3D:f_middle.02.R", "metarig/Skeleton3D:f_middle.03.L", "metarig/Skeleton3D:f_middle.03.R", "metarig/Skeleton3D:f_pinky.01.L", "metarig/Skeleton3D:f_pinky.01.R", "metarig/Skeleton3D:f_pinky.02.L", "metarig/Skeleton3D:f_pinky.02.R", "metarig/Skeleton3D:f_pinky.03.L", "metarig/Skeleton3D:f_pinky.03.R", "metarig/Skeleton3D:f_ring.01.L", "metarig/Skeleton3D:f_ring.01.R", "metarig/Skeleton3D:f_ring.02.L", "metarig/Skeleton3D:f_ring.02.R", "metarig/Skeleton3D:f_ring.03.L", "metarig/Skeleton3D:f_ring.03.R", "metarig/Skeleton3D:forearm.L", "metarig/Skeleton3D:forearm.R", "metarig/Skeleton3D:hand.L", "metarig/Skeleton3D:hand.R", "metarig/Skeleton3D:palm.01.L", "metarig/Skeleton3D:palm.01.R", "metarig/Skeleton3D:palm.02.L", "metarig/Skeleton3D:palm.02.R", "metarig/Skeleton3D:palm.03.L", "metarig/Skeleton3D:palm.03.R", "metarig/Skeleton3D:palm.04.L", "metarig/Skeleton3D:palm.04.R", "metarig/Skeleton3D:shoulder.L", "metarig/Skeleton3D:shoulder.R", "metarig/Skeleton3D:spine.003", "metarig/Skeleton3D:spine.005", "metarig/Skeleton3D:spine.006", "metarig/Skeleton3D:thumb.01.L", "metarig/Skeleton3D:thumb.01.R", "metarig/Skeleton3D:thumb.02.L", "metarig/Skeleton3D:thumb.02.R", "metarig/Skeleton3D:thumb.03.L", "metarig/Skeleton3D:thumb.03.R", "metarig/Skeleton3D:upper_arm.L", "metarig/Skeleton3D:upper_arm.R"]
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_jjxqn"]
-filter_enabled = true
-filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_Female/Skeleton3D:forearm.L", "Meat_Female/Skeleton3D:forearm.R", "Meat_Female/Skeleton3D:hand.L", "Meat_Female/Skeleton3D:hand.R", "Meat_Female/Skeleton3D:shoulder.L", "Meat_Female/Skeleton3D:shoulder.R", "Meat_Female/Skeleton3D:spine.002", "Meat_Female/Skeleton3D:spine.005", "Meat_Female/Skeleton3D:upper_arm.L", "Meat_Female/Skeleton3D:upper_arm.R", "metarig/Skeleton3D:f_index.01.L", "metarig/Skeleton3D:f_index.01.R", "metarig/Skeleton3D:f_index.02.L", "metarig/Skeleton3D:f_index.02.R", "metarig/Skeleton3D:f_index.03.L", "metarig/Skeleton3D:f_index.03.R", "metarig/Skeleton3D:f_middle.01.L", "metarig/Skeleton3D:f_middle.01.R", "metarig/Skeleton3D:f_middle.02.L", "metarig/Skeleton3D:f_middle.02.R", "metarig/Skeleton3D:f_middle.03.L", "metarig/Skeleton3D:f_middle.03.R", "metarig/Skeleton3D:f_pinky.01.L", "metarig/Skeleton3D:f_pinky.01.R", "metarig/Skeleton3D:f_pinky.02.L", "metarig/Skeleton3D:f_pinky.02.R", "metarig/Skeleton3D:f_pinky.03.L", "metarig/Skeleton3D:f_pinky.03.R", "metarig/Skeleton3D:f_ring.01.L", "metarig/Skeleton3D:f_ring.01.R", "metarig/Skeleton3D:f_ring.02.L", "metarig/Skeleton3D:f_ring.02.R", "metarig/Skeleton3D:f_ring.03.L", "metarig/Skeleton3D:f_ring.03.R", "metarig/Skeleton3D:forearm.L", "metarig/Skeleton3D:forearm.R", "metarig/Skeleton3D:hand.L", "metarig/Skeleton3D:hand.R", "metarig/Skeleton3D:palm.01.L", "metarig/Skeleton3D:palm.01.R", "metarig/Skeleton3D:palm.02.L", "metarig/Skeleton3D:palm.02.R", "metarig/Skeleton3D:palm.03.L", "metarig/Skeleton3D:palm.03.R", "metarig/Skeleton3D:palm.04.L", "metarig/Skeleton3D:palm.04.R", "metarig/Skeleton3D:shoulder.L", "metarig/Skeleton3D:shoulder.R", "metarig/Skeleton3D:spine.001", "metarig/Skeleton3D:spine.002", "metarig/Skeleton3D:spine.003", "metarig/Skeleton3D:spine.005", "metarig/Skeleton3D:spine.006", "metarig/Skeleton3D:thumb.01.L", "metarig/Skeleton3D:thumb.01.R", "metarig/Skeleton3D:thumb.02.L", "metarig/Skeleton3D:thumb.02.R", "metarig/Skeleton3D:thumb.03.L", "metarig/Skeleton3D:thumb.03.R", "metarig/Skeleton3D:upper_arm.L", "metarig/Skeleton3D:upper_arm.R"]
+filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_Female/Skeleton3D:Hips", "Meat_Female/Skeleton3D:forearm.L", "Meat_Female/Skeleton3D:forearm.R", "Meat_Female/Skeleton3D:hand.L", "Meat_Female/Skeleton3D:hand.R", "Meat_Female/Skeleton3D:shoulder.L", "Meat_Female/Skeleton3D:shoulder.R", "Meat_Female/Skeleton3D:spine.001", "Meat_Female/Skeleton3D:spine.002", "Meat_Female/Skeleton3D:spine.005", "Meat_Female/Skeleton3D:upper_arm.L", "Meat_Female/Skeleton3D:upper_arm.R", "metarig/Skeleton3D:f_index.01.L", "metarig/Skeleton3D:f_index.01.R", "metarig/Skeleton3D:f_index.02.L", "metarig/Skeleton3D:f_index.02.R", "metarig/Skeleton3D:f_index.03.L", "metarig/Skeleton3D:f_index.03.R", "metarig/Skeleton3D:f_middle.01.L", "metarig/Skeleton3D:f_middle.01.R", "metarig/Skeleton3D:f_middle.02.L", "metarig/Skeleton3D:f_middle.02.R", "metarig/Skeleton3D:f_middle.03.L", "metarig/Skeleton3D:f_middle.03.R", "metarig/Skeleton3D:f_pinky.01.L", "metarig/Skeleton3D:f_pinky.01.R", "metarig/Skeleton3D:f_pinky.02.L", "metarig/Skeleton3D:f_pinky.02.R", "metarig/Skeleton3D:f_pinky.03.L", "metarig/Skeleton3D:f_pinky.03.R", "metarig/Skeleton3D:f_ring.01.L", "metarig/Skeleton3D:f_ring.01.R", "metarig/Skeleton3D:f_ring.02.L", "metarig/Skeleton3D:f_ring.02.R", "metarig/Skeleton3D:f_ring.03.L", "metarig/Skeleton3D:f_ring.03.R", "metarig/Skeleton3D:forearm.L", "metarig/Skeleton3D:forearm.R", "metarig/Skeleton3D:hand.L", "metarig/Skeleton3D:hand.R", "metarig/Skeleton3D:palm.01.L", "metarig/Skeleton3D:palm.01.R", "metarig/Skeleton3D:palm.02.L", "metarig/Skeleton3D:palm.02.R", "metarig/Skeleton3D:palm.03.L", "metarig/Skeleton3D:palm.03.R", "metarig/Skeleton3D:palm.04.L", "metarig/Skeleton3D:palm.04.R", "metarig/Skeleton3D:shoulder.L", "metarig/Skeleton3D:shoulder.R", "metarig/Skeleton3D:spine.001", "metarig/Skeleton3D:spine.002", "metarig/Skeleton3D:spine.003", "metarig/Skeleton3D:spine.005", "metarig/Skeleton3D:spine.006", "metarig/Skeleton3D:thumb.01.L", "metarig/Skeleton3D:thumb.01.R", "metarig/Skeleton3D:thumb.02.L", "metarig/Skeleton3D:thumb.02.R", "metarig/Skeleton3D:thumb.03.L", "metarig/Skeleton3D:thumb.03.R", "metarig/Skeleton3D:upper_arm.L", "metarig/Skeleton3D:upper_arm.R"]
+sync = true
+fadein_time = 0.2
+fadeout_time = 0.2
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hpwo0"]
 animation = &"Character_Idle2"
@@ -83,15 +113,14 @@ animation = &"Character_Idle2"
 animation = &"Character_Walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_32upq"]
+xfade_time = 0.3
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_g6mlw"]
-xfade_time = 0.2
-reset = false
+xfade_time = 0.39
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_17fh3"]
-xfade_time = 0.2
-reset = false
+xfade_time = 0.34
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_7sutl"]
 states/Character_Idle2/node = SubResource("AnimationNodeAnimation_hpwo0")
@@ -105,12 +134,16 @@ graph_offset = Vector2(-53, -16)
 animation = &"Character_Projectile"
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_l1x5l"]
-filter_enabled = true
 filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_Female/Skeleton3D:forearm.L", "Meat_Female/Skeleton3D:forearm.R", "Meat_Female/Skeleton3D:hand.L", "Meat_Female/Skeleton3D:hand.R", "Meat_Female/Skeleton3D:shoulder.L", "Meat_Female/Skeleton3D:shoulder.R", "Meat_Female/Skeleton3D:spine.002", "Meat_Female/Skeleton3D:spine.005", "Meat_Female/Skeleton3D:upper_arm.L", "Meat_Female/Skeleton3D:upper_arm.R"]
+sync = true
+fadein_time = 0.2
+fadeout_time = 0.2
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_fnd76"]
-filter_enabled = true
-filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_Female/Skeleton3D:forearm.L", "Meat_Female/Skeleton3D:forearm.R", "Meat_Female/Skeleton3D:hand.L", "Meat_Female/Skeleton3D:hand.R", "Meat_Female/Skeleton3D:shoulder.L", "Meat_Female/Skeleton3D:shoulder.R", "Meat_Female/Skeleton3D:spine.002", "Meat_Female/Skeleton3D:spine.005", "Meat_Female/Skeleton3D:upper_arm.L", "Meat_Female/Skeleton3D:upper_arm.R"]
+filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_Female/Skeleton3D:Hips", "Meat_Female/Skeleton3D:forearm.L", "Meat_Female/Skeleton3D:forearm.R", "Meat_Female/Skeleton3D:hand.L", "Meat_Female/Skeleton3D:hand.R", "Meat_Female/Skeleton3D:shoulder.L", "Meat_Female/Skeleton3D:shoulder.R", "Meat_Female/Skeleton3D:spine.001", "Meat_Female/Skeleton3D:spine.002", "Meat_Female/Skeleton3D:spine.005", "Meat_Female/Skeleton3D:upper_arm.L", "Meat_Female/Skeleton3D:upper_arm.R"]
+sync = true
+fadein_time = 0.2
+fadeout_time = 0.2
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_l52ty"]
 animation = &"Character_Special"
@@ -132,11 +165,11 @@ filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_t0tf6"]
 nodes/AttackLeft/node = SubResource("AnimationNodeAnimation_rgjwp")
-nodes/AttackLeft/position = Vector2(-420, 580)
+nodes/AttackLeft/position = Vector2(-440, 580)
 nodes/AttackRight/node = SubResource("AnimationNodeAnimation_b12cm")
 nodes/AttackRight/position = Vector2(-220, 580)
 nodes/Block/node = SubResource("AnimationNodeAnimation_pcb33")
-nodes/Block/position = Vector2(-600, 580)
+nodes/Block/position = Vector2(-620, 580)
 nodes/BlockShot/node = SubResource("AnimationNodeOneShot_fpfb7")
 nodes/BlockShot/position = Vector2(-580, 240)
 nodes/LeftAttackShot/node = SubResource("AnimationNodeOneShot_jjxqn")
@@ -175,6 +208,7 @@ process_mode = 1
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_ldc1x")
+special = ExtResource("2_5d13c")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.986465, 0)
@@ -183,311 +217,454 @@ shape = SubResource("CapsuleShape3D_g0x83")
 [node name="ProjectilePlacement" type="Node3D" parent="."]
 transform = Transform3D(-0.6, 0, -5.24537e-08, 0, 0.6, 0, 5.24537e-08, 0, -0.6, 0.359086, 1.2, -0.325848)
 
-[node name="NPC_Meat_Female" parent="." instance=ExtResource("2_p58dw")]
-transform = Transform3D(-0.6, 0, -9.05975e-08, 0, 0.6, 0, 9.05975e-08, 0, -0.6, 0, 0, 0)
+[node name="NPC_Meat_Female2" parent="." instance=ExtResource("2_w2ctk")]
+transform = Transform3D(-0.6, 0, -5.24537e-08, 0, 0.6, 0, 5.24537e-08, 0, -0.6, 0, 0, 0)
 
-[node name="Skeleton3D" parent="NPC_Meat_Female/Meat_Female" index="0"]
-bones/0/position = Vector3(5.28339e-06, -0.398886, -0.62812)
+[node name="Skeleton3D" parent="NPC_Meat_Female2/Meat_Female" index="0"]
+bones/0/position = Vector3(5.28339e-06, -0.332594, -0.54277)
 bones/0/rotation = Quaternion(0.115415, -0.395018, 0.0500992, 0.910017)
-bones/1/rotation = Quaternion(-0.0545209, 0.254126, -0.0532032, 0.964166)
+bones/1/rotation = Quaternion(-0.0855464, 0.257638, -0.0341717, 0.96184)
+bones/2/rotation = Quaternion(-0.0774642, 1.47834e-08, -2.14509e-10, 0.996995)
+bones/3/rotation = Quaternion(0.0016272, -7.6543e-09, -1.2455e-11, 0.999999)
 bones/5/rotation = Quaternion(-0.0943413, 0.100049, -0.029062, 0.990073)
-bones/6/rotation = Quaternion(-0.1062, -0.0413879, 0.00381534, 0.993476)
-bones/8/rotation = Quaternion(-0.148452, 0.490183, -0.697931, 0.500574)
-bones/9/rotation = Quaternion(0.708581, 0.297444, 0.180497, 0.61389)
-bones/10/rotation = Quaternion(0.233194, -0.117616, 0.107978, 0.959233)
-bones/12/rotation = Quaternion(-0.258736, -0.484228, 0.691884, 0.468909)
-bones/13/rotation = Quaternion(0.64716, 0.235864, 0.490542, 0.533779)
+bones/6/rotation = Quaternion(-0.0662269, -0.151612, 0.00775617, 0.986188)
+bones/8/rotation = Quaternion(-0.0719196, 0.398564, -0.762487, 0.504567)
+bones/9/rotation = Quaternion(0.673036, 0.27045, 0.215104, 0.653919)
+bones/10/rotation = Quaternion(0.220691, -0.0901128, 0.0890432, 0.967082)
+bones/12/rotation = Quaternion(-0.302244, -0.644842, 0.559265, 0.424322)
+bones/13/rotation = Quaternion(0.617944, 0.255034, 0.473354, 0.573619)
 bones/14/rotation = Quaternion(-0.0109359, -0.215798, 0.439103, 0.872067)
-bones/17/rotation = Quaternion(0.940552, 0.186287, -0.0302932, 0.282385)
-bones/18/rotation = Quaternion(0.213845, 0.0213701, 0.134164, 0.967375)
-bones/19/rotation = Quaternion(-0.521359, -0.350408, -0.0127429, 0.777969)
-bones/20/rotation = Quaternion(-0.0400787, 0.976318, -0.211688, 0.0196087)
-bones/21/rotation = Quaternion(0.99224, -0.0325089, -0.0135125, 0.119249)
-bones/22/rotation = Quaternion(0.202381, -0.00318028, 0.12455, 0.971349)
-bones/23/rotation = Quaternion(-0.572072, 0.028726, -0.0929643, 0.814412)
-bones/24/rotation = Quaternion(0.0626579, 0.963728, -0.208729, -0.15406)
+bones/17/rotation = Quaternion(0.941861, 0.18351, -0.0298982, 0.279871)
+bones/18/rotation = Quaternion(0.200079, 0.0195641, 0.119206, 0.972304)
+bones/19/rotation = Quaternion(-0.319062, -0.399253, 0.0832966, 0.855487)
+bones/20/rotation = Quaternion(0.0781454, -0.892069, 0.442622, 0.0468224)
+bones/21/rotation = Quaternion(0.99213, -0.0312377, -0.0136453, 0.120482)
+bones/22/rotation = Quaternion(0.133189, -0.00543045, 0.0551793, 0.989538)
+bones/23/rotation = Quaternion(-0.63094, 0.058593, -0.162835, 0.756285)
+bones/24/rotation = Quaternion(-0.0096788, -0.989604, 0.119311, 0.0797224)
 
-[node name="Physical Bone Chest" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="1"]
-transform = Transform3D(0.943568, -0.00815288, 0.28625, -0.00570604, -0.988176, -0.00949031, 0.28649, 0.00727718, -0.937757, -0.0725517, 0.108931, -0.476104)
+[node name="Physical Bone Hips" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="1"]
+transform = Transform3D(0.682768, -0.70737, 0.171782, -0.00372384, -0.249626, -0.908555, 0.73045, 0.661255, -0.159222, -0.0221017, -0.211496, -0.517877)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00260615, -0.246139, 0.0760632)
-body_offset = Transform3D(0.986118, 1.5825e-05, 0.00247911, -1.52127e-05, -0.988237, -0.000198898, 0.000971437, -2.39704e-05, -0.980516, 0.0023853, -0.243229, 0.0745779)
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00322144, -0.00186596, 0.133812)
+body_offset = Transform3D(0.999865, -1.09673e-05, 0.000996463, -0.00359206, 6.70552e-06, -0.93826, 0.00098443, 0.999972, 4.85033e-06, 0.00308764, 0.125539, 0.00186843)
+bounce = 0.82
+angular_damp = 15.0
+bone_name = "Hips"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone Hips"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_kk6nv")
+
+[node name="Physical Bone spine001" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="2"]
+transform = Transform3D(0.95162, -0.28612, 0.0352503, 0.0158557, -0.0699695, -0.986979, 0.288108, 0.945863, -0.0625305, -0.0496092, 0.0234227, -0.489881)
+collision_layer = 8
+collision_mask = 9
+joint_type = 3
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010814, -0.00273136, 0.114312)
+body_offset = Transform3D(0.994404, -0.00139526, -6.59376e-05, 5.47208e-05, -6.48871e-05, -0.989586, 0.000515699, 0.990664, -0.000239216, 0.00107908, 0.113121, 0.00273377)
+bounce = 0.82
+angular_damp = 15.0
+bone_name = "spine.001"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone spine001"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_iq3ci")
+
+[node name="Physical Bone spine002" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="3"]
+transform = Transform3D(0.951245, -0.287919, -0.00910057, 0.0158912, 0.0835123, -0.984769, 0.287793, 0.942505, 0.0843566, -0.0523344, 0.268785, -0.494756)
+collision_layer = 8
+collision_mask = 9
+joint_type = 3
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000978687, -0.00219042, 0.134863)
+body_offset = Transform3D(0.993954, -0.00164327, 4.08106e-06, 3.31886e-05, 0.000100218, -0.988418, 0.000329316, 0.989032, -1.47223e-05, 0.00096862, 0.133301, 0.0021687)
+bounce = 0.82
+angular_damp = 15.0
+bone_name = "spine.002"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone spine002"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_kkmaa")
+
+[node name="Physical Bone Chest" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="4"]
+transform = Transform3D(0.952709, -0.288325, -0.00819505, 0.0158807, 0.0803134, -0.987157, 0.288144, 0.94389, 0.0814745, -0.0496291, 0.572124, -0.520222)
+collision_layer = 8
+collision_mask = 9
+joint_type = 3
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00103179, -0.00222125, 0.15373)
+body_offset = Transform3D(0.995457, -0.00168192, -8.43778e-07, 7.06501e-06, 1.36569e-05, -0.990548, 0.000239044, 0.990206, -2.63005e-06, 0.0010235, 0.152277, 0.00220014)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "Chest"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone Chest"]
-shape = SubResource("CapsuleShape3D_i2caa")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone Chest"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_d7s2b")
 
-[node name="Physical Bone spine005" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="2"]
-transform = Transform3D(0.986373, -0.0144102, 0.0829869, -0.00167765, -0.971212, -0.150441, 0.084185, 0.149452, -0.971525, -0.0657338, 1.01211, -0.421088)
+[node name="Physical Bone spine004" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="5"]
+transform = Transform3D(0.949935, -0.267448, 0.10583, 0.0158486, -0.315657, -0.938418, 0.287938, 0.89916, -0.297961, -0.0540064, 0.777057, -0.516554)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00191415, 0.229253, 0.12841)
-body_offset = Transform3D(0.98996, -9.65409e-06, 0.00037957, 1.3385e-05, -0.919421, -0.348168, 5.46351e-05, 0.347077, -0.923125, 0.00184841, 0.255488, 0.03897)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00118099, -0.00665604, 0.0448567)
+body_offset = Transform3D(0.992741, -0.000944406, 0.0001674, 0.000304945, 0.000424087, -0.990257, 0.000787079, 0.989776, 0.000424713, 0.00115862, 0.0444229, 0.00656986)
+bounce = 0.82
+angular_damp = 15.0
+bone_name = "spine.004"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone spine004"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_ibiip")
+
+[node name="Physical Bone spine005" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="6"]
+transform = Transform3D(0.991027, -0.0819015, 0.0157142, 0.00466771, -0.130861, -0.978748, 0.0845174, 0.97382, -0.130418, -0.0608307, 0.884425, -0.492562)
+collision_layer = 8
+collision_mask = 9
+joint_type = 3
+joint_offset = Transform3D(0.999999, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, -0.000562128, -0.00491501, 0.0454799)
+body_offset = Transform3D(0.994636, 0.000462368, 8.66409e-06, 2.68286e-05, -0.000227928, -0.987524, 6.82995e-05, 0.985981, -0.000441939, 0.000560991, 0.0449114, 0.00486624)
+bounce = 0.82
+angular_damp = 25.0
 bone_name = "spine.005"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 45.0
+joint_constraints/angular_limit_lower = -45.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone spine005"]
-shape = SubResource("CapsuleShape3D_glsxm")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone spine005"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_oqk2f")
 
-[node name="Physical Bone upper_armL" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="3"]
-transform = Transform3D(-0.901352, 0.091338, -0.394883, -0.279428, -0.841771, 0.448646, -0.296225, 0.521735, 0.794024, 0.282477, 0.374844, -0.272123)
+[node name="Physical Bone shoulderL" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="7"]
+transform = Transform3D(-0.0148105, 0.0829698, -0.988456, 0.988316, -0.0963239, -0.0228892, -0.0978437, -0.984894, -0.0811485, 0.10661, 0.648113, -0.379285)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0147782, -0.242645, 0.00313448)
-body_offset = Transform3D(0.98906, 0.00119993, -0.000353977, -0.00286174, 0.994549, -0.000533521, -0.0043238, 0.00108308, 0.993825, 0.0149088, 0.241282, -0.00291622)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0130339, 0.00274704, 0.166413)
+body_offset = Transform3D(-0.0455795, -0.955799, -0.26544, 2.4097e-05, 0.265882, -0.955796, 0.992212, -0.0439753, -0.0122131, 0.0473923, 0.158326, -0.0107791)
+bounce = 0.82
+angular_damp = 15.0
+bone_name = "shoulder.L"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone shoulderL"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_aywdr")
+
+[node name="Physical Bone upper_armL" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="8"]
+transform = Transform3D(-0.897185, -0.432589, 0.0329792, -0.313359, 0.696315, 0.638079, -0.301359, 0.560961, -0.76412, 0.259311, 0.513544, -0.194552)
+collision_layer = 8
+collision_mask = 9
+joint_type = 3
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00642827, 0.000826985, 0.232583)
+body_offset = Transform3D(0.996971, 0.00118285, -0.000443488, -0.00118467, -0.00134432, -0.996048, -0.000318646, 0.993309, 5.79059e-05, 0.00651097, 0.231657, -0.000836968)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "upper_arm.L"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone upper_armL"]
-shape = SubResource("CapsuleShape3D_db8km")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone upper_armL"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_652u0")
 
-[node name="Physical Bone forearmL" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="4"]
-transform = Transform3D(-0.583722, -0.576219, -0.554623, -0.803553, 0.440659, 0.384177, 0.024831, 0.680888, -0.718653, 0.171281, 0.298919, 0.00514135)
+[node name="Physical Bone forearmL" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="9"]
+transform = Transform3D(-0.674777, -0.527162, 0.506069, -0.694384, 0.248558, -0.667341, 0.228205, -0.807118, -0.536881, 0.131128, 0.53422, 0.104788)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013772, -0.236328, 0.00257493)
-body_offset = Transform3D(0.993502, -0.000235088, -0.00313892, -0.000603992, 0.994896, 0.000521123, 0.000316942, -0.000980556, 0.985724, 0.013635, 0.235112, -0.00276554)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00759364, 0.00113749, 0.24133)
+body_offset = Transform3D(0.994772, -0.00119422, -0.00084199, -0.000227287, -0.00185677, -0.994832, 0.000121146, 0.995548, -0.00118035, 0.0077585, 0.240083, -0.000846654)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "forearm.L"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone forearmL"]
-shape = SubResource("CapsuleShape3D_u7efp")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone forearmL"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_5vla1")
 
-[node name="Physical Bone upper_armR" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="5"]
-transform = Transform3D(-0.925379, 0.216821, 0.260296, 0.104876, 0.910747, -0.381281, -0.322065, -0.332117, -0.870404, -0.451878, 0.36632, -0.511774)
+[node name="Physical Bone shoulderR" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="10"]
+transform = Transform3D(-0.0363758, 0.476154, 0.857679, -0.98715, -0.0892183, 0.00784828, 0.0824394, -0.857116, 0.475519, -0.26073, 0.647339, -0.492538)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00776098, 0.244101, 0.00189423)
-body_offset = Transform3D(0.985412, -0.000409044, -0.00365084, -0.00225673, -0.993364, 0.00118896, -0.00311315, 0.000566125, -0.985251, -0.007541, 0.242496, 0.00175226)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00750521, 0.00120967, 0.168123)
+body_offset = Transform3D(-0.0457081, 0.947923, 0.261193, -0.000122961, 0.26239, -0.945211, -0.9902, -0.0438813, -0.0121973, -0.0454021, 0.158593, -0.00532794)
+bounce = 0.82
+angular_damp = 15.0
+bone_name = "shoulder.R"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone shoulderR"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_k6x1d")
+
+[node name="Physical Bone upper_armR" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="11"]
+transform = Transform3D(-0.931445, -0.287236, 0.199811, 0.198367, 0.0345921, 0.973686, -0.289006, 0.951897, 0.0253149, -0.450024, 0.425894, -0.577715)
+collision_layer = 8
+collision_mask = 9
+joint_type = 3
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00299919, -0.00218511, 0.232974)
+body_offset = Transform3D(0.99522, 0.000576794, -0.000539692, -0.000257879, 0.000445668, -0.994299, -0.00127771, 0.994892, 0.000833882, -0.00285786, 0.231648, 0.00198351)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "upper_arm.R"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone upper_armR"]
-shape = SubResource("CapsuleShape3D_6y87d")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone upper_armR"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_8i4k4")
 
-[node name="Physical Bone forearmR" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="6"]
-transform = Transform3D(-0.656632, -0.0337665, 0.739074, -0.563144, -0.621304, -0.530106, 0.480182, -0.772986, 0.395132, -0.484569, 0.319144, -0.250864)
+[node name="Physical Bone forearmR" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="12"]
+transform = Transform3D(-0.64786, -0.753, 0.0179634, -0.741188, 0.632382, -0.194167, 0.135174, -0.139907, -0.974525, -0.498638, 0.257172, -0.343432)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00403975, 0.243005, -0.0173504)
-body_offset = Transform3D(0.989378, -0.00106159, 0.00251502, -0.00194708, -0.992304, 0.00102296, -0.000479162, 1.32322e-05, -0.991648, 0.00429845, 0.241145, -0.0172106)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00479348, 0.00546025, 0.247151)
+body_offset = Transform3D(0.993657, -0.00055789, -0.000160083, -0.000709772, -9.86159e-05, -0.993843, 0.000771951, 0.993223, -7.01398e-05, 0.00480568, 0.245626, -0.00540221)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "forearm.R"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone forearmR"]
-shape = SubResource("CapsuleShape3D_8nqla")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone forearmR"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_bxyj8")
 
-[node name="Physical Bone Left_Thigh" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="7"]
-transform = Transform3D(0.679671, 0.0227262, 0.721298, 0.358243, -0.869381, -0.314564, 0.622353, 0.475028, -0.602518, 0.0264834, -0.667355, -0.202047)
+[node name="Physical Bone Left_Thigh" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="13"]
+transform = Transform3D(0.68346, 0.722644, -0.0238891, 0.354787, -0.309056, 0.874851, 0.625791, -0.609204, -0.469113, 0.0264283, -0.60093, -0.130134)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00446972, -0.436735, 0.0044608)
-body_offset = Transform3D(0.988742, -0.00188342, 0.00372842, 0.00150824, 0.990953, 0.00314578, -0.00112504, 0.000550002, 0.991072, 0.00358021, 0.432776, -0.0041858)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00206004, 0.0028953, 0.434288)
+body_offset = Transform3D(0.992273, 0.00225386, 0.000991911, 0.000494868, 0.00062862, -0.992975, 0.000782639, 0.99441, -0.0012401, 0.00160682, 0.431236, -0.00233895)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "Left_Thigh"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone Left_Thigh"]
-shape = SubResource("CapsuleShape3D_uw8s0")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone Left_Thigh"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_43xrd")
 
-[node name="Physical Bone shinL" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="8"]
-transform = Transform3D(0.668069, 0.150359, 0.711291, 0.107655, -0.975044, 0.10548, 0.722343, 0.00568613, -0.673381, 0.0911619, -1.41972, -0.00548619)
+[node name="Physical Bone shinL" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="14"]
+transform = Transform3D(0.675023, 0.700973, -0.1499, 0.13285, 0.0805476, 0.970327, 0.716564, -0.673027, -0.0394527, 0.0900362, -1.33172, 0.0842763)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00680416, -0.385907, -0.000685887)
-body_offset = Transform3D(0.989758, 0.000204514, 0.00804403, -0.000625595, 0.986585, 0.000769715, -0.00794405, -0.000496645, 0.985107, -0.00665003, 0.380735, 0.000538066)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00107975, 0.0014687, 0.364235)
+body_offset = Transform3D(0.99336, 0.00336546, -0.000613961, -6.36168e-05, 0.00104862, -0.982629, -0.00178081, 0.975091, 0.000684951, -0.000853896, 0.357907, -0.00167967)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "shin.L"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone shinL"]
-shape = SubResource("CapsuleShape3D_b7rmg")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone shinL"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_d7lgc")
 
-[node name="Physical Bone footL" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="9"]
-transform = Transform3D(0.956302, 0.210696, 0.144348, -0.195853, 0.246041, 0.939287, 0.163403, -0.929488, 0.278613, 0.131455, -1.87114, 0.0869533)
+[node name="Physical Bone footL" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="15"]
+transform = Transform3D(0.958837, -0.0852823, 0.240382, -0.248828, -0.52865, 0.802972, 0.0592321, -0.836585, -0.532247, 0.132078, -1.84896, 0.160386)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0049897, 0.0973794, 0.0166854)
-body_offset = Transform3D(0.989733, 0.00143236, -0.000242658, 3.86089e-05, -0.951322, -0.256752, 0.00015229, 0.252709, -0.956452, -0.0050739, 0.0969229, -0.00865063)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00220255, 0.00410804, 0.105309)
+body_offset = Transform3D(0.992366, 0.00011633, -0.000751577, 9.57772e-05, -2.5034e-06, -0.992892, 0.000102624, 0.993286, 0.000277638, -0.00210706, 0.10456, -0.00410992)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "foot.L"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone footL"]
-shape = SubResource("CapsuleShape3D_a0lof")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone footL"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_kycol")
 
-[node name="Physical Bone Right_Thigh" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="10"]
-transform = Transform3D(0.693856, -0.0325356, 0.703556, -0.0599131, -0.985449, 0.0142967, 0.701799, -0.0523462, -0.694644, -0.217139, -0.712549, -0.663022)
+[node name="Physical Bone Right_Thigh" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="16"]
+transform = Transform3D(0.699124, 0.702396, 0.0325986, -0.0576949, 0.0115329, 0.988283, 0.700348, -0.700563, 0.0490717, -0.218089, -0.648509, -0.592733)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00847975, -0.427492, 0.00689527)
-body_offset = Transform3D(0.988683, 0.000136364, 0.00717071, -0.000409782, 0.987375, -0.000675868, -0.00736269, 4.95948e-05, 0.988773, 0.00839263, 0.422097, -0.00685909)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00139614, 0.00107876, 0.430845)
+body_offset = Transform3D(0.991254, 0.00222713, -9.04128e-06, -0.000148777, -0.000129066, -0.990038, -0.00246841, 0.992106, -0.000212274, 0.00138542, 0.426553, -0.000982232)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "Right_Thigh"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone Right_Thigh"]
-shape = SubResource("CapsuleShape3D_xtsvt")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone Right_Thigh"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_d7l3p")
 
-[node name="Physical Bone shinR" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="11"]
-transform = Transform3D(0.706631, 0.0757036, 0.684652, -0.29859, -0.855499, 0.403125, 0.625788, -0.495442, -0.583873, -0.195851, -1.47935, -0.8828)
+[node name="Physical Bone shinR" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="17"]
+transform = Transform3D(0.711712, 0.689302, -0.0751165, -0.163919, 0.273208, 0.940935, 0.673261, -0.660429, 0.308814, -0.199893, -1.45161, -0.7368)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00950884, -0.385634, -0.00129936)
-body_offset = Transform3D(0.989985, 0.000675589, 0.0025616, -0.00178757, 0.9915, -0.00384706, -0.00456065, 4.52399e-05, 0.985973, 0.00967747, 0.382334, 0.00125521)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00296906, -0.00134845, 0.395625)
+body_offset = Transform3D(0.993319, 0.00198972, -0.000248924, -0.000464663, -0.000812292, -0.99316, -0.0008232, 0.992945, 0.000540972, 0.00305039, 0.392917, 0.00112247)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "shin.R"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone shinR"]
-shape = SubResource("CapsuleShape3D_e7swi")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone shinR"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_mhrye")
 
-[node name="Physical Bone footR" type="PhysicalBone3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="12"]
-transform = Transform3D(0.717806, 0.620847, -0.26074, -0.114821, 0.488125, 0.850798, 0.669111, -0.58733, 0.428779, -0.229175, -1.89818, -1.0327)
+[node name="Physical Bone footR" type="PhysicalBone3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="18"]
+transform = Transform3D(0.723136, 0.404745, 0.534579, 0.178974, -0.851802, 0.434864, 0.65343, -0.211201, -0.710486, -0.230789, -1.87418, -0.780791)
 collision_layer = 8
+collision_mask = 9
 joint_type = 3
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00867685, 0.10638, 0.0103565)
-body_offset = Transform3D(0.987978, 0.00209916, -0.000732422, 0.00463137, -0.95068, -0.257184, -0.00415722, 0.254709, -0.953704, 0.00835681, 0.103837, -0.017255)
-friction = 0.59
-bounce = 0.3
-linear_damp = 5.0
-angular_damp = 10.0
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00564244, 0.0101988, 0.109775)
+body_offset = Transform3D(0.990922, 0.00334543, 0.00124019, 0.00109056, 0.00360005, -0.989782, -0.00112681, 0.96642, -0.000452355, 0.00542095, 0.108623, -0.00981304)
+bounce = 0.82
+angular_damp = 15.0
 bone_name = "foot.R"
 joint_constraints/angular_limit_enabled = true
-joint_constraints/angular_limit_upper = 30.0
-joint_constraints/angular_limit_lower = -30.0
+joint_constraints/angular_limit_upper = 40.0
+joint_constraints/angular_limit_lower = -25.0
 joint_constraints/angular_limit_bias = 0.3
 joint_constraints/angular_limit_softness = 0.9
 joint_constraints/angular_limit_relaxation = 1.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/Physical Bone footR"]
-shape = SubResource("CapsuleShape3D_16hra")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/Physical Bone footR"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_bnrh8")
 
-[node name="LeftHookAttachment" type="BoneAttachment3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="13"]
-transform = Transform3D(-0.803254, -0.585421, -0.109838, -0.591634, 0.762834, 0.260866, -0.068928, 0.274526, -0.959106, 0.0275318, 0.431805, 0.172288)
-bone_name = "hand.L"
-bone_idx = 10
-
-[node name="LeftHook" type="Area3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/LeftHookAttachment"]
-transform = Transform3D(1, -2.29105e-07, 0, 9.31323e-09, 1, -7.45058e-09, 0, 2.23517e-08, 1, 0, 0.174262, 0)
-collision_layer = 4
-collision_mask = 2
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook"]
-shape = SubResource("BoxShape3D_x224e")
-
-[node name="RightHookAttachment" type="BoneAttachment3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="14"]
-transform = Transform3D(-0.594255, 0.681721, -0.426752, 0.374635, 0.704151, 0.603174, 0.711694, 0.198563, -0.673841, -0.486315, 0.485058, -0.0722164)
+[node name="RightHookAttachment" type="BoneAttachment3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="19"]
+transform = Transform3D(-0.631553, 0.64303, -0.433188, -0.00500366, 0.555321, 0.83162, 0.775315, 0.527381, -0.347497, -0.504041, 0.312586, -0.102073)
 bone_name = "hand.R"
 bone_idx = 14
 
-[node name="RightHook" type="Area3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/RightHookAttachment"]
-transform = Transform3D(1, 2.38419e-07, -1.49012e-07, 2.68221e-07, 1, 1.19209e-07, -1.49012e-07, -1.49012e-08, 1, 0, 0.172574, 4.76837e-07)
+[node name="RightHook" type="Area3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment"]
+transform = Transform3D(-0.183955, 0.871362, 0.45485, -0.403979, 0.354835, -0.843145, -0.896081, -0.338851, 0.286739, 0.212486, 0.22399, -0.0602716)
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook"]
+shape = SubResource("CapsuleShape3D_jtahc")
+
+[node name="ParticleSpawner2" type="RayCast3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook"]
+transform = Transform3D(0.546541, -0.7902, -0.277271, 0.402771, 0.538325, -0.740259, 0.734214, 0.292905, 0.612484, 0, 0, 0)
+target_position = Vector3(0.24, 0.354, -0.5)
+collision_mask = 3
+script = ExtResource("4_hqcqk")
+
+[node name="SpecialAttachment" type="Node3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment"]
+transform = Transform3D(-4.76721e-08, -1, 0, 1, -4.14439e-08, -1.86265e-09, 0, -3.72529e-09, 1, 0, 0, 0)
+
+[node name="LeftHookAttachment" type="BoneAttachment3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="20"]
+transform = Transform3D(-0.837296, -0.52445, -0.154557, -0.533205, 0.84578, 0.0186428, 0.120944, 0.09802, -0.987807, 0.00747746, 0.709725, 0.239124)
+bone_name = "hand.L"
+bone_idx = 10
+
+[node name="LeftHook" type="Area3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment"]
+transform = Transform3D(0.953532, 0.189719, 0.234062, -0.265505, 0.89633, 0.355107, -0.142426, -0.40075, 0.905049, 0.0296538, 0.409576, -0.0354156)
 collision_layer = 4
 collision_mask = 2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_Meat_Female/Meat_Female/Skeleton3D/RightHookAttachment/RightHook"]
-shape = SubResource("BoxShape3D_x224e")
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook"]
+shape = SubResource("CapsuleShape3D_jtahc")
+
+[node name="ParticleSpawner" type="RayCast3D" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook"]
+target_position = Vector3(0, 0.5, 0)
+collision_mask = 3
+script = ExtResource("4_hqcqk")
 
 [node name="CharacterAnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeBlendTree_t0tf6")
-anim_player = NodePath("../NPC_Meat_Female/AnimationPlayer")
+anim_player = NodePath("../NPC_Meat_Female2/AnimationPlayer")
 advance_expression_base_node = NodePath("..")
-active = true
 parameters/BlockShot/active = false
 parameters/BlockShot/request = 0
 parameters/LeftAttackShot/active = false
@@ -513,14 +690,11 @@ update_scale = false
 
 [node name="Timers" type="Node" parent="."]
 
-[node name="JumpTimer" type="Timer" parent="Timers"]
-wait_time = 0.252
-one_shot = true
-
 [node name="ProjectileTimer" type="Timer" parent="Timers"]
 one_shot = true
 
 [node name="SpecialMeleeTimer" type="Timer" parent="Timers"]
+wait_time = 5.0
 one_shot = true
 
 [node name="RespawnTimer" type="Timer" parent="Timers"]
@@ -542,11 +716,20 @@ one_shot = true
 
 [node name="InvincibilityTimer" type="Timer" parent="Timers"]
 wait_time = 2.0
-
-[node name="PunchTimer" type="Timer" parent="Timers"]
-wait_time = 0.5
 one_shot = true
 
+[node name="PunchTimer" type="Timer" parent="Timers"]
+wait_time = 0.3
+one_shot = true
+
+[node name="Sounds" type="Node3D" parent="."]
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="Sounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33289, -0.439516)
+stream = ExtResource("6_b7uon")
+
+[connection signal="body_entered" from="NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook" to="." method="_on_right_hook_body_entered"]
+[connection signal="body_entered" from="NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook" to="." method="_on_left_hook_body_entered"]
 [connection signal="animation_finished" from="CharacterAnimationTree" to="." method="_on_animation_tree_animation_finished"]
 [connection signal="timeout" from="Timers/RespawnTimer" to="." method="respawn"]
 [connection signal="timeout" from="Timers/SlowTimer" to="." method="end_slow_effect"]
@@ -554,4 +737,4 @@ one_shot = true
 [connection signal="timeout" from="Timers/InvincibilityTimer" to="." method="_on_invincibility_timer_timeout"]
 [connection signal="timeout" from="Timers/PunchTimer" to="." method="_on_punch_timer_timeout"]
 
-[editable path="NPC_Meat_Female"]
+[editable path="NPC_Meat_Female2"]

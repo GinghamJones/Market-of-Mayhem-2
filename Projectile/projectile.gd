@@ -3,22 +3,19 @@ extends RigidBody3D
 
 @onready var lifespan_timer : Timer = $LifespanTimer
 
-
-var speed : float = 0
 var damage : int = 0
 var status_effect
 
 var is_active : bool = true
 var who_fired_me : Character = null
-var previous_velocity : Vector3 = Vector3.ZERO
+#var previous_velocity : Vector3 = Vector3.ZERO
 
 
-func fire(velocity : Vector3):
+func fire(speed : float):
 	apply_central_impulse(transform.basis.z * speed)
 
 
-func initiate(new_speed : float, new_damage : int, requester : Character):
-	speed = new_speed
+func initiate(new_damage : int, requester : Character):
 	damage = new_damage
 	who_fired_me = requester
 

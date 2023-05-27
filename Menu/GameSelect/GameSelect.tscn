@@ -1,7 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxvdlx08i8sox"]
+[gd_scene load_steps=11 format=3 uid="uid://bxvdlx08i8sox"]
 
 [ext_resource type="Script" path="res://Menu/GameSelect/GameSelect.gd" id="1_pumnm"]
 [ext_resource type="Texture2D" uid="uid://b3x8bq7iicmyj" path="res://mom2 splash.png" id="2_lunac"]
+[ext_resource type="Texture2D" uid="uid://dkccldcyfnexb" path="res://Characters/Meat/MeatIcon.png" id="3_03ef1"]
+[ext_resource type="Texture2D" uid="uid://1cf2g1fdx2kg" path="res://Characters/Kitchen/KitchenIcon.png" id="4_sdjpa"]
+[ext_resource type="Texture2D" uid="uid://bacmdoqc5f6hx" path="res://Characters/Floral/FloralIcon.png" id="5_sblia"]
+[ext_resource type="Texture2D" uid="uid://balkualp3xlf7" path="res://Characters/Freight/FreightIcon.png" id="6_fxurv"]
+[ext_resource type="Texture2D" uid="uid://c4gd1eg8uepa5" path="res://Characters/Produce/ProduceIcon.png" id="7_tp42f"]
+[ext_resource type="Texture2D" uid="uid://b6woyylsjcp3i" path="res://Characters/Cashier/CashierIcon.png" id="8_c517o"]
+[ext_resource type="Texture2D" uid="uid://b1hfi5dqfue5d" path="res://Characters/Bakery/BakerIcon.png" id="9_2rtsh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_micgk"]
+font_size = 50
 
 [node name="GameSelect" type="Control"]
 layout_mode = 3
@@ -21,28 +31,9 @@ color = Color(0.482353, 0.00392157, 0.890196, 1)
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 99.0
-offset_top = 106.0
+offset_top = 830.0
 offset_right = 594.0
-offset_bottom = 259.0
-
-[node name="CharacterSelect" type="OptionButton" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-item_count = 7
-popup/item_0/text = "Baker"
-popup/item_0/id = 0
-popup/item_1/text = "Cashier"
-popup/item_1/id = 1
-popup/item_2/text = "Florist"
-popup/item_2/id = 2
-popup/item_3/text = "Kitchen Dude"
-popup/item_3/id = 3
-popup/item_4/text = "Meat/Seafood Dude"
-popup/item_4/id = 4
-popup/item_5/text = "Freight Clerk"
-popup/item_5/id = 5
-popup/item_6/text = "Produce Clerk"
-popup/item_6/id = 6
+offset_bottom = 983.0
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer"]
 layout_mode = 2
@@ -81,9 +72,88 @@ position = Vector2(1126, 428)
 scale = Vector2(0.558333, 0.558333)
 texture = ExtResource("2_lunac")
 
-[connection signal="item_selected" from="VBoxContainer/CharacterSelect" to="." method="_on_character_select_item_selected"]
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 0
+offset_left = 165.0
+offset_top = 234.0
+offset_right = 473.0
+offset_bottom = 542.0
+columns = 3
+
+[node name="MeatButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Meat/Seafood"
+texture_normal = ExtResource("3_03ef1")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="KitchenButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Kitchen"
+texture_normal = ExtResource("4_sdjpa")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="FloralButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Floral"
+texture_normal = ExtResource("5_sblia")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="FreightButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Freight"
+texture_normal = ExtResource("6_fxurv")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="ProduceButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Produce"
+texture_normal = ExtResource("7_tp42f")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="CashierButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Cashier"
+texture_normal = ExtResource("8_c517o")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="BakerButton" type="TextureButton" parent="GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+tooltip_text = "Baker"
+texture_normal = ExtResource("9_2rtsh")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="SelectText" type="Label" parent="."]
+layout_mode = 0
+offset_left = 61.0
+offset_top = 135.0
+offset_right = 472.0
+offset_bottom = 207.0
+text = "Select Character:"
+label_settings = SubResource("LabelSettings_micgk")
+
 [connection signal="text_submitted" from="VBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="VBoxContainer/DevModeStart" to="." method="_on_devmode_pressed"]
 [connection signal="pressed" from="VBoxContainer/TimedModeStart" to="." method="_on_timed_mode_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/EliminationModeStart" to="." method="_on_elimination_mode_start_pressed"]
 [connection signal="pressed" from="CenterContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="GridContainer/MeatButton" to="." method="_on_meat_button_pressed"]
+[connection signal="pressed" from="GridContainer/KitchenButton" to="." method="_on_kitchen_button_pressed"]
+[connection signal="pressed" from="GridContainer/FloralButton" to="." method="_on_floral_button_pressed"]
+[connection signal="pressed" from="GridContainer/FreightButton" to="." method="_on_freight_button_pressed"]
+[connection signal="pressed" from="GridContainer/ProduceButton" to="." method="_on_produce_button_pressed"]
+[connection signal="pressed" from="GridContainer/CashierButton" to="." method="_on_cashier_button_pressed"]
+[connection signal="pressed" from="GridContainer/BakerButton" to="." method="_on_baker_button_pressed"]

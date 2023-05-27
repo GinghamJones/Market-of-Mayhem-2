@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://dxvmimacblilw"]
+
+[ext_resource type="Script" path="res://Characters/Meat/meat_special.gd" id="1_6oa35"]
+[ext_resource type="PackedScene" uid="uid://c37kl8bssrugc" path="res://Characters/Meat/Fish.glb" id="1_l1kug"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gotkv"]
+radius = 0.280248
+height = 2.37008
+
+[node name="MeatSpecial" type="Area3D"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -1.84469, -1.61268e-07)
+script = ExtResource("1_6oa35")
+
+[node name="Fish" parent="." instance=ExtResource("1_l1kug")]
+transform = Transform3D(0.256037, 0, 0, 0, 0.256037, 0, 0, 0, 0.256037, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0988921, 0)
+shape = SubResource("CapsuleShape3D_gotkv")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

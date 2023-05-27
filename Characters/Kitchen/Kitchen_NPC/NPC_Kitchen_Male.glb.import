@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://hmtmmsp12gi1"
-path="res://.godot/imported/NPC_Meat_Female.glb-20cedf1b9416e86b21c48259e9d48c06.scn"
+uid="uid://b26cp4qgk870v"
+path="res://.godot/imported/NPC_Kitchen_Male.glb-59e9ac4d146db6589d3277d69dff567a.scn"
 
 [deps]
 
-source_file="res://Characters/Meat/NPC_Meat_Female.glb"
-dest_files=["res://.godot/imported/NPC_Meat_Female.glb-20cedf1b9416e86b21c48259e9d48c06.scn"]
+source_file="res://Characters/Kitchen/Kitchen_NPC/NPC_Kitchen_Male.glb"
+dest_files=["res://.godot/imported/NPC_Kitchen_Male.glb-59e9ac4d146db6589d3277d69dff567a.scn"]
 
 [params]
 

@@ -6,29 +6,28 @@ extends CharacterBody3D
 
 @export var character_stats : CharacterData
 @export var projectile : PackedScene
+@export var special : PackedScene
 #@onready var projectile_placement : Node3D = $Human_Template_Male/ProjectilePlacement
 
 @onready var anims : AnimationTree = $CharacterAnimationTree
-#@onready var anim_player : AnimationPlayer = $Human_Template_Male/AnimationPlayer
-#@onready var right_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/RightHookBone/RightHook
-#@onready var left_hook : Area3D = $Human_Template_Male/metarig/Skeleton3D/LeftHookBone/LeftHook
-#@onready var skeleton : Skeleton3D = $Human_Template_Male/metarig/Skeleton3D
-#@onready var mesh = $Human_Template_Male
-@onready var anim_player = $NPC_Meat_Female/AnimationPlayer
-@onready var right_hook = $NPC_Meat_Female/Meat_Female/Skeleton3D/RightHookAttachment/RightHook
-@onready var left_hook = $NPC_Meat_Female/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook
-@onready var skeleton = $NPC_Meat_Female/Meat_Female/Skeleton3D
-@onready var mesh : MeshInstance3D = $NPC_Meat_Female/Meat_Female/Skeleton3D/Female_Meat
+@onready var anim_player = $NPC_Meat_Female2/AnimationPlayer
+@onready var right_hook = $NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook
+@onready var left_hook = $NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook
+@onready var skeleton = $NPC_Meat_Female2/Meat_Female/Skeleton3D
+@onready var mesh : MeshInstance3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/Female_Meat
 @onready var projectile_placement = $ProjectilePlacement
+@onready var special_attach : Node3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/SpecialAttachment
 
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
 @onready var special_timer : Timer = $Timers/SpecialMeleeTimer
-@onready var jump_timer : Timer = $Timers/JumpTimer
 @onready var dodge_timer : Timer = $Timers/DodgeTimer
 @onready var dodge_cooldown : Timer = $Timers/DodgeCooldown
 @onready var invincibility_timer : Timer = $Timers/InvincibilityTimer
 @onready var punch_timer : Timer = $Timers/PunchTimer
 
+@onready var punch_sound : AudioStreamPlayer3D = $Sounds/PunchSound
+@onready var l_punch_particle : RayCast3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook/ParticleSpawner
+@onready var r_punch_particle : RayCast3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook/ParticleSpawner2
 
 var is_paused : bool = false : set = set_is_paused
 var is_dodging : bool = false
@@ -41,14 +40,17 @@ var is_invincible : bool = false
 var is_dead : bool = false
 var is_smacked : bool = false
 var should_respawn : bool = true
+var is_slowed : bool = false
+var just_punched : bool = false
 
 var jump_force : float = 30
+var move_direction : Vector3 = Vector3.ZERO
 var dodge_direction : Vector3 = Vector3.ZERO
 var hit_direction : Vector3 = Vector3.ZERO
 var mouse_delta : Vector2 = Vector2.ZERO
 
 var current_action : String = ""
-var lives_left : int = 0
+var lives_left : int = 100 : set = set_lives_left
 
 var spawn_point : Vector3 = Vector3.ZERO
 var player_controlled : bool = false
@@ -62,28 +64,26 @@ var score : int = 0 :
 signal score_changed
 signal respawn_complete
 signal i_died
+signal health_changed
+signal im_done_fer
 
 
 func _ready() -> void:
 	randomize()
-
-	character_stats.current_ammo = character_stats.max_ammo
+#	character_stats.current_ammo = character_stats.max_ammo
 
 
 func _physics_process(delta: float) -> void:
 	if is_paused or not controller:
 		return
 	
-#	if not player_controlled:
 	controller.run(delta)
 		
 	if is_firing:
 		_handle_firing()
-#		if character_stats.single_fire:
-#			is_firing = false
 
 
-#### Movement functions ####
+########################## Movement functions ###########################################
 
 func move_my_ass(delta : float, direction : Vector3):
 	if im_walloped:
@@ -114,6 +114,7 @@ func move_my_ass(delta : float, direction : Vector3):
 		velocity.y -= character_stats.gravity 
 	else:
 		velocity.y = 0
+	
 	move_and_slide()
 
 
@@ -128,20 +129,12 @@ func handle_movement_anims(delta : float):
 #		anims.set("parameters/TimeScale/scale", 1.1)
 
 
-#### Action functions ####
-
-func start_dodge(new_direction : Vector3):
-	if dodge_cooldown.is_stopped():
-		dodge_timer.start()
-		dodge_direction = new_direction
-		is_dodging = true
-
-func stop_dodge():
-	dodge_cooldown.start()
-	is_dodging = false
-
+############################## Action functions #############################################
 
 func request_action(action : String):
+	if current_action == "dead":
+		return
+	
 	if action == "StopFire":
 		is_firing = false
 		current_action = ""
@@ -157,7 +150,10 @@ func request_action(action : String):
 		return
 	
 	if action == "Attack":
-		attack()
+		if just_punched:
+			attack(1)
+		else:
+			attack(0)
 	elif action == "Block":
 		block()
 	elif action == "Fire":
@@ -171,13 +167,35 @@ func request_action(action : String):
 	current_action = action
 
 
-func attack():
-	if anims.set_oneshot("parameters/LeftAttackShot/request"):
-		hit_detected = false
-		right_hook.monitoring = true
-		left_hook.monitoring = true
-		punch_timer.start()
+func start_dodge(new_direction : Vector3):
+	if dodge_cooldown.is_stopped():
+		dodge_timer.start()
+		dodge_direction = new_direction
+		is_dodging = true
 
+func stop_dodge():
+	dodge_cooldown.start()
+	is_dodging = false
+
+
+func attack(which_punch : int):
+	if which_punch == 0:
+		if anims.set_oneshot("parameters/LeftAttackShot/request"):
+			hit_detected = false
+			left_hook.monitoring = true
+			handle_just_punched()
+	else:
+		if anims.set_oneshot("parameters/RightAttackShot/request"):
+			hit_detected = false
+			right_hook.monitoring = true
+			punch_timer.start()
+
+func handle_just_punched() -> void:
+	just_punched = true
+	var new_timer : SceneTreeTimer = get_tree().create_timer(0.7)
+	await new_timer.timeout
+	punch_timer.start()
+	just_punched = false
 
 func block():
 	if anims.set_oneshot("parameters/BlockShot/request"):
@@ -186,30 +204,35 @@ func block():
 
 func _handle_firing():
 	# Overridden if Character is Baker or Freight
-	if projectile_timer.is_stopped():
-		projectile_timer.start()
-		spawn_projectile()
-		anims.set_oneshot("parameters/ProjectileShot/request")
-		character_stats.current_ammo -= 1
-		if player_controlled:
-			controller.hud.update_ammo()
-		if character_stats.single_fire:
-			is_firing = false
+	if get_ammo() <= 0:
+		pass
+	else:
+		if projectile_timer.is_stopped():
+			projectile_timer.start()
+			anims.set_oneshot("parameters/ProjectileShot/request")
+#			await anims.animation_finished
+			spawn_projectile()
+				
+			if character_stats.single_fire:
+				is_firing = false
+		else:
+			pass
 
 
-func spawn_projectile():
-	var p : Projectile = projectile.instantiate()
-	add_child(p)
-	p.set_as_top_level(true)
-	p.global_transform = projectile_placement.global_transform
-	p.initiate(character_stats.projectile_speed, character_stats.projectile_damage, self)
-	p.fire(velocity)
+
 
 
 func use_super_move():
-	pass
+	if anims.set_oneshot("parameters/SpecialShot/request"):
+		special_timer.start()
+		var s = special.instantiate()
+		special_attach.add_child(s)
+		await anims.animation_finished
+		s.queue_free()
+		
+	
 
-#### Damage related functions ####
+############################## Damage related functions ###########################################
 
 func take_damage(damage : int, direction : Vector3, who_dunnit):
 	if is_invincible:
@@ -248,15 +271,19 @@ func take_projectile_damage(damage : int, status_effect, who_dunnit : Character)
 
 
 func begin_slow_effect():
-	$Timers/SlowTimer.start()
-	character_stats.move_speed -= 2
+	if not is_slowed:
+		$Timers/SlowTimer.start()
+		character_stats.move_speed -= 2
+		is_slowed = true
 
 func end_slow_effect():
 	character_stats.move_speed += 2
 
 
 func die():
-	emit_signal("i_died", self)
+#	emit_signal("i_died", self)
+	current_action = "dead"
+	lives_left -= 1
 	set_physics_process(false)
 	set_process(false)
 	
@@ -265,10 +292,12 @@ func die():
 	
 	call_deferred("set_collision_layer_value", 2, false)
 	call_deferred("set_collision_mask_value", 2, false)
+	
 #	$CollisionShape3D.call_deferred("set_disabled", true)
 	
 	# Activate ragdoll
 	skeleton.physical_bones_start_simulation()
+	anims.active = false
 	skeleton.animate_physical_bones = false
 	
 	if should_respawn:
@@ -276,22 +305,10 @@ func die():
 	is_dead = true
 
 
-#### Setter functions ####
+############################## Setter functions #########################################
 
 func set_y_rotation(new_rotation : float):
 	rotation.y = lerp_angle(rotation.y, new_rotation, 0.2)
-
-
-#func set_oneshot(anim : String) -> bool:
-#	# This checks if a oneshot is already playing and returns false if so. A false return stops the requested action from taking place.
-#	var oneshot_anims : Array = [anims["parameters/BlockShot/active"], anims["parameters/LeftAttackShot/active"], 
-#								anims["parameters/RightAttackShot/active"], anims["parameters/ProjectileShot/active"], anims["parameters/SpecialShot/active"]]
-#	for oneshot in oneshot_anims:
-#		if oneshot == true:
-#			return false
-#
-#	anims.set(anim, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-#	return true
 
 
 func set_is_moving(value : bool):
@@ -316,6 +333,16 @@ func set_is_paused(value):
 		is_invincible = true
 	else:
 		is_invincible = false
+	
+	
+func set_lives_left(amount) -> void:
+	lives_left = amount
+	if player_controlled:
+		controller.update_hud(-1, -1, lives_left)
+	
+	if lives_left <= 0:
+		should_respawn = false
+		im_done_fer.emit(get_team())
 
 ####### Getter Functions ######
 
@@ -340,9 +367,15 @@ func get_team() -> String:
 func _on_left_hook_body_entered(body):
 	if body == self:
 		return
-	if body.has_method("take_damage") and not hit_detected:
+	elif body.is_in_group("Level"):
+		punch_sound.play()
+		l_punch_particle.spawn_particle()
+	elif body is Character and not hit_detected:
+#	if body.has_method("take_damage") and not hit_detected:
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
-		$Human_Template_Male/metarig/Skeleton3D/LeftHookBone/ParticleSpawner2.spawn_particle()
+		punch_sound.play()
+		l_punch_particle.spawn_particle()
+#		$Human_Template_Male/metarig/Skeleton3D/LeftHookBone/ParticleSpawner2.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
 
@@ -350,9 +383,15 @@ func _on_left_hook_body_entered(body):
 func _on_right_hook_body_entered(body):
 	if body == self:
 		return
-	if body.has_method("take_damage") and not hit_detected:
+	elif body.is_in_group("Level"):
+		punch_sound.play()
+		r_punch_particle.spawn_particle()
+	elif body is Character:
+#	if body.has_method("take_damage") and not hit_detected:
+		punch_sound.play()
+		r_punch_particle.spawn_particle()
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
-		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
+#		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		right_hook.set_deferred("monitoring", false)
 
@@ -361,11 +400,38 @@ func _on_animation_tree_animation_finished(anim_name):
 	if anim_name == "Character_Left_Attack":
 		left_hook.set_deferred("monitoring", false)
 		right_hook.set_deferred("monitoring", false)
+		pass
 	elif anim_name == "Character_Block":
 		is_blocking = false
 	
 	current_action = ""
 
+########################## Projecile Functions ####################################
+func spawn_projectile():
+	var p : Projectile = projectile.instantiate()
+	add_child(p)
+	p.set_as_top_level(true)
+	p.global_transform = projectile_placement.global_transform
+	p.initiate(character_stats.projectile_damage, self)
+	p.fire(determine_projectile_speed())
+	character_stats.current_ammo -= 1
+	if player_controlled:
+		controller.update_hud(get_ammo())
+
+
+func determine_projectile_speed() -> float:
+	var projectile_speed = character_stats.projectile_speed
+	const FORWARD_SPEED = 1.25
+	const BACKWARD_SPEED = 0.6
+	
+	# Increase speed if moving forward, decrease if backward
+	var projectile_speed_modifier : float = 1
+	if move_direction.z > 0:
+		projectile_speed *= BACKWARD_SPEED
+	elif move_direction.z < 0:
+		projectile_speed *= FORWARD_SPEED
+	
+	return projectile_speed
 
 #### Misc functions ####
 
@@ -382,8 +448,7 @@ func initiate():
 	if player_controlled:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-#	mesh.rotation_degrees.y = 180.0
-	
+	anims.active = true
 	right_hook.monitoring = false
 	left_hook.monitoring = false
 	
@@ -396,34 +461,43 @@ func initiate():
 
 func update_health():
 	if player_controlled and controller:
-		controller.hud.update_health()
+		controller.update_hud(-1, get_health())
+	
+	health_changed.emit()
 
 
 func respawn():
 	var tween : Tween = create_tween()
 	tween.tween_property(self, "global_position", spawn_point, 0.5)
 	is_invincible = true
-	invincibility_timer.start()
 	await tween.finished
-#	global_position = spawn_point
+	invincibility_timer.start()
+
 	set_physics_process(true)
 	set_process(true)
-#	$CollisionShape3D.call_deferred("set_disabled", false)
+	$CollisionShape3D.call_deferred("set_disabled", false)
 	call_deferred("set_collision_layer_value", 2, true)
 	call_deferred("set_collision_mask_value", 2, true)
+	
 	character_stats.current_ammo = character_stats.max_ammo
 	character_stats.current_health = character_stats.max_health
 	is_dead = false
 	
 	# Reset skeleton
 	skeleton.physical_bones_stop_simulation()
+	anims.active = true
 	skeleton.animate_physical_bones = true
 	skeleton.reset_bone_poses()
 	
+	current_action = ""
+	
 	if not player_controlled:
 		controller.reset_ai()
+	else:
+		controller.update_hud(get_ammo(), get_health(), lives_left)
+		
 	respawn_complete.emit()
-	update_health()
+#	update_health()
 
 
 func _on_invincibility_timer_timeout():

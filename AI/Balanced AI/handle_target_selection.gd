@@ -1,13 +1,6 @@
 extends Node
 
-## need to add gangbang check
-
-
-enum {
-	SUCCESS,
-	MOVEON,
-	STOP,
-}
+@onready var master = get_parent()
 
 #####################################################################################
 ############################## Main Function ########################################
@@ -24,13 +17,19 @@ func run(controller : AIController):
 	
 	######################### Important checks ##########################################
 	# Check if anyone in sight
-	check = detection_area.is_anyone_in_sight()
-	if not check:
+	var dudes_in_sight : int = detection_area.get_dudes_in_sight()
+#	check = detection_area.get_dudes_in_sight()
+	if dudes_in_sight == 0:
 		# No one in sight, no need to select targets
 		if flee_target:
 			controller.set_flee_target(null)
+		if current_target:
+			controller.set_target(null)
 		return 
-	
+	elif dudes_in_sight > 3:
+		master.too_many_dudes = true
+		return
+		
 	# Check for managers
 	var manager : Manager = detection_area.get_manager_in_sight()
 	if manager != null:
@@ -53,8 +52,6 @@ func run(controller : AIController):
 	#####################################################################################
 	
 	# Check if they dead or if no target chosen yet
-	
-		
 	if current_target != null:
 		if current_target.is_dead:
 			controller.set_target(null)

@@ -20,9 +20,9 @@ func _process(_delta):
 		raycast.force_raycast_update()
 		
 		if raycast.is_colliding():
-	
 			cast_point = to_local(raycast.get_collision_point())
 			particles.emitting = true
+			print(-cast_point.z)
 			
 			mesh_l.mesh.height = -(cast_point.z)
 			mesh_r.mesh.height = -(cast_point.z)
@@ -42,6 +42,16 @@ func _process(_delta):
 			particles.process_material.set_emission_box_extents(
 				Vector3(mesh_l.mesh.radius, abs(cast_point.y) / 2, mesh_l.mesh.radius)
 			)
+			
+			# Check if we're hitting an enemy
+			if dam_freq_limit.is_stopped():
+				var collider = raycast.get_collider()
+				if collider is Character:
+					if collider is Freight:
+						pass
+					else:
+						colliding.emit(collider)
+				dam_freq_limit.start()
 		else:
 			particles.emitting = false
 			
@@ -50,38 +60,46 @@ func _process(_delta):
 			mesh_r.mesh.height = 10
 			mesh_r.position.z = -5
 			particles.position = Vector3(200, 200, 200)
-			
 
 
-func check_raycast():
-	if raycast.is_colliding():
-		var target = raycast.get_collider()
-		if target is Character:
-			colliding.emit(target)
+#func check_raycast():
+#	if raycast.is_colliding():
+#		var target = raycast.get_collider()
+#		if target is Freight:
+#			pass
+#		elif target is Character:
+#			colliding.emit(target)
 
 
 func set_is_active(value : bool):
 	is_active = value
 	if value == true:
-		mesh_l.show()
-		mesh_r.show()
+#		mesh_l.show()
+#		mesh_r.show()
 		damage_detector.enabled = true
 		raycast.enabled = true
 		timer.start()
 		dam_freq_limit.start()
 	else:
-		mesh_l.hide()
-		mesh_r.hide()
+#		mesh_l.hide()
+#		mesh_r.hide()
 		particles.emitting = false
 		raycast.enabled = false
 		damage_detector.enabled = false
 
 
 func activate(time : float):
+	mesh_l.show()
+	mesh_r.show()
+	
 	tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(mesh_l.mesh, "radius", beam_radius, time)
 	tween.tween_property(mesh_r.mesh, "radius", beam_radius, time)
+	tween.tween_property(mesh_l.mesh, "height", 10, time)
+	tween.tween_property(mesh_r.mesh, "height", 10, time)
+	tween.tween_property(mesh_r, "position", Vector3(mesh_r.position.x, mesh_r.position.y, -5), time)
+	tween.tween_property(mesh_l, "position", Vector3(mesh_l.position.x, mesh_l.position.y, -5), time)
 	tween.tween_property(particles.process_material, "scale_min", 1, time)
 	await tween.finished
 	set_is_active(true)
@@ -95,4 +113,7 @@ func deactivate(time : float):
 	tween.tween_property(mesh_r.mesh, "radius", 0.0, time)
 	tween.tween_property(particles.process_material, "scale_min", 0.0, time)
 	await tween.finished
+	
+	mesh_l.hide()
+	mesh_r.hide()
 

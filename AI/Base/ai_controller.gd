@@ -28,14 +28,7 @@ var did_i_fire : bool = false
 signal y_rotation_computed
 signal direction_computed
 signal request_action
-#signal request_punch
-#signal requenst_fire
-#signal request_block
-#signal request_special
 
-
-#func _process(delta: float) -> void:
-#	pass
 ###################################### Main Run #####################################################
 
 func run(delta : float):
@@ -122,8 +115,6 @@ func punch():
 
 
 func fire():
-#	actor._handle_firing()
-	print("fire request received")
 	request_action.emit("Fire")
 	did_i_fire = true
 #	request_action.emit("StopFire")
@@ -197,6 +188,7 @@ func set_velocity(new_velocity : Vector3):
 
 func set_direction(new_direction : Vector3):
 	direction = new_direction
+	actor.move_direction = direction
 
 func set_y_rotation(value : float):
 #	y_rotation = lerp(y_rotation, value, 0.1)
@@ -213,12 +205,13 @@ func set_nav_target(new_target : Vector3):
 	nav_agent.set_target_position(new_target)
 
 func set_target(new_target : Character):
-	if new_target == null:
-		forget_timer.start()
-		await forget_timer.timeout
-		target = null
-	else:
-		target = new_target
+	target = new_target
+#	if new_target == null:
+#		forget_timer.start()
+#		await forget_timer.timeout
+#		target = null
+#	else:
+#		target = new_target
 
 func set_flee_target(new_target):
 	if new_target == null:

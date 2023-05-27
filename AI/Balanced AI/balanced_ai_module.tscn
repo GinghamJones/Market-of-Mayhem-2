@@ -18,5 +18,16 @@ script = ExtResource("4_llf6o")
 wait_time = 5.0
 one_shot = true
 
+[node name="BackUpTimer" type="Timer" parent="Movement"]
+wait_time = 0.2
+one_shot = true
+
+[node name="DecisionTimer" type="Timer" parent="Movement"]
+wait_time = 0.3
+one_shot = true
+
+[node name="AvoidTimer" type="Timer" parent="Movement"]
+one_shot = true
+
 [node name="Attack" type="Node" parent="."]
 script = ExtResource("5_je1g7")

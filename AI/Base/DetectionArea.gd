@@ -1,5 +1,7 @@
 extends Area3D
 
+@onready var line_of_sight : RayCast3D = $LineOfSight
+
 var opponents_in_sight : Array[Character] = []
 var projectiles_in_sight : Array[Projectile] = []
 var manager_in_sight : Manager = null
@@ -93,11 +95,8 @@ func get_opponents_in_sight() -> Array[Character]:
 	return opponents_in_sight
 
 
-func is_anyone_in_sight() -> bool:
-	if opponents_in_sight.size() == 0:
-		return false
-	
-	return true
+func get_dudes_in_sight() -> int:
+	return opponents_in_sight.size()
 
 
 func get_projectiles_in_sight() -> Array[Projectile]:
@@ -115,7 +114,12 @@ func reset():
 
 
 func _on_body_entered(body: Node3D) -> void:
+	if body == actor:
+		return
+	
 	if body is Character:
+		if not check_line_of_sight(body.global_position):
+			return
 		if actor.character_stats.Team == body.character_stats.Team or body.is_dead:
 			return
 		else:
@@ -142,3 +146,23 @@ func _on_body_exited(body: Node3D) -> void:
 	elif body is Manager:
 		manager_in_sight = null
 		return
+
+
+func check_line_of_sight(body_pos : Vector3) -> bool:
+	line_of_sight.enabled = true
+	line_of_sight.look_at(body_pos)
+	
+	line_of_sight.target_position = line_of_sight.target_position.normalized()
+	var distance : float = (global_position - body_pos).length()
+	line_of_sight.target_position *= distance
+
+	line_of_sight.force_raycast_update()
+	var collider = line_of_sight.get_collider()
+	
+#	line_of_sight.target_position = Vector3.ZERO
+#	line_of_sight.enabled = false
+	
+	if collider is CharacterBody3D:
+		return true
+	else:
+		return false

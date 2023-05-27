@@ -6,7 +6,7 @@ extends Node
 @onready var elim_mode : PackedScene = preload("res://Menu/GameSelect/GameModes/elimination_mode.tscn")
 @onready var world = preload("res://World/world.tscn").instantiate()
 @onready var settings = preload("res://Menu/Settings/settings.tscn").instantiate()
-@export var game_modes : Array[PackedScene]
+
 var current_scene : Node = null
 
 
@@ -36,11 +36,11 @@ func load_game_mode(game_mode : String, player_type : String, player_name : Stri
 	var gm : GameMode = null
 	
 	if game_mode == "DevMode":
-		gm = game_modes[2].instantiate()
+		gm = dev_mode.instantiate()
 	elif game_mode == "TimedMode":
-		gm = game_modes[1].instantiate()
+		gm = timed_mode.instantiate()
 	elif game_mode == "EliminationMode":
-		gm = game_modes[0].instantiate()
+		gm = elim_mode.instantiate()
 
 #	if game_mode == "DevMode":
 #		gm = dev_mode.instantiate()

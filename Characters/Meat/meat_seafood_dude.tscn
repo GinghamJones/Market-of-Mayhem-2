@@ -5,116 +5,48 @@
 [ext_resource type="Script" path="res://Characters/Resources/character_data.gd" id="3_tdnbw"]
 [ext_resource type="PackedScene" uid="uid://cc653p6ws20k1" path="res://Projectile/Knife/knife.tscn" id="4_0ocn6"]
 
-[sub_resource type="Resource" id="Resource_8gd2v"]
-resource_local_to_scene = true
+[sub_resource type="Resource" id="Resource_1hf3m"]
 script = ExtResource("3_tdnbw")
 Team = "Meat"
-max_health = 100
+max_health = 80
 single_fire = true
 base_damage = 10
 special_damage = 0
-projectile_damage = 30
-projectile_speed = 50.0
+projectile_damage = 20
+projectile_speed = 60.0
 max_ammo = 5
-move_speed = 7.0
-acceleration = 0.15
+move_speed = 6.5
+acceleration = 0.1
 gravity = 30.0
 dodge_force = 15.0
-punch_force = 8.0
+punch_force = 10.0
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_o365e"]
 
 [node name="MeatSeafoodDude" instance=ExtResource("1_ex4bq")]
 script = ExtResource("2_qd4mi")
-character_stats = SubResource("Resource_8gd2v")
+character_stats = SubResource("Resource_1hf3m")
 projectile = ExtResource("4_0ocn6")
 
-[node name="NPC_Meat_Female" parent="." index="2"]
-transform = Transform3D(-0.6, 0, -9.05975e-08, 0, 0.6, 0, 9.05975e-08, 0, -0.6, 0, 0, 0)
+[node name="Physical Bone Hips" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="1"]
+transform = Transform3D(0.682857, -0.707372, 0.182296, -6.25248e-06, -0.249629, -0.967963, 0.730471, 0.661258, -0.17041, -0.0224729, -0.211403, -0.518022)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00272882, -0.00201188, 0.125721)
+body_offset = Transform3D(0.999941, -1.00136e-05, 4.38839e-06, -4.81308e-06, 4.44055e-06, -0.999612, 7.33137e-06, 0.999976, 1.11759e-07, 0.00272809, 0.125672, 0.00201184)
 
-[node name="Skeleton3D" parent="NPC_Meat_Female/Meat_Female" index="0"]
-bones/0/position = Vector3(5.28339e-06, -0.346497, -0.46371)
-bones/1/rotation = Quaternion(-0.0670746, 0.255576, -0.0455144, 0.963385)
-bones/6/rotation = Quaternion(-0.0666685, -0.0143653, -0.00190254, 0.99767)
-bones/8/rotation = Quaternion(-0.0923513, 0.417687, -0.760685, 0.488229)
-bones/9/rotation = Quaternion(0.679521, 0.237799, 0.220668, 0.658034)
-bones/10/rotation = Quaternion(0.220691, -0.0901127, 0.0890432, 0.967082)
-bones/12/rotation = Quaternion(-0.283815, -0.618871, 0.591318, 0.432194)
-bones/13/rotation = Quaternion(0.636413, 0.237362, 0.487556, 0.548568)
-bones/17/rotation = Quaternion(0.930592, 0.206379, -0.0331484, 0.300513)
-bones/18/rotation = Quaternion(0.252103, 0.026405, 0.175969, 0.9512)
-bones/19/rotation = Quaternion(-0.355263, -0.392169, 0.0670471, 0.84587)
-bones/20/rotation = Quaternion(-0.0683137, 0.920856, -0.38277, -0.0290739)
-bones/21/rotation = Quaternion(0.993095, -0.108224, -0.00553273, 0.0449394)
-bones/22/rotation = Quaternion(0.133189, -0.00543049, 0.0551793, 0.989539)
-bones/23/rotation = Quaternion(-0.556334, 0.0212524, -0.0754302, 0.827255)
-bones/24/rotation = Quaternion(0.0756534, 0.954762, -0.230392, -0.17212)
+[node name="Physical Bone spine002" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="3"]
+transform = Transform3D(0.951793, -0.287955, -0.00909559, 0.0158785, 0.0835099, -0.985136, 0.287851, 0.942963, 0.0843744, -0.0523358, 0.269411, -0.494954)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000929586, -0.00205095, 0.135459)
+body_offset = Transform3D(0.994495, -0.00154501, 8.15094e-06, 2.06176e-05, 5.83977e-05, -0.988785, 0.000224978, 0.989479, -3.01376e-05, 0.000920195, 0.13394, 0.00203367)
 
-[node name="Physical Bone Chest" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="1"]
-transform = Transform3D(0.956284, -0.289315, -0.00826102, 0.0580823, 0.219547, -0.972652, 0.283661, 0.929647, 0.227052, -0.0588576, 0.431608, -0.723925)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0954303, 0.286318, 0.0964187)
-body_offset = Transform3D(0.997639, -0.00691226, 0.0546617, 0.054976, 0.181022, -0.980742, -0.00332943, 0.981494, 0.181193, -0.0984963, 0.0374856, -0.298172)
+[node name="Physical Bone shinL" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="14"]
+transform = Transform3D(0.675232, 0.707701, -0.150518, 0.132885, 0.0820469, 0.974203, 0.716685, -0.68114, -0.0391687, 0.0962207, -1.36223, 0.0843123)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000830139, -0.000335046, 0.394294)
+body_offset = Transform3D(0.993595, 0.0023053, -0.000311749, -6.20391e-05, 0.000276795, -0.98654, -0.00171223, 0.985655, 0.000367844, -0.000701129, 0.388987, 0.000186622)
 
-[node name="Physical Bone spine005" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="2"]
-transform = Transform3D(0.995658, -0.0823477, 0.0156418, 0.0170585, 0.0143802, -0.985509, 0.0833067, 0.981664, 0.0147835, -0.067236, 1.2385, -0.800418)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0346512, 0.415172, 0.425313)
-body_offset = Transform3D(0.999152, 0.00143512, 0.0158905, 0.0155535, 0.187018, -0.967882, -0.00445411, 0.967303, 0.186127, -0.0419761, 0.333469, -0.480605)
-
-[node name="Physical Bone upper_armL" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="3"]
-transform = Transform3D(-0.87954, -0.375909, 0.289274, -0.377768, 0.92375, 0.0518536, -0.286927, -0.0638486, -0.955202, 0.279035, 0.638627, -0.462654)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0550518, -0.00535765, -0.197319)
-body_offset = Transform3D(0.992522, 0.104087, 0.051953, 0.109855, -0.692622, -0.7121, -0.0382097, 0.71284, -0.699282, 0.0654491, -0.138174, -0.136266)
-
-[node name="Physical Bone forearmL" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="4"]
-transform = Transform3D(-0.804689, -0.501024, 0.313553, -0.322149, -0.0717793, -0.942844, 0.495484, -0.860125, -0.103849, 0.12587, 0.892121, -0.19465)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.203203, -0.235772, 0.551791)
-body_offset = Transform3D(0.87537, 0.286348, 0.385584, 0.46875, -0.335962, -0.815405, -0.103976, 0.895058, -0.42953, -0.323127, 0.275471, 0.469169)
-
-[node name="Physical Bone upper_armR" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="5"]
-transform = Transform3D(-0.935712, -0.32391, 0.130763, 0.314198, -0.61796, 0.719744, -0.152171, 0.715257, 0.680985, -0.427658, 0.801091, -0.865159)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.132175, 0.379349, 0.162243)
-body_offset = Transform3D(0.985087, -0.0152085, -0.163681, -0.108087, 0.689513, -0.715243, 0.123917, 0.722998, 0.678607, 0.162529, -0.159809, -0.367989)
-
-[node name="Physical Bone forearmR" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="6"]
-transform = Transform3D(-0.566682, -0.818364, 0.0791376, -0.568156, 0.458854, 0.680566, -0.595039, 0.341195, -0.725307, -0.473048, 0.550952, -0.743366)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0395995, -0.0354767, -0.449471)
-body_offset = Transform3D(0.625389, 0.305047, -0.715788, -0.761188, 0.434702, -0.47835, 0.165777, 0.845377, 0.504314, -0.335669, -0.16944, 0.250101)
-
-[node name="Physical Bone Left_Thigh" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="7"]
-transform = Transform3D(0.68742, 0.724954, -0.0238816, 0.352658, -0.305865, 0.883493, 0.633126, -0.616286, -0.466098, 0.026902, -0.430407, -0.306472)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.092394, -0.0967196, 0.149088)
-body_offset = Transform3D(0.997437, 0.00343293, 0.0536711, 0.0536897, -0.0507227, -0.996436, -0.000406533, 0.998165, -0.051113, -0.0998269, 0.13869, 0.1042)
-
-[node name="Physical Bone shinL" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="8"]
-transform = Transform3D(0.678142, 0.711278, -0.15232, 0.173723, 0.0436719, 0.982263, 0.708958, -0.690839, -0.0950409, 0.0936339, -1.23185, -0.0780236)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.205323, -0.222263, 0.24676)
-body_offset = Transform3D(0.990253, -0.0168678, -0.108826, -0.106222, 0.102773, -0.987419, 0.0281435, 0.987033, 0.101171, -0.180217, 0.288308, 0.188637)
-
-[node name="Physical Bone footL" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="9"]
-transform = Transform3D(0.965794, -0.0842069, 0.241383, -0.198445, 0.348081, 0.915265, -0.161211, -0.932785, 0.319683, 0.132468, -1.63825, 0.0829505)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0368839, -0.108748, -0.0749632)
-body_offset = Transform3D(0.97376, -0.222391, 0.0218831, -0.157832, -0.754077, -0.636216, 0.158132, 0.616643, -0.770015, -0.0584603, -0.123876, 0.00350362)
-
-[node name="Physical Bone Right_Thigh" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="10"]
-transform = Transform3D(0.706063, 0.705719, 0.0329618, -0.0618421, 0.0151917, 0.996536, 0.703831, -0.706513, 0.054403, -0.218614, -0.514059, -0.769639)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.187245, -0.18068, 0.292876)
-body_offset = Transform3D(0.987743, 0.0183578, -0.147522, -0.148579, 0.147563, -0.976365, 0.00391799, 0.987581, 0.148593, -0.138427, 0.340436, 0.134183)
-
-[node name="Physical Bone shinR" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="11"]
-transform = Transform3D(0.71637, 0.692389, -0.0758007, 0.087772, 0.0181834, 0.995142, 0.690961, -0.719983, -0.0478278, -0.202103, -1.40711, -0.799912)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0638043, -0.072865, 0.340442)
-body_offset = Transform3D(0.919196, 0.0403689, -0.389588, -0.371756, 0.402383, -0.835533, 0.12326, 0.913545, 0.385288, 0.076925, 0.33749, -0.0724674)
-
-[node name="Physical Bone footR" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="12"]
-transform = Transform3D(0.728846, 0.415367, 0.537824, 0.579993, -0.792914, -0.169425, 0.358142, 0.436039, -0.821677, -0.231224, -1.78384, -0.688651)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0938917, -0.194333, 0.387338)
-body_offset = Transform3D(0.680463, 0.716694, -0.126672, -0.664163, 0.537747, -0.513981, -0.302873, 0.434225, 0.844327, 0.252232, 0.241227, -0.271093)
-
-[node name="LeftHookAttachment" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="13"]
-transform = Transform3D(-0.874777, -0.464005, -0.139513, -0.481166, 0.865766, 0.137575, 0.0569503, 0.187477, -0.980616, 0.0238934, 0.640489, 0.351451)
-
-[node name="RightHookAttachment" parent="NPC_Meat_Female/Meat_Female/Skeleton3D" index="14"]
-transform = Transform3D(-0.591048, 0.683172, -0.42888, 0.103277, 0.591405, 0.799733, 0.799997, 0.428387, -0.420105, -0.483671, 0.357441, 0.0160945)
+[node name="Physical Bone footR" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="18"]
+transform = Transform3D(0.723663, 0.412102, 0.535222, 0.179038, -0.866241, 0.435529, 0.653692, -0.217874, -0.711274, -0.230802, -1.87452, -0.780946)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00545437, 0.00969669, 0.109664)
+body_offset = Transform3D(0.99149, 0.00172824, 0.00131086, 0.000966758, 0.00116985, -0.990987, -0.00102134, 0.983701, -0.000592321, 0.00524744, 0.10867, -0.00947925)
 
 [node name="CharacterAnimationTree" parent="." index="3"]
 parameters/Movement/playback = SubResource("AnimationNodeStateMachinePlayback_o365e")
@@ -122,4 +54,4 @@ parameters/Movement/playback = SubResource("AnimationNodeStateMachinePlayback_o3
 "parameters/TimeScale 5/scale" = 1.0
 "parameters/TimeScale 6/scale" = 1.0
 
-[editable path="NPC_Meat_Female"]
+[editable path="NPC_Meat_Female2"]

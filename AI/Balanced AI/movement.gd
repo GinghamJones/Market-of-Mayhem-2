@@ -3,13 +3,18 @@ extends Node
 ## Need to add backup after punching
 
 @onready var strafe_dir_timer : Timer = $StrafeDirTimer
+@onready var back_up_timer : Timer = $BackUpTimer
+@onready var decision_timer : Timer = $DecisionTimer
+@onready var avoid_timer : Timer = $AvoidTimer
+@onready var master = get_parent()
+
+var move_forward : bool = true
 
 var strafe_dir : int = 0   # 0 = right, 1 = left
 var distance_to_target : float = 0.0
 
 
 func run(controller : AIController):
-
 	var detection_area : Area3D = controller.detection_area
 	var current_target : Character = controller.target
 	var flee_target : Character = controller.flee_target
@@ -18,12 +23,27 @@ func run(controller : AIController):
 	if controller.get_is_dodging():
 		return
 	
+	if master.too_many_dudes and avoid_timer.is_stopped():
+		avoid_timer.start()
+		master.too_many_dudes = false
+	
+	if not avoid_timer.is_stopped():
+		controller.back_up()
+	
+	
 	if controller.is_dodge_available():
 		check = detection_area.is_projectile_comin_for_me()
 		if check:
 			controller.dodge(choose_dodge_direction())
 			return
-
+	
+	if master.just_punched == true:
+		master.just_punched = false
+		back_up_timer.start()
+	
+	if back_up_timer.time_left > 0:
+		controller.back_up()
+		return
 
 	############################################################################
 	########################### Wander Mode ####################################
@@ -58,21 +78,26 @@ func run(controller : AIController):
 	
 	distance_to_target = get_distance_to_target(actor_pos, target_pos)
 	
-	check = should_move_to_enemy()
-	if check:
-		controller.move_to_target()
-#		print("moving to target")
-		return 
-	else:
-		if strafe_dir_timer.is_stopped():
-			strafe_dir = get_strafe_dir()
-			strafe_dir_timer.start()
-#		print("strafing target")
-		if strafe_dir == 0:
-			controller.strafe_right()
+	if decision_timer.is_stopped():
+		move_forward = !move_forward
+		if move_forward:
+			decision_timer.wait_time = randf_range(0.1, 0.6)
 		else:
-			controller.strafe_left()
-		return 
+			decision_timer.wait_time = randf_range(0.05, 0.2)
+		decision_timer.start()
+#	check = should_move_to_enemy()
+	if move_forward:
+		controller.move_to_target()
+	else:
+		handle_strafe(controller)
+		
+#	if check:
+#		controller.move_to_target()
+##		print("moving to target")
+#		return 
+#	else:
+#		handle_strafe(controller)
+#		return 
 
 	
 	############################################################################
@@ -90,10 +115,22 @@ func should_move_to_enemy() -> bool:
 	else:
 		return false
 
+func handle_strafe(controller : AIController) -> void:
+	if strafe_dir_timer.is_stopped():
+		strafe_dir = get_strafe_dir()
+		strafe_dir_timer.start()
+#		print("strafing target")
+	if strafe_dir == 0:
+		controller.strafe_right()
+	else:
+		controller.strafe_left()
+
+
 func get_strafe_dir() -> int:
 	var rand_int : int = randi() % 2
 	return rand_int
-	
+
+
 func choose_dodge_direction() -> Vector3:
 	var rand_int : int = randi() % 2
 	if rand_int == 0:

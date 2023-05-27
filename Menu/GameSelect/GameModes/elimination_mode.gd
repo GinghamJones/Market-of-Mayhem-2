@@ -4,6 +4,19 @@ var teams_in_play : Dictionary = {}
 @export var max_lives : int
 
 
+func _ready() -> void:
+	super()
+	await get_tree().process_frame
+	spawn_players()
+	await get_tree().process_frame
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.i_died.connect(Callable(self, "character_died"))
+			dude.im_done_fer.connect(Callable(self, "character_done_fer"))
+	$GUI.populate_scoreboard(current_characters)
+	start_round()
+
+
 func start_round() -> void:
 	reset_teams_in_play()
 	reset_characters()
@@ -31,8 +44,15 @@ func end_round() -> void:
 		start_round()
 
 
+func character_done_fer(team : String) -> void:
+	teams_in_play[team] -= 1
+	if teams_in_play[team] <= 0:
+		teams_in_play.erase(team)
+		check_teams_in_play()
+
+
 func character_died(deceased : Character) -> void:
-	deceased.lives_left -= 1
+	deceased.set_lives_left(deceased.lives_left - 1)
 	if deceased.lives_left == 0:
 		deceased.should_respawn = false
 		var team : String = deceased.get_team()
@@ -76,7 +96,7 @@ func reset_characters() -> void:
 	for key in current_characters.keys():
 		for dude in current_characters[key]:
 			dude.should_respawn = true
-			dude.lives_left = max_lives
+			dude.set_lives_left(3)
 			dude.respawn()
 
 
@@ -93,10 +113,6 @@ func spawn_players():
 		for i in chars_to_spawn:
 			add_character(t, false)
 	
-	for key in current_characters.keys():
-		for dude in current_characters[key]:
-			dude.i_died.connect(Callable(self, "character_died"))
-	
 	pause_characters()
 #	reset_characters()
 
@@ -109,5 +125,5 @@ func reset_teams_in_play() -> void:
 		"Freight" : 3,
 		"Cashier" : 3,
 		"Produce" : 3,
-		"Baker" : 3
+		"Bakery" : 3
 	}

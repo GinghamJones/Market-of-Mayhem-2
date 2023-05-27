@@ -1,3 +1,4 @@
+@icon("res://Characters/Bakery/BakerIcon.png")
 class_name Baker
 extends Character
 
@@ -11,6 +12,8 @@ func _handle_firing():
 		projectile_timer.start()
 		frosting_gun.fire()
 		character_stats.current_ammo -= 1
+		if player_controlled:
+			controller.update_hud(get_ammo())
 
 
 func slather_em(target):
