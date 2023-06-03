@@ -22,7 +22,7 @@ func _process(_delta):
 		if raycast.is_colliding():
 			cast_point = to_local(raycast.get_collision_point())
 			particles.emitting = true
-			print(-cast_point.z)
+#			print(-cast_point.z)
 			
 			mesh_l.mesh.height = -(cast_point.z)
 			mesh_r.mesh.height = -(cast_point.z)

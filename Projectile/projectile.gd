@@ -33,6 +33,7 @@ func _on_body_entered(body):
 	elif body == who_fired_me:
 		pass
 	elif body.has_method("take_projectile_damage") and is_active:
+		$ImpactSound.play()
 		body.take_projectile_damage(damage, status_effect, who_fired_me)
 		is_active = false
 #		queue_free()

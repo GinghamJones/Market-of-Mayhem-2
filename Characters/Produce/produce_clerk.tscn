@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bn6sd3oo5jas0" path="res://Projectile/Banana/banana.tscn" id="4_uhrw3"]
 
 [sub_resource type="Resource" id="Resource_uffss"]
+resource_local_to_scene = true
 script = ExtResource("3_mnuln")
 Team = "Produce"
 max_health = 100
@@ -13,8 +14,8 @@ single_fire = true
 base_damage = 10
 special_damage = 0
 projectile_damage = 15
-projectile_speed = 60.0
-max_ammo = 103
+projectile_speed = 50.0
+max_ammo = 10
 move_speed = 6.5
 acceleration = 0.05
 gravity = 30.0
@@ -29,14 +30,29 @@ character_stats = SubResource("Resource_uffss")
 projectile = ExtResource("4_uhrw3")
 
 [node name="Physical Bone Hips" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="1"]
-transform = Transform3D(0.682858, -0.707372, 0.182359, -5.76666e-06, -0.24963, -0.968307, 0.730475, 0.661258, -0.170473, -0.0224884, -0.272366, -0.625078)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027177, -0.00202249, 0.12568)
-body_offset = Transform3D(0.999945, -9.86457e-06, 6.10948e-07, -3.66569e-06, 4.18723e-06, -0.999967, 9.0003e-06, 0.999976, 1.3411e-07, 0.00271745, 0.125676, 0.00202245)
+transform = Transform3D(0.682854, -0.707372, 0.182358, -0.000433092, -0.249629, -0.968307, 0.730474, 0.661258, -0.170473, -0.0224884, -0.211402, -0.518022)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00271778, -0.00202219, 0.125681)
+body_offset = Transform3D(0.999941, -9.71556e-06, 6.10948e-07, -0.000417136, 4.26173e-06, -0.999967, 0.000117779, 0.999976, 1.19209e-07, 0.00271752, 0.125676, 0.00202245)
 
 [node name="Physical Bone spine002" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="3"]
-transform = Transform3D(0.951802, -0.287927, -0.00909441, -0.00313744, 0.0211484, -0.988556, 0.288245, 0.946426, 0.0192306, -0.0523352, 0.20734, -0.578371)
-joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000929503, -0.0020506, 0.13546)
-body_offset = Transform3D(0.994495, -0.00154468, 8.19284e-06, 1.97999e-05, 5.81201e-05, -0.988785, 0.000224888, 0.989479, -3.03891e-05, 0.000920109, 0.133941, 0.00203335)
+transform = Transform3D(0.951793, -0.287955, -0.00909548, 0.0158776, 0.0835095, -0.985136, 0.287852, 0.942963, 0.0843741, -0.0523358, 0.26941, -0.494954)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000929584, -0.00205089, 0.135459)
+body_offset = Transform3D(0.994495, -0.00154501, 8.19564e-06, 1.97925e-05, 5.80251e-05, -0.988785, 0.000225037, 0.989479, -3.03835e-05, 0.000920188, 0.13394, 0.00203364)
+
+[node name="Physical Bone shoulderR" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="10"]
+transform = Transform3D(-0.0364812, 0.476134, 0.856941, -0.987094, -0.0892153, 0.0078307, 0.0824467, -0.857055, 0.474825, -0.260743, 0.645467, -0.492522)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00938594, 0.00101494, 0.16831)
+body_offset = Transform3D(-0.0457893, 0.947865, 0.261171, -5.45755e-05, 0.262361, -0.944198, -0.990145, -0.0438815, -0.0121833, -0.0453494, 0.158651, -0.00719833)
+
+[node name="Physical Bone forearmR" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="12"]
+transform = Transform3D(-0.647844, -0.752971, 0.0176924, -0.741165, 0.632365, -0.194191, 0.135169, -0.139901, -0.974499, -0.498592, 0.257139, -0.343372)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00484534, 0.00547793, 0.247209)
+body_offset = Transform3D(0.993628, -0.000563661, 3.7387e-05, -0.000710323, -9.66936e-05, -0.993817, 0.000775333, 0.993188, 0.00011684, 0.00480831, 0.245677, -0.00546575)
+
+[node name="Physical Bone shinL" parent="NPC_Meat_Female2/Meat_Female/Skeleton3D" index="14"]
+transform = Transform3D(0.67497, 0.699391, -0.149572, 0.132839, 0.0801909, 0.968219, 0.716528, -0.670699, -0.0394404, 0.0890357, -1.32628, 0.0842706)
+joint_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00105062, 0.00172522, 0.359398)
+body_offset = Transform3D(0.993297, 0.00391701, -0.000663819, -6.23893e-05, 0.00125066, -0.980496, -0.00179493, 0.972315, 0.000736171, -0.000811756, 0.352386, -0.00194015)
 
 [node name="CharacterAnimationTree" parent="." index="3"]
 parameters/Movement/playback = SubResource("AnimationNodeStateMachinePlayback_2wcgi")

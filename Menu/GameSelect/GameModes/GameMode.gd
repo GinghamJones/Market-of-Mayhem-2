@@ -35,7 +35,7 @@ signal fuck_the_settings
 
 func _ready():
 	countdown_text.hide()
-#	spawn_world()
+#	world.play_song()
 
 
 func _input(event):
@@ -61,11 +61,6 @@ func _process(_delta):
 	if not intermission_timer.is_stopped():
 		var time_left : float = intermission_timer.time_left
 		intermission_text.text = "%2.2f" % time_left
-
-
-#func spawn_world():
-#	current_world = world.instantiate()
-#	add_child(current_world)
 
 
 func add_character(character_type : String, player_controlled : bool, character_name : String = NameGenerator.get_new_name()) -> void:

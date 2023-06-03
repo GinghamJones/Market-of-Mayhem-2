@@ -1,15 +1,16 @@
 extends AIModule
 
 @onready var wait_timer : Timer = $TargetWaitTimer
+@onready var think_timer : Timer = $RandomThinkTimer
 
-func run(controller : AIController):
+func run(controller : ManagerController):
 	# Give players some time to recover by wandering
 	if wait_timer.time_left > 0:
 		wander(controller)
 		return
 		
 	
-	var detection_area : Area3D = controller.detection_area
+	var detection_area : Area3D = controller.detection_field
 	var check : bool = false
 	var my_speed : float = controller.get_actor_speed()
 	var current_target : Character = controller.target
@@ -17,28 +18,32 @@ func run(controller : AIController):
 	# If we have a target:
 	if current_target:
 		if current_target.is_dead:
-			controller.set_target(null)
+			controller.target = null
 			return
 		if controller.is_target_in_grab_distance():
-			controller.grab_target()
-			wait_timer.start()
-			controller.set_target(null)
+			if think_timer.is_stopped():
+				var rand_float : float = randf_range(0.1, 0.5)
+				think_timer.wait_time = rand_float
+				think_timer.start()
+				controller.current_timer = think_timer
+#			controller.target = null
 			return
 	
-	# If we don't have a target: NEED TO ADD FLEE METHOD
+	# If we don't have a target: NEED TO ADD CHARACTER FLEEING METHOD
 	else:
-		check = detection_area.is_anyone_in_sight()
+		var num_sighted : int = detection_area.get_dudes_in_sight()
 		# Wander if noone in sight
-		if not check:
+		if num_sighted == 0:
 			wander(controller)
 			return
 		else:
-			controller.set_target(detection_area.get_closest_opponent())
+			controller.target = (detection_area.get_closest_opponent())
 	
 	# Default action
 	controller.move_to_target()
 
-func wander(controller : AIController):
+
+func wander(controller : ManagerController):
 	var nav_agent : NavigationAgent3D = controller.nav_agent
 	if nav_agent.is_navigation_finished():
 		while(true):
@@ -59,3 +64,7 @@ func check_speed_difference(my_speed : float, targetter_speed : float) -> bool:
 		return false
 	
 	return true
+
+
+func activate_attack() -> void:
+	get_parent().grab_target()

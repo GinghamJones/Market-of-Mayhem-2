@@ -18,6 +18,8 @@ wait_time = 6.997
 one_shot = true
 autostart = true
 
+[node name="ImpactSound" type="AudioStreamPlayer3D" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="sleeping_state_changed" from="." to="." method="_on_sleeping_state_changed"]
 [connection signal="timeout" from="LifespanTimer" to="." method="_on_lifespan_timer_timeout"]

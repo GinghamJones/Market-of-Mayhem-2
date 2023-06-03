@@ -8,3 +8,8 @@ script = ExtResource("1_cpcqk")
 [node name="TargetWaitTimer" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true
+
+[node name="RandomThinkTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="RandomThinkTimer" to="." method="activate_attack"]

@@ -3,9 +3,10 @@ extends CharacterBody3D
 
 
 @onready var manager_anims : AnimationPlayer = $NPC_Manager/AnimationPlayer
+@onready var death_timer : Timer = $DeathTimer
 #@onready var ai_tree = preload("res://NPC/Manager/manager_ai_tree.tscn")
 
-var controller : AIController = null
+var controller : ManagerController = null
 @export var character_stats : CharacterData
 
 var spawn_point : Vector3 = Vector3.ZERO
@@ -13,7 +14,7 @@ var spawn_point : Vector3 = Vector3.ZERO
 var player_in_hand : bool = false
 #var should_respawn : bool = false
 #var target : Character = null
-#var is_dead : bool = false
+var is_dead : bool = false
 var is_paused : bool = false
 
 
@@ -24,7 +25,7 @@ var is_paused : bool = false
 
 
 func _physics_process(delta: float) -> void:
-	if is_paused:
+	if is_paused or not controller or player_in_hand or is_dead or is_paused:
 		return
 	
 	controller.run(delta)
@@ -34,8 +35,6 @@ func _physics_process(delta: float) -> void:
 
 
 func move_my_ass(delta : float, new_direction : Vector3):
-	if not controller:
-		return
 	if not player_in_hand:
 		velocity = lerp(velocity, new_direction * character_stats.move_speed, character_stats.acceleration)
 		
@@ -51,7 +50,7 @@ func move_my_ass(delta : float, new_direction : Vector3):
 func fuck_em_up(target : Character):
 	player_in_hand = true
 	target.is_paused = true
-	manager_anims.play("Npc_Manager_Ruiner")
+	manager_anims.play("Character_Attack")
 	manager_anims.speed_scale = 0.75
 	await manager_anims.animation_finished
 	player_in_hand = false
@@ -73,7 +72,7 @@ func take_damage(damage : int, _direction : Vector3, who_dunnit : Character):
 
 func handle_movement_anims(delta : float):
 	if velocity.length() > 2.0:
-		manager_anims.play("Npc_MAnager_Walk")
+		manager_anims.play("Character_Walk")
 		manager_anims.speed_scale = velocity.length() * delta + 2.0
 	else:
 		manager_anims.play("Character_Idle")
@@ -90,7 +89,8 @@ func die():
 	controller.queue_free()
 #	if should_respawn:
 #		$Timers/RespawnTimer.start()
-#	is_dead = true
+	is_dead = true
+	death_timer.start()
 
 
 func set_y_rotation(new_rotation : float):
@@ -105,6 +105,7 @@ func get_health() -> int:
 func get_team() -> String:
 	return character_stats.Team
 
+
 func initiate():
 	for node in get_children():
 		if node.is_in_group("Controller"):
@@ -116,3 +117,7 @@ func initiate():
 			
 	character_stats.current_health = character_stats.max_health
 	global_position = spawn_point
+
+
+func _on_death_timer_timeout() -> void:
+	queue_free()

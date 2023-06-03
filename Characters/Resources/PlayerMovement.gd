@@ -13,10 +13,11 @@ const MAX_ZOOM: float = 5
 const MIN_ZOOM : float = -1
 var dodge_direction : Vector3 = Vector3.ZERO : get = get_dodge_direction
 
+var controller_positioner : Node3D = null
 var actor : Character = null
 var target : Character = null
 # Maybe I could figure out how to detect if player is fleeing??
-var fleeing : bool = false
+var is_fleeing : bool = false
 
 signal y_rotation_computed
 signal direction_computed
@@ -25,7 +26,7 @@ signal request_action
 
 func initiate(new_actor : Character):
 	actor = new_actor
-	
+	controller_positioner = actor.get_node("ControllerPositioner")
 	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
 	direction_computed.connect(Callable(actor, "move_my_ass"))
 	request_action.connect(Callable(actor, "request_action"))
@@ -78,24 +79,32 @@ func _unhandled_input(event):
 		actor.die()
 	
 	if event.is_action_pressed("DebugCamera"):
-		if $SpringArm3D/Camera3D.current:
+		if $CameraSpringArm/Camera3D.current:
 			get_tree().get_first_node_in_group("DebugCam").current = true
-			$SpringArm3D/Camera3D.current = false
+			$CameraSpringArm/Camera3D.current = false
 		else:
 			get_tree().get_first_node_in_group("DebugCam").current = false
-			$SpringArm3D/Camera3D.current = true
+			$CameraSpringArm/Camera3D.current = true
+	
+	if event.is_action_pressed("AICam"):
+		if $CameraSpringArm/Camera3D.current:
+			$CameraSpringArm/Camera3D.current = false
+			get_tree().get_first_node_in_group("AICam").current = true
+		else:
+			get_tree().get_first_node_in_group("AICam").current = false
+			$CameraSpringArm/Camera3D.current = true
 
 
 func _process(delta: float) -> void:
 	if actor:
 		#Rotate camera
-		$SpringArm3D.rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
-		$SpringArm3D.rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
+		rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
+		rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
 		emit_signal("y_rotation_computed", get_y_rotation())
 		
 		mouse_delta = Vector2()
 		
-		
+		global_position = controller_positioner.global_position
 	else:
 		pass
 
@@ -113,7 +122,7 @@ func run(delta : float):
 
 
 func is_projectile_available() -> bool:
-	if actor.get_ammo() <= 0:
+	if actor.get_ammo() <= 0 and not actor.projectile_timer.is_stopped():
 		return false
 	
 	return true
@@ -155,14 +164,14 @@ func update_hud(ammo : int = -1, health : int = -1, lives_left : int = -1):
 
 
 func get_y_rotation() -> float:
-	return $SpringArm3D.rotation.y
+	return rotation.y
 
 
 func set_target(new_target : Character):
 	target = new_target
 
 func get_fleeing() -> bool:
-	return fleeing
+	return is_fleeing
 
 
 func get_dodge_direction() -> Vector3:

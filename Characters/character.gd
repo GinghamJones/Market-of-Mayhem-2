@@ -24,12 +24,13 @@ extends CharacterBody3D
 @onready var dodge_cooldown : Timer = $Timers/DodgeCooldown
 @onready var invincibility_timer : Timer = $Timers/InvincibilityTimer
 @onready var punch_timer : Timer = $Timers/PunchTimer
+@onready var heal_delay_timer: Timer = $Timers/HealDelayTimer
+@onready var respawn_timer: Timer = $Timers/RespawnTimer
 
 @onready var punch_sound : AudioStreamPlayer3D = $Sounds/PunchSound
-@onready var l_punch_particle : RayCast3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook/ParticleSpawner
-@onready var r_punch_particle : RayCast3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook/ParticleSpawner2
+@onready var punch_particle : PackedScene = preload("res://Characters/Assets/punch_particle.tscn")
 
-var is_paused : bool = false : set = set_is_paused
+var is_paused : bool = false
 var is_dodging : bool = false
 var is_moving : bool = false : set = set_is_moving
 var is_firing : bool = false : set = set_is_firing
@@ -42,6 +43,7 @@ var is_smacked : bool = false
 var should_respawn : bool = true
 var is_slowed : bool = false
 var just_punched : bool = false
+var is_healing : bool = false
 
 var jump_force : float = 30
 var move_direction : Vector3 = Vector3.ZERO
@@ -69,18 +71,25 @@ signal im_done_fer
 
 
 func _ready() -> void:
+#	set_running(false)
+	is_paused = true
 	randomize()
 #	character_stats.current_ammo = character_stats.max_ammo
 
 
 func _physics_process(delta: float) -> void:
-	if is_paused or not controller:
+	if is_paused:
 		return
-	
-	controller.run(delta)
-		
 	if is_firing:
 		_handle_firing()
+	
+	controller.run(delta)
+	
+	if is_healing:
+		if heal_delay_timer.is_stopped():
+			heal_delay_timer.start()
+		
+	
 
 
 ########################## Movement functions ###########################################
@@ -92,7 +101,6 @@ func move_my_ass(delta : float, direction : Vector3):
 		hit_direction = Vector3.ZERO
 		im_walloped = false
 	else:
-		
 		velocity = lerp(velocity, direction * get_speed(), get_acceleration())
 		
 		if not player_controlled:
@@ -132,7 +140,7 @@ func handle_movement_anims(delta : float):
 ############################## Action functions #############################################
 
 func request_action(action : String):
-	if current_action == "dead":
+	if current_action == "dead" or is_paused:
 		return
 	
 	if action == "StopFire":
@@ -192,8 +200,8 @@ func attack(which_punch : int):
 
 func handle_just_punched() -> void:
 	just_punched = true
-	var new_timer : SceneTreeTimer = get_tree().create_timer(0.7)
-	await new_timer.timeout
+#	var new_timer : SceneTreeTimer = get_tree().create_timer(0.5)
+	await get_tree().create_timer(0.5).timeout
 	punch_timer.start()
 	just_punched = false
 
@@ -215,11 +223,13 @@ func _handle_firing():
 				
 			if character_stats.single_fire:
 				is_firing = false
+			
+			character_stats.current_ammo -= 1
+			if player_controlled:
+				controller.update_hud(get_ammo())
+			
 		else:
 			pass
-
-
-
 
 
 func use_super_move():
@@ -280,12 +290,17 @@ func end_slow_effect():
 	character_stats.move_speed += 2
 
 
+func heal() -> void:
+	if character_stats.current_health < character_stats.max_health:
+		character_stats.current_health += 5
+		update_health()
+
 func die():
 #	emit_signal("i_died", self)
 	current_action = "dead"
 	lives_left -= 1
-	set_physics_process(false)
-	set_process(false)
+#	set_running(false)
+	is_paused = true
 	
 	if controller is AIController:
 		controller.die()
@@ -301,7 +316,7 @@ func die():
 	skeleton.animate_physical_bones = false
 	
 	if should_respawn:
-		$Timers/RespawnTimer.start()
+		respawn_timer.start()
 	is_dead = true
 
 
@@ -326,13 +341,13 @@ func set_is_firing(value):
 	is_firing = value
 	
 
-func set_is_paused(value):
-	is_paused = value
-	if value == true:
-		set_is_moving(false)
-		is_invincible = true
-	else:
-		is_invincible = false
+#func set_is_paused(value):
+#	is_paused = value
+#	if value == true:
+#		set_is_moving(false)
+#		is_invincible = true
+#	else:
+#		is_invincible = false
 	
 	
 func set_lives_left(amount) -> void:
@@ -369,12 +384,19 @@ func _on_left_hook_body_entered(body):
 		return
 	elif body.is_in_group("Level"):
 		punch_sound.play()
-		l_punch_particle.spawn_particle()
+		var p = punch_particle.instantiate()
+		add_child(p)
+		p.set("transform/top_level", true)
+		p.global_position = left_hook.global_position
+		
 	elif body is Character and not hit_detected:
 #	if body.has_method("take_damage") and not hit_detected:
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
 		punch_sound.play()
-		l_punch_particle.spawn_particle()
+		var p : GPUParticles3D = punch_particle.instantiate()
+		p.set("transform/top_level", true)
+		add_child(p)
+		p.global_position = left_hook.global_position
 #		$Human_Template_Male/metarig/Skeleton3D/LeftHookBone/ParticleSpawner2.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
@@ -385,11 +407,17 @@ func _on_right_hook_body_entered(body):
 		return
 	elif body.is_in_group("Level"):
 		punch_sound.play()
-		r_punch_particle.spawn_particle()
+		var p = punch_particle.instantiate()
+		p.set("transform/top_level", true)
+		p.global_position = right_hook.global_position
+		add_child(p)
 	elif body is Character:
 #	if body.has_method("take_damage") and not hit_detected:
 		punch_sound.play()
-		r_punch_particle.spawn_particle()
+		var p = punch_particle.instantiate()
+		add_child(p)
+		p.set("transform/top_level", true)
+		p.global_position = right_hook.global_position
 		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
 #		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
@@ -414,9 +442,6 @@ func spawn_projectile():
 	p.global_transform = projectile_placement.global_transform
 	p.initiate(character_stats.projectile_damage, self)
 	p.fire(determine_projectile_speed())
-	character_stats.current_ammo -= 1
-	if player_controlled:
-		controller.update_hud(get_ammo())
 
 
 func determine_projectile_speed() -> float:
@@ -425,7 +450,7 @@ func determine_projectile_speed() -> float:
 	const BACKWARD_SPEED = 0.6
 	
 	# Increase speed if moving forward, decrease if backward
-	var projectile_speed_modifier : float = 1
+#	var projectile_speed_modifier : float = 1
 	if move_direction.z > 0:
 		projectile_speed *= BACKWARD_SPEED
 	elif move_direction.z < 0:
@@ -440,7 +465,7 @@ func initiate():
 	for node in get_children():
 		if node.is_in_group("Controller"):
 			controller = node
-			$ControllerPositioner.remote_path = node.get_path()
+#			$ControllerPositioner.remote_path = node.get_path()
 			break
 	
 	controller.initiate(self)
@@ -449,6 +474,7 @@ func initiate():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 	anims.active = true
+#	skeleton.animate_physical_bones = true
 	right_hook.monitoring = false
 	left_hook.monitoring = false
 	
@@ -456,6 +482,7 @@ func initiate():
 	character_stats.current_ammo = character_stats.max_ammo
 	global_position = spawn_point
 	
+#	set_running(true)
 	update_health()
 
 
@@ -473,8 +500,8 @@ func respawn():
 	await tween.finished
 	invincibility_timer.start()
 
-	set_physics_process(true)
-	set_process(true)
+#	set_running(true)
+	is_paused = false
 	$CollisionShape3D.call_deferred("set_disabled", false)
 	call_deferred("set_collision_layer_value", 2, true)
 	call_deferred("set_collision_mask_value", 2, true)
@@ -495,9 +522,23 @@ func respawn():
 		controller.reset_ai()
 	else:
 		controller.update_hud(get_ammo(), get_health(), lives_left)
-		
+	
+	
 	respawn_complete.emit()
 #	update_health()
+
+func set_running(value : bool) -> void:
+	set_process(value)
+	set_physics_process(value)
+	is_paused = !value
+	set_is_moving(value)
+	if controller:
+		controller.set_process(value)
+		controller.set_physics_process(value)
+	if value:
+		is_invincible = false
+	else:
+		is_invincible = true
 
 
 func _on_invincibility_timer_timeout():
@@ -505,4 +546,6 @@ func _on_invincibility_timer_timeout():
 
 
 func _on_punch_timer_timeout() -> void:
+	left_hook.monitoring = false
+	right_hook.monitoring = false
 	current_action = ""

@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cc653p6ws20k1"]
+[gd_scene load_steps=6 format=3 uid="uid://cc653p6ws20k1"]
 
 [ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_l7yjw"]
 [ext_resource type="PackedScene" uid="uid://degfbyxwsm2vc" path="res://Projectile/Knife/KNIFE.glb" id="2_nqhok"]
+[ext_resource type="AudioStream" uid="uid://u11rx6pdpynx" path="res://kenney impact sounds/impact_plate_heavy_003.ogg" id="3_l3v15"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_dvse7"]
 bounce = 0.07
@@ -20,5 +21,8 @@ shape = SubResource("BoxShape3D_qfg2y")
 
 [node name="KNIFE" parent="." index="3" instance=ExtResource("2_nqhok")]
 transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
+
+[node name="ImpactSound" parent="." index="4"]
+stream = ExtResource("3_l3v15")
 
 [editable path="KNIFE"]

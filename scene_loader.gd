@@ -56,6 +56,7 @@ func load_game_mode(game_mode : String, player_type : String, player_name : Stri
 	gm.connect("fuck_the_settings", Callable(self, "hide_settings"))
 	gm.player_character_type = player_type
 	gm.player_name = player_name
+	gm.world = world
 	
 	add_child(gm)
 	world.reparent(gm)
@@ -77,6 +78,7 @@ func hide_settings():
 
 func destroy_cur_scene():
 	if current_scene:
+		world.stop_song()
 		world.reparent(self)
 		current_scene.queue_free()
 		current_scene = null

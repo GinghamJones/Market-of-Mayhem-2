@@ -6,8 +6,8 @@ extends Character
 
 
 func _handle_firing():
-	if is_paused:
-		return
+#	if is_paused:
+#		return
 	if projectile_timer.is_stopped():
 		projectile_timer.start()
 		frosting_gun.fire()

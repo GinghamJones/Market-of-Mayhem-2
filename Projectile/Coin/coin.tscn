@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://chra6tqgxkrgm"]
+[gd_scene load_steps=8 format=3 uid="uid://chra6tqgxkrgm"]
 
 [ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_f0qr2"]
 [ext_resource type="Script" path="res://Projectile/Coin/coin.gd" id="2_qou0p"]
+[ext_resource type="AudioStream" uid="uid://igcyy04qkaap" path="res://kenney impact sounds/impact_metal_medium_002.ogg" id="3_4gcqu"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0rv0u"]
 friction = 0.67
@@ -31,3 +32,7 @@ shape = SubResource("CylinderShape3D_8ohge")
 
 [node name="MeshInstance3D" parent="." index="1"]
 mesh = SubResource("CylinderMesh_a33ul")
+
+[node name="ImpactSound" parent="." index="3"]
+stream = ExtResource("3_4gcqu")
+volume_db = -13.333

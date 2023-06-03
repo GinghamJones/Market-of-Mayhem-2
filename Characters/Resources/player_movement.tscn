@@ -1,7 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://c3qwsbgpvcqv"]
+[gd_scene load_steps=10 format=3 uid="uid://c3qwsbgpvcqv"]
 
 [ext_resource type="Script" path="res://Characters/Resources/PlayerMovement.gd" id="1_wydpy"]
 [ext_resource type="Script" path="res://Characters/Resources/HUD.gd" id="2_ty4rr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jkriw"]
+custom_solver_bias = 0.75
+size = Vector3(0.2, 0.2, 0.05)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xug86"]
 bg_color = Color(0.0156863, 0.470588, 0, 1)
@@ -25,18 +29,19 @@ top_level = true
 script = ExtResource("1_wydpy")
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.771608, -0.837237)
 target_position = Vector3(0, 0, -5)
 collision_mask = 2
 
-[node name="SpringArm3D" type="SpringArm3D" parent="."]
+[node name="CameraSpringArm" type="SpringArm3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.910875, 2.105, 0)
+shape = SubResource("BoxShape3D_jkriw")
 spring_length = 2.7
-margin = 0.2
+margin = 0.5
 
-[node name="Camera3D" type="Camera3D" parent="SpringArm3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.74504)
+[node name="Camera3D" type="Camera3D" parent="CameraSpringArm"]
 current = true
+near = 0.6
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3

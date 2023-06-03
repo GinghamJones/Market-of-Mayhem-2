@@ -6,6 +6,7 @@ extends RigidBody3D
 func _on_body_entered(body):
 	if body is Character:
 		timer.start()
+		$SlipSound.play()
 	if body is StaticBody3D:
 		axis_lock_linear_x = false
 		axis_lock_linear_z = false

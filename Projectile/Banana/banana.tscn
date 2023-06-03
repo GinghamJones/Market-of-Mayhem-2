@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bn6sd3oo5jas0"]
+[gd_scene load_steps=7 format=3 uid="uid://bn6sd3oo5jas0"]
 
 [ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_43paw"]
 [ext_resource type="Script" path="res://Projectile/Banana/banana.gd" id="2_t3675"]
+[ext_resource type="AudioStream" uid="uid://blnqv3oiwaid8" path="res://kenney impact sounds/impact_plate_light_001.ogg" id="3_qcj56"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oevhg"]
 radius = 0.0719583
@@ -25,3 +26,6 @@ shape = SubResource("CapsuleShape3D_oevhg")
 
 [node name="MeshInstance3D" parent="." index="1"]
 mesh = SubResource("CapsuleMesh_ir88d")
+
+[node name="ImpactSound" parent="." index="3"]
+stream = ExtResource("3_qcj56")

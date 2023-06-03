@@ -22,8 +22,8 @@ func _process(delta):
 		round_time_left.text = time_convert(int(round_timer.time_left)) 
 
 
-func start_round(): 
-	reset_characters()
+func start_round():
+#	reset_characters()
 	pause_characters()
 #	get_tree().paused = true
 	current_round += 1
@@ -35,7 +35,6 @@ func start_round():
 	countdown_text.hide()
 	
 	unpause_characters()
-#	get_tree().paused = false
 	round_timer.start()
 	round_time_left.show()
 
@@ -53,6 +52,7 @@ func end_round():
 		
 		intermission_text.hide()
 		scoreboard.hide()
+		reset_characters()
 		start_round()
 	
 	else:
@@ -89,6 +89,8 @@ func spawn_players():
 func kill_em_all() -> void:
 	for key in current_characters.keys():
 		for dude in current_characters[key]:
+			if not dude.respawn_timer.is_stopped():
+				dude.respawn_timer.stop()
 			dude.should_respawn = false
 			dude.die()
 
@@ -108,19 +110,22 @@ func reset_characters() -> void:
 			dude.set_lives_left(1000)
 			if dude.player_controlled == false:
 				dude.controller.reset_ai()
-#			dude.is_paused = true
+#			dude.set_running(false)
+			dude.is_paused = true
 			dude.should_respawn = true
 
 
 func pause_characters() -> void:
 	for key in current_characters.keys():
 		for dude in current_characters[key]:
+#			dude.set_running(false)
 			dude.is_paused = true
 
 
 func unpause_characters() -> void:
 	for key in current_characters.keys():
 		for dude in current_characters[key]:
+#			dude.set_running(true)
 			dude.is_paused = false
 #			if dude.player_controlled == false:
 #				dude.controller.reset_ai()

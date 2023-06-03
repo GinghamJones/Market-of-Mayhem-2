@@ -31,3 +31,18 @@ one_shot = true
 
 [node name="Attack" type="Node" parent="."]
 script = ExtResource("5_je1g7")
+
+[node name="PunchThinkTimer" type="Timer" parent="Attack"]
+wait_time = 0.5
+one_shot = true
+
+[node name="FireThinkTimer" type="Timer" parent="Attack"]
+wait_time = 0.5
+one_shot = true
+
+[node name="JustPunchedTimer" type="Timer" parent="Attack"]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="Attack/PunchThinkTimer" to="Attack" method="punch"]
+[connection signal="timeout" from="Attack/FireThinkTimer" to="Attack" method="fire"]

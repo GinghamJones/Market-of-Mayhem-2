@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bdn3ex4fq0djq"
+path="res://.godot/imported/Samplin 13(4).mp3-70a11fe0aae8529e3fc28bd3b8d90e42.mp3str"
+
+[deps]
+
+source_file="res://World/Songs/Samplin 13(4).mp3"
+dest_files=["res://.godot/imported/Samplin 13(4).mp3-70a11fe0aae8529e3fc28bd3b8d90e42.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -151,8 +151,8 @@ func _on_button_pressed() -> void:
 
 
 func _on_character_spawned() -> void:
-	print("spawned")
 	for key in current_characters.keys():
 		for character in current_characters[key]:
 			character.character_stats.current_ammo = 1000
+			character.is_paused = false
 			
