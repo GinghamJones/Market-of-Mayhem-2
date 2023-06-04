@@ -19,6 +19,9 @@ func _ready():
 	character_spawned.emit()
 	dev_menu.hide()
 	max_rounds = 10090
+	for key in current_characters.keys():
+		for dude in current_characters[key]:
+			dude.is_paused = false
 
 
 func _unhandled_input(event):

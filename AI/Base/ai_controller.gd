@@ -4,7 +4,6 @@ extends Node3D
 ## Controller node intended to interface with Character functions.
 
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
-@onready var balanced_module : PackedScene = preload("res://AI/Balanced AI/balanced_ai_module.tscn")
 
 @onready var detection_area : Area3D = $DetectionArea
 
@@ -19,13 +18,9 @@ extends Node3D
 @onready var forget_target: Timer = $Node/ForgetTarget
 
 var projectile_timer : Timer = null
-#var frames_till_update : int = 2
-var ai_module_children : Array = []
-var cur_ai : AIModule = null
 var actor : Character = null
 var controller_positioner : Node3D = null
 
-#var current_timer : Timer = null
 var target : Character = null
 var flee_target : Character = null
 var frames_till_run : int = randi_range(3, 10)
@@ -301,6 +296,8 @@ func initiate(new_actor):
 	elif actor is Cashier:
 		nav_agent.set_navigation_layer_value(8, true)
 	
+	# Because a target was already set for some reason?
+	set_nav_target(actor.spawn_point)
 
 
 func die():

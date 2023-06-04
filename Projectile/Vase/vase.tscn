@@ -25,6 +25,8 @@ bottom_radius = 0.1
 height = 0.25
 
 [node name="Vase" instance=ExtResource("1_88o6w")]
+collision_layer = 2052
+collision_mask = 2019
 physics_material_override = SubResource("PhysicsMaterial_0k65s")
 angular_damp = 5.952
 

@@ -19,7 +19,6 @@ const STARTUP_TIME = 0.5
 
 signal slather_em
 
-
 func _ready():
 	slather_em.connect(Callable(get_parent(), "slather_em"))
 
@@ -74,8 +73,9 @@ func cease_fire():
 func check_raycast():
 	if raycast.is_colliding():
 		var who_dis = raycast.get_collider()
-		if who_dis is Baker:
-			return
 		if who_dis is Character:
-			emit_signal("slather_em", who_dis)
-#			hit_timer.start()
+			if who_dis.collision_layer == 10:
+				return
+			else:
+				emit_signal("slather_em", who_dis)
+	#			hit_timer.start()

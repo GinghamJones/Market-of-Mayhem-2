@@ -24,4 +24,4 @@ func stop_firing():
 
 
 func deal_lazer_damage(enemy : Character):
-	enemy.take_projectile_damage(character_stats.projectile_damage, null, self)
+	enemy.take_projectile_damage(character_stats.projectile_damage, self)

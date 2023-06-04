@@ -21,6 +21,7 @@ material = SubResource("StandardMaterial3D_klp33")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="FastFood" instance=ExtResource("1_whhyr")]
+angular_damp = 12.5
 script = ExtResource("2_5sca2")
 
 [node name="CollisionShape3D" parent="." index="0"]

@@ -1,4 +1,4 @@
-extends AIModule
+extends Node
 
 @onready var wait_timer : Timer = $TargetWaitTimer
 @onready var think_timer : Timer = $RandomThinkTimer
@@ -11,8 +11,8 @@ func run(controller : ManagerController):
 		
 	
 	var detection_area : Area3D = controller.detection_field
-	var check : bool = false
-	var my_speed : float = controller.get_actor_speed()
+#	var check : bool = false
+#	var my_speed : float = controller.get_actor_speed()
 	var current_target : Character = controller.target
 	
 	# If we have a target:

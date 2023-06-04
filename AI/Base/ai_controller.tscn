@@ -10,6 +10,7 @@ script = ExtResource("1_617uw")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_desired_distance = 0.5
 target_desired_distance = 0.5
+path_postprocessing = 1
 avoidance_enabled = true
 neighbor_distance = 10.0
 max_speed = 100.0

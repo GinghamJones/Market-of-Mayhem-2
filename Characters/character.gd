@@ -268,9 +268,12 @@ func take_damage(damage : int, direction : Vector3, who_dunnit):
 		die()
 
 
-func take_projectile_damage(damage : int, status_effect, who_dunnit : Character):
+func take_projectile_damage(damage : int, who_dunnit : Character, status_effect : String = ""):
 	if is_invincible:
 		return
+	
+	if status_effect != "":
+		call(status_effect)
 	
 	character_stats.current_health -= damage
 	
@@ -281,10 +284,10 @@ func take_projectile_damage(damage : int, status_effect, who_dunnit : Character)
 		die()
 
 
-func begin_slow_effect():
+func slow():
 	if not is_slowed:
 		$Timers/SlowTimer.start()
-		character_stats.move_speed -= 2
+		character_stats.move_speed -= 4
 		is_slowed = true
 
 func end_slow_effect():

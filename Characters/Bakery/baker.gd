@@ -16,6 +16,6 @@ func _handle_firing():
 			controller.update_hud(get_ammo())
 
 
-func slather_em(target):
-	target.take_projectile_damage(character_stats.projectile_damage, null, self)
-	target.begin_slow_effect()
+func slather_em(target : Character):
+	target.take_projectile_damage(character_stats.projectile_damage, self, "slow")
+#	target.begin_slow_effect()
