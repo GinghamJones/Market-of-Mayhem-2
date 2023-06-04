@@ -28,6 +28,7 @@ func run(delta : float) -> void:
 #	else:
 #		detection_area.monitoring = true
 #		frames_till_run = randi_range(1, 2)
+#	print(str(is_fleeing))
 	handle_target_selection()
 #		detection_area.monitoring = false
 	
@@ -35,51 +36,71 @@ func run(delta : float) -> void:
 	
 	handle_attacking()
 	
+	detection_area.reset()
 	global_position = controller_positioner.global_position
 	direction_computed.emit(delta, direction)
 
 
 func handle_target_selection() -> void:
+	# Using this, we populate the opponents_in_sight array in detection_area
 	var num_in_sight : int = detection_area.get_num_in_sight()
 	
+	if is_fleeing:
+		return
+#	print(str(num_in_sight))
 	# Check for too many opponents in area
 	if num_in_sight > 4:
 		# Run away if so
 		too_many_dudes = true
-		set_nav_target(actor.global_position)
-		set_flee_target(check_wander_target())
+		set_target(null, true)
+		is_fleeing = true
+#		set_nav_target(actor.global_position)
+#		set_flee_target(check_wander_target())
 		return
-		
 	elif num_in_sight > 0:
 		# If we have a target already, make sure it's still valid
 		if target:
 			check_current_target()
 		else:
-			target = detection_area.get_lowest_health_opponent()
+			set_target(detection_area.get_lowest_health_opponent(), false)
+		
+		var targetters : Array[CharacterBody3D] = detection_area.get_targetters()
+		if targetters.size() == 0:
+			pass
+		else:
+			parse_targetters(targetters)
+			return
 	else: #dudes_in_sight == 0:
 		# No one in sight, no need to select targets
-		if is_fleeing:
-			is_fleeing = false
+
+#		if is_fleeing:
+#			set_fleeing(false)
 		if target:
-			set_target(null)
+			set_target(null, false)
+	
+	
 	
 	# Check if being targetted and handle accordingly
-	var targetter : Character = detection_area.am_i_targetted()
-	if targetter:
-		if is_health_too_low(targetter):
-			set_flee_target(get_new_runaway_target())
-			is_fleeing = true
-		else:
-			set_target(targetter)
-	
-	# Manager no iz good..
-	var manager : Manager = detection_area.get_manager_in_sight()
-	if manager:
-		set_flee_target(-manager.global_position)
-		is_fleeing = true
+#	var targetter : Character = detection_area.am_i_targetted()
+#	if targetter:
+#		if is_health_too_low(targetter):
+#			set_flee_target(get_new_runaway_target())
+#			is_fleeing = true
+#		else:
+#			set_target(targetter)
+#
+#	# Manager no iz good..
+#	var manager : Manager = detection_area.get_manager_in_sight()
+#	if manager:
+#		set_flee_target(-manager.global_position)
+#		is_fleeing = true
 
 
 func handle_movement() -> void:
+	if is_fleeing:
+		flee()
+		return
+	
 	if target == null:
 		check_wander_target()
 		move_to_target()
@@ -90,10 +111,6 @@ func handle_movement() -> void:
 		return
 	
 	if get_is_dodging():
-		return
-	
-	if is_fleeing:
-		move_to_target()
 		return
 	
 	if is_dodge_available():
@@ -110,12 +127,13 @@ func handle_movement() -> void:
 
 
 func handle_attacking() -> void:
-	if not punch_anim_timer.is_stopped() or not punch_think_timer.is_stopped() or not fire_think_timer.is_stopped() or not target:
+	if not punch_anim_timer.is_stopped() or not target:
 		return
 	
-	if check_punch_conditions():
-		punch_think_timer.wait_time = randf_range(0.1, 0.2)
-		punch_think_timer.start()
+	if punch_think_timer.is_stopped():
+		if check_punch_conditions():
+			punch_think_timer.wait_time = randf_range(0.1, 0.2)
+			punch_think_timer.start()
 	
 	if fire_think_timer.is_stopped():
 		if check_fire_conditions():
@@ -142,19 +160,37 @@ func check_current_target() -> void:
 		return
 	# Check if dead
 	if target.is_dead:
-		target = null
+		set_target(null, false)
 		return
 	# Check if fleeing
 	if target.controller.is_fleeing:
 		if target.get_speed() < get_actor_speed():
 			return
 		else:
-			target = detection_area.get_lowest_health_opponent()
+			set_target(detection_area.get_lowest_health_opponent(), false)
 			return
 	# Check if health too high
 	if is_health_too_low(target):
-		set_flee_target(get_new_runaway_target())
-		is_fleeing = true
+#		var vector_away_from : Vector3 = (target.global_position - actor.global_position).normalized()
+#		set_flee_target(vector_away_from)
+		set_is_fleeing(true)
+
+
+func parse_targetters(targetters : Array[CharacterBody3D]):
+	for dude in targetters:
+		if dude is Manager:
+			set_target(null, true)
+#			set_flee_target(dude.global_position)
+			is_fleeing = true
+			return
+		else:
+			if is_health_too_low(dude):
+				set_target(null, true)
+				is_fleeing = true
+#				var vector_away_from : Vector3 = (dude.global_position - actor.global_position).normalized()
+#				set_flee_target(vector_away_from)
+			else:
+				set_target(dude, false)
 
 
 func is_health_too_low(new_target : Character) -> bool:
@@ -178,7 +214,10 @@ func check_wander_target():
 		while(true):
 			var radius : float = 50.0
 			var random_position = Vector3(randf_range(-radius, radius), 0, randf_range(-radius, radius))
-			set_nav_target(random_position)
+			if random_position < Vector3(1, 0, 1) and random_position > Vector3(-1, 0, -1):
+				set_nav_target(Vector3(1000, 234, 2343))
+			else:
+				set_nav_target(random_position)
 			if nav_agent.is_target_reachable():
 				break
 

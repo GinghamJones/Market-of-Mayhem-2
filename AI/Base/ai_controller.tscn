@@ -13,6 +13,7 @@ target_desired_distance = 0.5
 avoidance_enabled = true
 neighbor_distance = 10.0
 max_speed = 100.0
+debug_enabled = true
 
 [node name="DetectionArea" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39248, 3.34015)
@@ -42,6 +43,7 @@ one_shot = true
 
 [node name="FleeTimer" type="Timer" parent="Node"]
 process_callback = 0
+wait_time = 5.0
 one_shot = true
 
 [node name="PunchThinkTimer" type="Timer" parent="Node"]
@@ -65,5 +67,4 @@ one_shot = true
 one_shot = true
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
-[connection signal="body_entered" from="DetectionArea" to="DetectionArea" method="_on_body_entered"]
-[connection signal="body_exited" from="DetectionArea" to="DetectionArea" method="_on_body_exited"]
+[connection signal="timeout" from="Node/FleeTimer" to="." method="stop_fleeing"]

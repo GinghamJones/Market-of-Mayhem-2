@@ -139,10 +139,25 @@ AICam={
 [layer_names]
 
 3d_physics/layer_1="World"
+3d_navigation/layer_1="World"
 3d_physics/layer_2="Player"
+3d_navigation/layer_2="Floral"
 3d_physics/layer_3="Attack"
+3d_navigation/layer_3="Produce"
 3d_physics/layer_4="Bones"
+3d_navigation/layer_4="Meat"
 3d_physics/layer_5="BananaPeel"
+3d_navigation/layer_5="Freight"
+3d_physics/layer_6="Produce"
+3d_navigation/layer_6="Kitchen"
+3d_physics/layer_7="Meat"
+3d_navigation/layer_7="Bakery"
+3d_physics/layer_8="Freight"
+3d_navigation/layer_8="Cashier"
+3d_physics/layer_9="Kitchen"
+3d_physics/layer_10="Bakery"
+3d_physics/layer_11="Cashier"
+3d_physics/layer_12="Floral"
 
 [rendering]
 

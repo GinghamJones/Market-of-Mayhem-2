@@ -7,24 +7,51 @@ var projectiles_in_sight : Array[Projectile] = []
 var manager_in_sight : Manager = null
 
 # Eh, do you think this is okay, ma?
-var actor = null
+var actor : Character = null
+
+
+func populate_opponents_in_sight():
+	for thing in get_overlapping_bodies():
+		if thing is Character:
+			if thing.get_team() == actor.get_team():
+				pass
+			else:
+				opponents_in_sight.push_back(thing)
+		elif thing is Manager:
+			manager_in_sight = thing
 
 
 func get_lowest_health_opponent() -> Character:
 	if opponents_in_sight.size() == 0:
 		return null
 	
+#	var potential_target : Character = opponents_in_sight[0]
+#	var target_health : int = potential_target.get_health()
+	
+#	for thing in get_overlapping_bodies():
+#		if thing is Character:
+#			if thing.get_team() == actor.get_team():
+#				pass
+#			else:
+#				opponents_in_sight.push_back(thing)
+	
 	var potential_target : Character = opponents_in_sight[0]
 	var target_health : int = potential_target.get_health()
-
 	for dude in opponents_in_sight:
-		# Just in case the array hasn't been updated...
 		if dude.is_dead:
 			pass
 		else:
 			var new_target_health : int = dude.get_health()
 			if new_target_health < target_health:
 				potential_target = dude
+#	for dude in opponents_in_sight:
+#		# Just in case the array hasn't been updated...
+#		if dude.is_dead:
+#			pass
+#		else:
+#			var new_target_health : int = dude.get_health()
+#			if new_target_health < target_health:
+#				potential_target = dude
 
 	return potential_target
 
@@ -80,12 +107,14 @@ func get_closest_opponent() -> Character:
 	return new_target
 
 
-func am_i_targetted() -> Character:
+func get_targetters() -> Array[CharacterBody3D]:
+	var targetters : Array[CharacterBody3D]
 	for dude in opponents_in_sight:
 		if dude.controller.target == actor:
-			return dude
+			targetters.push_back(dude)
 	
-	return null
+	return targetters
+
 
 func get_manager_in_sight() -> Manager:
 	return manager_in_sight
@@ -96,8 +125,12 @@ func get_opponents_in_sight() -> Array[Character]:
 
 
 func get_num_in_sight() -> int:
+	populate_opponents_in_sight()
 	return opponents_in_sight.size()
 
+
+#func clear_opponents_in_sight() -> void:
+#	opponents_in_sight.clear()
 
 func get_projectiles_in_sight() -> Array[Projectile]:
 	return projectiles_in_sight
@@ -113,39 +146,41 @@ func reset():
 	manager_in_sight = null
 
 
-func _on_body_entered(body: Node3D) -> void:
-	if body == actor:
-		return
-	
-	if body is Character:
-		if not check_line_of_sight(to_local(body.global_position)):
-			return
-		if actor.character_stats.Team == body.character_stats.Team or body.is_dead:
-			return
-		else:
-			opponents_in_sight.push_back(body)
-	elif body is Manager:
-		manager_in_sight = body
-		return
-	elif body is Projectile:
-		if body.is_active:
-			projectiles_in_sight.push_back(body)
-		
-		return
+#func check_area() -> Array[Character]:
 
-
-func _on_body_exited(body: Node3D) -> void:
-	if body is Character:
-		if opponents_in_sight.has(body):
-			opponents_in_sight.erase(body)
-		return
-	elif body is Projectile:
-		if projectiles_in_sight.has(body):
-			projectiles_in_sight.erase(body)
-		return
-	elif body is Manager:
-		manager_in_sight = null
-		return
+#func _on_body_entered(body: Node3D) -> void:
+#	if body == actor:
+#		return
+#
+#	if body is Character:
+#		if not check_line_of_sight(to_local(body.global_position)):
+#			return
+#		if actor.character_stats.Team == body.character_stats.Team or body.is_dead:
+#			return
+#		else:
+#			opponents_in_sight.push_back(body)
+#	elif body is Manager:
+#		manager_in_sight = body
+#		return
+#	elif body is Projectile:
+#		if body.is_active:
+#			projectiles_in_sight.push_back(body)
+#
+#		return
+#
+#
+#func _on_body_exited(body: Node3D) -> void:
+#	if body is Character:
+#		if opponents_in_sight.has(body):
+#			opponents_in_sight.erase(body)
+#		return
+#	elif body is Projectile:
+#		if projectiles_in_sight.has(body):
+#			projectiles_in_sight.erase(body)
+#		return
+#	elif body is Manager:
+#		manager_in_sight = null
+#		return
 
 
 func check_line_of_sight(body_pos : Vector3) -> bool:

@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://Characters/character.gd" id="1_ldc1x"]
 [ext_resource type="PackedScene" uid="uid://dxvmimacblilw" path="res://Characters/Meat/meat_special.tscn" id="2_5d13c"]
 [ext_resource type="PackedScene" uid="uid://bd6rmhofmeww6" path="res://Characters/Meat/Meat_NPC/NPC_Meat_Female.glb" id="2_w2ctk"]
-[ext_resource type="Script" path="res://Characters/CharacterAnimationTree.gd" id="5_hokk0"]
+[ext_resource type="Script" path="res://Characters/Resources/CharacterAnimationTree.gd" id="5_hokk0"]
 [ext_resource type="AudioStream" uid="uid://bxdqmvjxnmoyf" path="res://kenney impact sounds/impact_plate_heavy_004.ogg" id="6_savac"]
-[ext_resource type="Script" path="res://Characters/HealDetectArea.gd" id="7_e3b4m"]
+[ext_resource type="Script" path="res://Characters/Resources/HealDetectArea.gd" id="7_e3b4m"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g0x83"]
 radius = 0.455959

@@ -78,8 +78,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if is_paused:
+	if is_paused or is_dead:
 		return
+		
 	if is_firing:
 		_handle_firing()
 	
@@ -408,9 +409,10 @@ func _on_right_hook_body_entered(body):
 	elif body.is_in_group("Level"):
 		punch_sound.play()
 		var p = punch_particle.instantiate()
+		add_child(p)
 		p.set("transform/top_level", true)
 		p.global_position = right_hook.global_position
-		add_child(p)
+		
 	elif body is Character:
 #	if body.has_method("take_damage") and not hit_detected:
 		punch_sound.play()

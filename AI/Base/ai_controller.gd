@@ -26,8 +26,8 @@ var actor : Character = null
 var controller_positioner : Node3D = null
 
 #var current_timer : Timer = null
-var target : Character = null : set = set_target
-var flee_target : Vector3 = Vector3.ZERO : set = set_flee_target
+var target : Character = null
+var flee_target : Character = null
 var frames_till_run : int = randi_range(3, 10)
 
 var is_fleeing : bool = false
@@ -42,50 +42,30 @@ signal y_rotation_computed
 signal direction_computed
 signal request_action
 
-###################################### Main Run #####################################################
-
-func run(delta : float):
-#	if actor:
-#		frames_till_update -= 1
-#		if frames_till_update > 0:
-#			return
-		
-	if did_i_fire:
-		request_action.emit("StopFire")
-		did_i_fire = false
-	
-#	if actor.is_dead or actor.is_paused:
-#		return
-
-	global_position = controller_positioner.global_position
-	set_direction(Vector3.ZERO)
-	
-#		cur_ai.tick()
-	for module in ai_module_children:
-		module.run()
-	
-	
-	
-	direction_computed.emit(delta, direction)
-#		frames_till_update = 2
-#		actor.move_my_ass(delta, get_direction())
 
 ################################# Move Actions ######################################################
 
 func move_to_target():
 	set_direction((nav_agent.get_next_path_position() - actor.global_position).normalized())
+	if is_fleeing:
+		return
 	
-	if target and not is_fleeing:
+	if target:
 		set_nav_target(target.global_position)
 		face_enemy()
 	else:
 		face_move_direction()
 
-func flee_from_target():
-	if flee_target:
-		set_direction((nav_agent.get_next_path_position() - actor.global_position).normalized())
-		set_nav_target(-target.position)
-		face_enemy()
+
+func flee():
+	var new_flee_target : Character = detection_area.get_closest_opponent()
+	if not new_flee_target:
+		set_is_fleeing(false)
+	else:
+		flee_target = new_flee_target
+	set_direction((actor.global_position - flee_target.global_position).normalized())
+#	move_to_target()
+	face_enemy()
 
 
 func strafe_left():
@@ -111,6 +91,10 @@ func stop_moving():
 func face_enemy():
 	if target:
 		var new_direction = target.global_position - actor.global_position
+		var angle = atan2(-new_direction.x, -new_direction.z)
+		set_y_rotation(angle)
+	elif flee_target:
+		var new_direction = flee_target.global_position - actor.global_position
 		var angle = atan2(-new_direction.x, -new_direction.z)
 		set_y_rotation(angle)
 	else:
@@ -194,18 +178,10 @@ func is_target_in_punch_range() -> bool:
 
 
 func is_target_aimed_at() -> bool:
-#	if actor.global_position.distance_to(target.global_position) < 3:
-#		print("tis true")
-#		return false
-	
-#	var z_vector : Vector3 = actor.mesh.global_transform.basis.z
-	
-#	var relative_pos : Vector3 = (target.global_position - actor.global_position).normalized()
-#	var dot : float = z_vector.dot(relative_pos)
 	var angle1 : Vector3 = actor.global_transform.basis.z
 	var angle3 : Vector3 = (actor.global_position - target.global_position).normalized()
 	var angle : float = angle1.dot(angle3)
-#	print(angle)
+
 	if angle > 0.97:
 		return true
 	else:
@@ -232,8 +208,12 @@ func set_detection(huh : bool):
 func set_nav_target(new_target : Vector3):
 	nav_agent.set_target_position(new_target)
 
-func set_target(new_target : Character):
+func set_target(new_target : Character, is_urgent : bool):
 	if new_target == null:
+		if is_urgent:
+			target = null
+			return
+		
 		if forget_target.is_stopped():
 			forget_target.start()
 		await forget_target.timeout
@@ -246,16 +226,16 @@ func set_target(new_target : Character):
 		target = new_target
 
 
-func set_flee_target(new_target):
-#	if new_target == null:
-#		forget_timer.start()
-#		await forget_timer.timeout
-#		flee_target = null
-#		set_fleeing(false)
-		
-#	flee_target = new_target
-	is_fleeing = true
-	set_nav_target(flee_target)
+func set_is_fleeing(value) -> void:
+	if value == false and flee_timer.is_stopped():
+		print("flee timer started")
+		flee_timer.start()
+	elif value == true:
+		is_fleeing = true
+
+func stop_fleeing() -> void:
+	is_fleeing = false
+	flee_target = null
 
 
 ##################################### Getters #######################################################
@@ -306,16 +286,29 @@ func initiate(new_actor):
 	direction_computed.connect(Callable(actor, "move_my_ass"))
 	request_action.connect(Callable(actor, "request_action"))
 	
-	frames_till_run = randi_range(1, 2)
-#	strafe_dir_timer
-#	detection_area.add_exception(actor)
+	if actor is Florist:
+		nav_agent.set_navigation_layer_value(2, true)
+	elif actor is Produce:
+		nav_agent.set_navigation_layer_value(3, true)
+	elif actor is MeatDude:
+		nav_agent.set_navigation_layer_value(4, true)
+	elif actor is Freight:
+		nav_agent.set_navigation_layer_value(5, true)
+	elif actor is KitchenDude:
+		nav_agent.set_navigation_layer_value(6, true)
+	elif actor is Baker:
+		nav_agent.set_navigation_layer_value(7, true)
+	elif actor is Cashier:
+		nav_agent.set_navigation_layer_value(8, true)
+	
 
 
 func die():
 	detection_area.set_monitoring(false)
 	detection_area.reset()
 	target = null
-	set_flee_target(Vector3.ZERO)
+	is_fleeing = false
+	flee_target = null
 
 
 func reset_ai():
