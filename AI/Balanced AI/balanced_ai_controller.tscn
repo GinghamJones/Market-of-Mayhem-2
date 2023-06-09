@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dtlrsr7igobkv"]
+
+[ext_resource type="PackedScene" uid="uid://b7fwx56n0jnkd" path="res://AI/Base/ai_controller.tscn" id="1_pix3h"]
+[ext_resource type="Script" path="res://AI/Balanced AI/balanced_ai_controller.gd" id="2_ien2r"]
+
+[node name="BalancedAIController" instance=ExtResource("1_pix3h")]
+script = ExtResource("2_ien2r")
+RANGE_RADIUS = 10.0
+
+[node name="DetectionArea" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.392, 4)
+
+[node name="Camera3D" type="Camera3D" parent="." index="3" groups=["AICam"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.38977, 1.41847, 3.29736)

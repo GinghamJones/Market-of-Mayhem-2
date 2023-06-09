@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://br6f0u4qfi88i"]
+
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/manager_ai_module.gd" id="1_cpcqk"]
+
+[node name="ManagerAIModule" type="Node"]
+script = ExtResource("1_cpcqk")
+
+[node name="TargetWaitTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="RandomThinkTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="RandomThinkTimer" to="." method="activate_attack"]

@@ -1,29 +1,71 @@
-[gd_scene load_steps=6 format=3 uid="uid://dtkn4gktps451"]
+[gd_scene load_steps=11 format=3 uid="uid://dtkn4gktps451"]
 
 [ext_resource type="Texture2D" uid="uid://d1mpi212e5bd5" path="res://addons/kenney_particle_pack/star_09.png" id="1_n5peg"]
 [ext_resource type="Script" path="res://Characters/Assets/punch_particle.gd" id="2_231fx"]
 
+[sub_resource type="Curve" id="Curve_o57jf"]
+_data = [Vector2(0, 0.154545), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jvy6m"]
+curve = SubResource("Curve_o57jf")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fvolg"]
 direction = Vector3(0, 0, 0)
 gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_jvy6m")
+sub_emitter_mode = 1
+sub_emitter_frequency = 41.34
+sub_emitter_keep_velocity = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5sd8k"]
 transparency = 1
 cull_mode = 2
+albedo_color = Color(0.96875, 1, 0, 1)
 albedo_texture = ExtResource("1_n5peg")
 emission_enabled = true
 emission = Color(0.737255, 0.631373, 0, 1)
-emission_energy_multiplier = 4.43
+emission_energy_multiplier = 9.42
 
 [sub_resource type="QuadMesh" id="QuadMesh_kaojt"]
 material = SubResource("StandardMaterial3D_5sd8k")
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1fnj8"]
+direction = Vector3(0, 0, -1)
+gravity = Vector3(0, -1, 0)
+initial_velocity_min = 3.82
+initial_velocity_max = 3.82
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jgamk"]
+cull_mode = 2
+albedo_color = Color(1, 0.772549, 0, 1)
+metallic = 0.52
+roughness = 0.25
+emission_enabled = true
+emission = Color(1, 0.773438, 0, 1)
+emission_energy_multiplier = 1.94
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_m0pno"]
+material = SubResource("StandardMaterial3D_jgamk")
+radius = 0.011
+height = 0.23
+
 [node name="PunchParticle" type="GPUParticles3D"]
 emitting = false
 amount = 1
-lifetime = 0.11
+lifetime = 0.15
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_fvolg")
 draw_pass_1 = SubResource("QuadMesh_kaojt")
 script = ExtResource("2_231fx")
+
+[node name="PunchSparks" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+emitting = false
+amount = 15
+lifetime = 0.24
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_1fnj8")
+draw_pass_1 = SubResource("CapsuleMesh_m0pno")

@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdvd6adgjadbw"]
+
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/manager_controller.gd" id="2_2qedc"]
+[ext_resource type="Script" path="res://NPC/Manager/Manager AI/detection_field.gd" id="2_341xy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t1ndy"]
+size = Vector3(10, 2, 10)
+
+[node name="ManagerController" type="Node3D" groups=["Controller"]]
+script = ExtResource("2_2qedc")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="DetectionField" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.20576, -2.04791)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_341xy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionField"]
+shape = SubResource("BoxShape3D_t1ndy")
+
+[node name="LineOfSight" type="RayCast3D" parent="DetectionField"]
+target_position = Vector3(0, 0, -1)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="TargetWaitTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="RandomThinkTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="body_entered" from="DetectionField" to="DetectionField" method="_on_body_entered"]
+[connection signal="body_exited" from="DetectionField" to="DetectionField" method="_on_body_exited"]
+[connection signal="timeout" from="RandomThinkTimer" to="." method="grab_target"]

@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dw8cyhw41604e"]
+
+[ext_resource type="PackedScene" uid="uid://drn3guvtuxnsh" path="res://Menu/GameSelect/GameModes/game_mode.tscn" id="1_yi6aa"]
+[ext_resource type="Script" path="res://Menu/GameSelect/GameModes/elimination_mode.gd" id="2_5ieh6"]
+
+[node name="EliminationMode" instance=ExtResource("1_yi6aa")]
+script = ExtResource("2_5ieh6")
+max_lives = 3

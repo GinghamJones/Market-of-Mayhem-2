@@ -81,6 +81,17 @@ text = "Manager"
 layout_mode = 2
 text = "Customer"
 
+[node name="Button" type="Button" parent="DevMenu" index="2"]
+layout_mode = 0
+offset_left = 1227.0
+offset_top = 121.0
+offset_right = 1775.0
+offset_bottom = 208.0
+text = "Spawn A Shit Load of Projectiles"
+
+[node name="GUI" parent="." index="1"]
+visible = false
+
 [node name="IntermissionText" parent="GUI" index="2"]
 process_mode = 3
 
@@ -98,3 +109,4 @@ wait_time = 2.0
 [connection signal="pressed" from="DevMenu/VBoxContainer/CashierButton" to="." method="_on_cashier_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/BakerButton" to="." method="_on_baker_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer2/Manager" to="." method="_on_manager_pressed"]
+[connection signal="pressed" from="DevMenu/Button" to="." method="_on_button_pressed"]

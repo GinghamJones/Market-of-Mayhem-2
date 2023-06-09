@@ -3,45 +3,47 @@ extends RigidBody3D
 
 @onready var lifespan_timer : Timer = $LifespanTimer
 
-
-var speed : float = 0
 var damage : int = 0
-var status_effect
+@export var status_effect : String = ""
 
-var is_active : bool = true
+var is_active : bool = true : set = set_is_active
 var who_fired_me : Character = null
-var previous_velocity : Vector3 = Vector3.ZERO
+#var previous_velocity : Vector3 = Vector3.ZERO
 
 
-func fire(velocity : Vector3):
-	apply_central_impulse(transform.basis.z * (speed + velocity.length()))
+func fire(speed : float):
+	apply_central_impulse(transform.basis.z * speed)
 
 
-func initiate(new_speed : float, new_damage : int, requester : Character):
-	speed = new_speed
+func initiate(new_damage : int, requester : Character):
 	damage = new_damage
 	who_fired_me = requester
 
 
-func _physics_process(delta):
-	if is_active:
-		previous_velocity = linear_velocity
-#		print(previous_velocity.length())
+#func _physics_process(delta):
+#	if is_active:
+#		previous_velocity = linear_velocity
+##		print(previous_velocity.length())
 
 
 func _on_body_entered(body):
-	if body.is_in_group("Floor"):
-		is_active = false
-	elif body == who_fired_me:
-		pass
-	elif body.has_method("take_projectile_damage") and is_active:
-		body.take_projectile_damage(damage, status_effect, who_fired_me)
-		is_active = false
+	if body is Character:
+		if body.get_team() == who_fired_me.get_team():
+			pass
+		else:
+			$ImpactSound.play()
+			body.take_projectile_damage(damage, who_fired_me, status_effect)
+	else:
+		$ImpactSound.play()
+		set_is_active(false)
+
+
+func set_is_active(value : bool) -> void:
+	is_active = value
+	if value == false:
+		set_deferred("contact_monitor", false)
 
 
 func _on_lifespan_timer_timeout():
 	queue_free()
 
-
-func _on_sleeping_state_changed():
-	is_active = false

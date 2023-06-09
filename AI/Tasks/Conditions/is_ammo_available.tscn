@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://AI/Tasks/Conditions/IsAmmoAvailable.gd" id="1_fpcf6"]
-
-[node name="IsAmmoAvailable" type="Node"]
-script = ExtResource("1_fpcf6")

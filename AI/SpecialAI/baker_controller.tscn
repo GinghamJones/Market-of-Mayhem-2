@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3s0100rkhevn"]
+
+[ext_resource type="PackedScene" uid="uid://b7fwx56n0jnkd" path="res://AI/Base/ai_controller.tscn" id="1_s7ils"]
+[ext_resource type="Script" path="res://AI/SpecialAI/baker_controller.gd" id="2_dbcph"]
+
+[node name="BakerController" instance=ExtResource("1_s7ils")]
+script = ExtResource("2_dbcph")
+
+[node name="ManagerFleeTimer" type="Timer" parent="Node" index="9"]
+wait_time = 3.0
+one_shot = true
+
+[node name="FiringRotationTimer" type="Timer" parent="Node" index="10"]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="timeout" from="Node/ManagerFleeTimer" to="." method="_on_manager_flee_timer_timeout"]

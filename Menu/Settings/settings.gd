@@ -243,6 +243,7 @@ func initiate():
 	load_settings()
 	initiated.emit()
 
+
 func save_settings():
 	for child in $PanelContainer/ScrollContainer/VBoxContainer.get_children():
 		if child is GridContainer:

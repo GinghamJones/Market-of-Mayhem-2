@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ca0rvcvbyk1v4"
+path="res://.godot/imported/I Want A Penis.mp3-e7ce3c9b99031ef5e3d1af5ddd86e089.mp3str"
+
+[deps]
+
+source_file="res://World/Songs/I Want A Penis.mp3"
+dest_files=["res://.godot/imported/I Want A Penis.mp3-e7ce3c9b99031ef5e3d1af5ddd86e089.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

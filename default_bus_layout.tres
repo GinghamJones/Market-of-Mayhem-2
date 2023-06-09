@@ -1,0 +1,29 @@
+[gd_resource type="AudioBusLayout" load_steps=4 format=3 uid="uid://bw3r1co7s8cru"]
+
+[sub_resource type="AudioEffectCompressor" id="AudioEffectCompressor_k6vlj"]
+resource_name = "Compressor"
+threshold = -2.3
+ratio = 2.2
+release_ms = 63.0
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_wmtm1"]
+resource_name = "Reverb"
+predelay_msec = 20.0
+predelay_feedback = 0.19
+room_size = 0.21
+damping = 0.64
+wet = 0.19
+
+[sub_resource type="AudioEffectLimiter" id="AudioEffectLimiter_3tnb3"]
+resource_name = "Limiter"
+ceiling_db = -0.2
+soft_clip_db = 0.0
+soft_clip_ratio = 4.2
+
+[resource]
+bus/0/effect/0/effect = SubResource("AudioEffectCompressor_k6vlj")
+bus/0/effect/0/enabled = true
+bus/0/effect/1/effect = SubResource("AudioEffectReverb_wmtm1")
+bus/0/effect/1/enabled = true
+bus/0/effect/2/effect = SubResource("AudioEffectLimiter_3tnb3")
+bus/0/effect/2/enabled = true

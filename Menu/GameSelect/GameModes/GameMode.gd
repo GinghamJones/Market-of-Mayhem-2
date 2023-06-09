@@ -3,7 +3,6 @@ extends Node
 
 @onready var start_timer : Timer = $Timers/StartRoundTimer
 @onready var intermission_timer : Timer = $Timers/IntermissionTimer
-#@onready var world : PackedScene = preload("res://World/world.tscn")
 @onready var countdown_text : Label = $GUI/CountdownText
 @onready var intermission_text : Label = $GUI/IntermissionText
 @onready var scoreboard = $GUI/ScoreBoard
@@ -36,7 +35,7 @@ signal fuck_the_settings
 
 func _ready():
 	countdown_text.hide()
-#	spawn_world()
+#	world.play_song()
 
 
 func _input(event):
@@ -54,7 +53,7 @@ func _input(event):
 			fuck_the_settings.emit()
 
 
-func _process(delta):
+func _process(_delta):
 	if not start_timer.is_stopped():
 		var time_left : int = int(start_timer.time_left)
 		countdown_text.text = str(time_left)
@@ -62,11 +61,6 @@ func _process(delta):
 	if not intermission_timer.is_stopped():
 		var time_left : float = intermission_timer.time_left
 		intermission_text.text = "%2.2f" % time_left
-
-
-#func spawn_world():
-#	current_world = world.instantiate()
-#	add_child(current_world)
 
 
 func add_character(character_type : String, player_controlled : bool, character_name : String = NameGenerator.get_new_name()) -> void:
@@ -77,6 +71,7 @@ func add_character(character_type : String, player_controlled : bool, character_
 		return
 	else:
 		var new_character : Character = SpawnManager.get_new_character(character_type, player_controlled, spawn_number)
+		new_character.name = character_name
 		new_character.character_stats.my_name = character_name
 		current_characters[character_type].push_back(new_character)
 		add_child(new_character)
@@ -91,6 +86,7 @@ func get_score(team : String, char_name : String) -> int:
 	
 	printerr("Couldn't find character for scoring")
 	return -1
+
 
 
 
