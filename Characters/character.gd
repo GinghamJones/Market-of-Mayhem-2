@@ -26,6 +26,8 @@ extends CharacterBody3D
 @onready var punch_timer : Timer = $Timers/PunchTimer
 @onready var heal_delay_timer: Timer = $Timers/HealDelayTimer
 @onready var respawn_timer: Timer = $Timers/RespawnTimer
+@onready var slip_timer: Timer = $Timers/SlipTimer
+@onready var impulse_timer: Timer = $Timers/ImpulseTimer
 
 @onready var punch_sound : AudioStreamPlayer3D = $Sounds/PunchSound
 @onready var punch_particle : PackedScene = preload("res://Characters/Assets/punch_particle.tscn")
@@ -44,9 +46,15 @@ var should_respawn : bool = true
 var is_slowed : bool = false
 var just_punched : bool = false
 var is_healing : bool = false
+var is_slipping : bool = false : set = set_is_slipping
+var impulse_applied : bool = false
+var just_slipped : bool = false
 
+var impulse_direction : Vector3 = Vector3.ZERO
+var impulse_speed : float = 0
+var move_direction : int = 0
 var jump_force : float = 30
-var move_direction : Vector3 = Vector3.ZERO
+#var move_direction : Vector3 = Vector3.ZERO
 var dodge_direction : Vector3 = Vector3.ZERO
 var hit_direction : Vector3 = Vector3.ZERO
 var mouse_delta : Vector2 = Vector2.ZERO
@@ -76,11 +84,23 @@ func _ready() -> void:
 	randomize()
 #	character_stats.current_ammo = character_stats.max_ammo
 
-
+# Is this alright to put it in _process vs _physics_process, ma?
 func _physics_process(delta: float) -> void:
 	if is_paused or is_dead:
 		return
-		
+	
+	if is_slipping:
+		if just_slipped:
+			velocity = -transform.basis.z * 20
+			print(velocity.length())
+			just_slipped = false
+		print(velocity.length())
+		velocity = velocity.lerp(velocity / 1.5, 0.2)
+		set_is_moving(false)
+		controller.global_position = $ControllerPositioner.global_position
+		move_and_slide()
+		return
+	
 	if is_firing:
 		_handle_firing()
 	
@@ -89,42 +109,62 @@ func _physics_process(delta: float) -> void:
 	if is_healing:
 		if heal_delay_timer.is_stopped():
 			heal_delay_timer.start()
-		
-	
 
 
 ########################## Movement functions ###########################################
 
 func move_my_ass(delta : float, direction : Vector3):
-	if im_walloped:
-		# Hit direction comes from the take_damage functiion
-		velocity = hit_direction * character_stats.punch_force
-		hit_direction = Vector3.ZERO
-		im_walloped = false
+#	if im_walloped:
+#		# Hit direction comes from the take_damage functiion
+#		velocity = hit_direction * character_stats.punch_force
+#		hit_direction = Vector3.ZERO
+#		im_walloped = false
+	
+	if impulse_applied:
+		velocity = impulse_direction * impulse_speed
+		# Maybe??
+		set_is_moving(false)
+		move_and_slide()
+		return
 	else:
 		velocity = lerp(velocity, direction * get_speed(), get_acceleration())
-		
-		if not player_controlled:
-			var nav_agent : NavigationAgent3D = controller.nav_agent
-			nav_agent.set_velocity(velocity)
-			await nav_agent.velocity_computed
-			velocity = controller.get_velocity()
-			
+
+#		if not player_controlled:
+#			controller.nav_agent.set_velocity(velocity)
+#			await nav_agent.velocity_computed
+#			velocity = controller.get_velocity()
+
+		if velocity.length() > get_speed():
+			velocity = velocity.normalized() * get_speed()
+
 		if is_dodging:
 			velocity = dodge_direction * character_stats.dodge_force
-	
+
 		handle_movement_anims(delta)
-	
-	if is_smacked:
-		velocity = transform.basis.z * 75
-		velocity.y += 15
-	
+
+#	if is_smacked:
+#		velocity = transform.basis.z * 75
+#		velocity.y += 15
+
 	if not is_on_floor():
 		velocity.y -= character_stats.gravity 
 	else:
 		velocity.y = 0
-	
+
+#	print(velocity.length())
 	move_and_slide()
+
+
+#func move_my_ass(delta : float, new_velocity : Vector3, new_rotation : float) -> void:
+#	move_and_slide()
+#
+#	rotation.y += 
+func apply_impulse(new_direction : Vector3, new_speed : float, time : float) -> void:
+	impulse_applied = true
+	impulse_direction = new_direction
+	impulse_speed = new_speed
+	impulse_timer.wait_time = time
+	impulse_timer.start()
 
 
 func handle_movement_anims(delta : float):
@@ -245,7 +285,7 @@ func use_super_move():
 
 ############################## Damage related functions ###########################################
 
-func take_damage(damage : int, direction : Vector3, who_dunnit):
+func take_damage(damage : int, who_dunnit):
 	if is_invincible:
 		return
 	
@@ -255,8 +295,8 @@ func take_damage(damage : int, direction : Vector3, who_dunnit):
 		character_stats.current_health -= damage
 		
 		# Set im_walloped so phys_process can calculate punched velocity
-		im_walloped = true
-		hit_direction = direction
+#		im_walloped = true
+#		hit_direction = direction
 		
 		update_health()
 	
@@ -291,7 +331,7 @@ func slow():
 		is_slowed = true
 
 func end_slow_effect():
-	character_stats.move_speed += 2
+	character_stats.move_speed += 4
 
 
 func heal() -> void:
@@ -311,6 +351,7 @@ func die():
 	
 	call_deferred("set_collision_layer_value", 2, false)
 	call_deferred("set_collision_mask_value", 2, false)
+	$HealDetectArea.disable()
 	
 #	$CollisionShape3D.call_deferred("set_disabled", true)
 	
@@ -339,6 +380,33 @@ func set_is_moving(value : bool):
 	else:
 		anims["parameters/Movement/playback"].travel("Character_Idle2")
 		anims.set("parameters/TimeScale/scale", 1.0)
+
+
+func set_is_slipping(value) -> void:
+	if not slip_timer.is_stopped():
+		return
+	is_slipping = value
+	if value == true:
+#		skeleton.physical_bones_start_simulation(["Physical Bone footR", "Physicla Bone footL", "Physical Bone shoulderR", "Physical Bone shoulderL"])
+#		skeleton.physical_bones_start_simulation([])
+#		skeleton.animate_physical_bones = false
+		slip_timer.start()
+		controller.set_process(false)
+		controller.set_physics_process(false)
+		var tween : Tween = create_tween()
+		tween.tween_property(self, "rotation_degrees:x", 90, 0.1)
+		tween.tween_property(self, "position:y", 0.1, 0.1)
+		just_slipped = true
+		await slip_timer.timeout
+		set_is_slipping(false)
+	else:
+#		skeleton.physical_bones_stop_simulation()
+#		skeleton.animate_physical_bones = true
+		var tween : Tween = create_tween()
+		tween.tween_property(self, "rotation_degrees:x", 0, 0.1)
+		tween.tween_property(self, "position:y", 0, 0.1)
+		controller.set_process(true)
+		controller.set_physics_process(true)
 
 
 func set_is_firing(value): 
@@ -384,49 +452,52 @@ func get_team() -> String:
 #### Signal functions ####
 
 func _on_left_hook_body_entered(body):
-	if body == self:
+	if body == self or hit_detected:
 		return
+	
 	elif body.is_in_group("Level"):
-		punch_sound.play()
-		var p = punch_particle.instantiate()
-		add_child(p)
-		p.set("transform/top_level", true)
-		p.global_position = left_hook.global_position
-		
-	elif body is Character and not hit_detected:
-#	if body.has_method("take_damage") and not hit_detected:
-		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
-		punch_sound.play()
-		var p : GPUParticles3D = punch_particle.instantiate()
-		p.set("transform/top_level", true)
-		add_child(p)
-		p.global_position = left_hook.global_position
+		spawn_punch_particle(true)
+	
+	elif body is Character:
+		if body.get_team() == get_team():
+			return
+			
+		body.take_damage(character_stats.base_damage, self)
+		body.apply_impulse(-transform.basis.z, character_stats.punch_force, 0.1)
+		spawn_punch_particle(true)
 #		$Human_Template_Male/metarig/Skeleton3D/LeftHookBone/ParticleSpawner2.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
 
 
 func _on_right_hook_body_entered(body):
-	if body == self:
+	if body == self or hit_detected:
 		return
+	
 	elif body.is_in_group("Level"):
-		punch_sound.play()
-		var p = punch_particle.instantiate()
-		add_child(p)
-		p.set("transform/top_level", true)
-		p.global_position = right_hook.global_position
-		
+		spawn_punch_particle(false)
+	
 	elif body is Character:
-#	if body.has_method("take_damage") and not hit_detected:
-		punch_sound.play()
-		var p = punch_particle.instantiate()
-		add_child(p)
-		p.set("transform/top_level", true)
-		p.global_position = right_hook.global_position
-		body.take_damage(character_stats.base_damage, -transform.basis.z.normalized(), self)
+		if body.get_team() == get_team():
+			return
+		
+		spawn_punch_particle(false)
+		body.take_damage(character_stats.base_damage, self)
+		body.apply_impulse(-transform.basis.z, character_stats.punch_force, 0.2)
 #		$Human_Template_Male/metarig/Skeleton3D/RightHookBone/ParticleSpawner.spawn_particle()
 		hit_detected = true
 		right_hook.set_deferred("monitoring", false)
+
+
+func spawn_punch_particle(left_hand : bool) -> void:
+		punch_sound.play()
+		var p = punch_particle.instantiate()
+		add_child(p)
+		p.set("transform/top_level", true)
+		if left_hand:
+			p.global_position = left_hook.global_position
+		else:
+			p.global_position = right_hook.global_position
 
 
 func _on_animation_tree_animation_finished(anim_name):
@@ -456,10 +527,12 @@ func determine_projectile_speed() -> float:
 	
 	# Increase speed if moving forward, decrease if backward
 #	var projectile_speed_modifier : float = 1
-	if move_direction.z > 0:
+	if move_direction > 0:
 		projectile_speed *= BACKWARD_SPEED
-	elif move_direction.z < 0:
+	elif move_direction < 0:
 		projectile_speed *= FORWARD_SPEED
+	else:
+		projectile_speed *= 1
 	
 	return projectile_speed
 
@@ -528,22 +601,22 @@ func respawn():
 	else:
 		controller.update_hud(get_ammo(), get_health(), lives_left)
 	
-	
+	$HealDetectArea.enable()
 	respawn_complete.emit()
 #	update_health()
 
-func set_running(value : bool) -> void:
-	set_process(value)
-	set_physics_process(value)
-	is_paused = !value
-	set_is_moving(value)
-	if controller:
-		controller.set_process(value)
-		controller.set_physics_process(value)
-	if value:
-		is_invincible = false
-	else:
-		is_invincible = true
+#func set_running(value : bool) -> void:
+#	set_process(value)
+#	set_physics_process(value)
+#	is_paused = !value
+#	set_is_moving(value)
+#	if controller:
+#		controller.set_process(value)
+#		controller.set_physics_process(value)
+#	if value:
+#		is_invincible = false
+#	else:
+#		is_invincible = true
 
 
 func _on_invincibility_timer_timeout():
@@ -554,3 +627,9 @@ func _on_punch_timer_timeout() -> void:
 	left_hook.monitoring = false
 	right_hook.monitoring = false
 	current_action = ""
+
+
+func _on_impulse_timer_timeout() -> void:
+	impulse_applied = false
+	impulse_direction = Vector3.ZERO
+	impulse_speed = 0

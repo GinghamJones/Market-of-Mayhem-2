@@ -73,9 +73,9 @@ func update_health(value : int):
 
 
 func update_special(value : float):
-	var time_left : float = special_timer.time_left
-	special_cooldown_bar.set("value", time_left)
-	special_cooldown_text.text = str(time_left)
+#	var time_left : float = special_timer.time_left
+	special_cooldown_bar.set("value", value)
+	special_cooldown_text.text = str(value)
 
 
 func update_lives_left(value : int):

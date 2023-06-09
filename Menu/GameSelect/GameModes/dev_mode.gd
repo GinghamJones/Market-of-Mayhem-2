@@ -13,12 +13,14 @@ signal character_spawned
 
 
 func _ready():
+	character_spawned.connect(Callable(self, "_on_character_spawned"))
 	super()
 	call_deferred("add_character", player_character_type, true, player_name)
 	await get_tree().physics_frame
 	character_spawned.emit()
 	dev_menu.hide()
 	max_rounds = 10090
+	await get_tree().physics_frame
 	for key in current_characters.keys():
 		for dude in current_characters[key]:
 			dude.is_paused = false
@@ -46,9 +48,9 @@ func start_round():
 			dude.is_paused = true
 			dude.should_respawn = true
 			await dude.respawn_complete
-	
-#	get_tree().paused = true
-	current_round += 1
+
+##	get_tree().paused = true
+#	current_round += 1
 	countdown_text.show()
 	start_timer.start()
 	await start_timer.timeout
@@ -149,13 +151,13 @@ func _on_button_pressed() -> void:
 		i /= 4
 		f.global_position = Vector3(i, i, i)
 		f.initiate(10, 10, get_tree().get_first_node_in_group("Character"))
-		
-		
 
 
 func _on_character_spawned() -> void:
+#	await get_tree().physics_frame
 	for key in current_characters.keys():
 		for character in current_characters[key]:
 			character.character_stats.current_ammo = 1000
 			character.is_paused = false
-			
+			character.set_process(true)
+			character.set_physics_process(true)

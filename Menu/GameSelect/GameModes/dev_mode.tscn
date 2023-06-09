@@ -101,7 +101,6 @@ process_mode = 3
 [node name="IntermissionTimer" parent="Timers" index="1"]
 wait_time = 2.0
 
-[connection signal="character_spawned" from="." to="." method="_on_character_spawned"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/ButcherButton" to="." method="_on_butcher_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/CookButton" to="." method="_on_cook_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/FloristButton" to="." method="_on_florist_button_pressed"]

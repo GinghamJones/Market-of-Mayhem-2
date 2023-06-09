@@ -1,34 +1,14 @@
 class_name BalancedAIController
 extends AIController
 
-var move_forward : bool = true
-
-var strafe_dir : int = 0   # 0 = right, 1 = left
-var distance_to_target : float = 0.0
-
-var too_many_dudes : bool = false
-
-
-#func initiate(new_actor):
-#	super(new_actor)
-#	var new_module = balanced_module.instantiate()
-#	add_child(new_module)
-#	ai_module_children = new_module.get_children()
-#	cur_ai = new_module
-
-
 func run(delta : float) -> void:
 	if did_i_fire:
 		request_action.emit("StopFire")
 		did_i_fire = false
-	global_position = controller_positioner.global_position
+#	global_position = controller_positioner.global_position
 	set_direction(Vector3.ZERO)
-#	if frames_till_run > 0:
-#		frames_till_run -= 1
-#	else:
-#		detection_area.monitoring = true
-#		frames_till_run = randi_range(1, 2)
-#	print(str(is_fleeing))
+
+	
 	handle_target_selection()
 #		detection_area.monitoring = false
 	
@@ -38,15 +18,17 @@ func run(delta : float) -> void:
 	
 	detection_area.reset()
 	global_position = controller_positioner.global_position
+	direction = direction.normalized()
 	direction_computed.emit(delta, direction)
 
 
 func handle_target_selection() -> void:
+	if is_fleeing:
+		return
+	
 	# Using this, we populate the opponents_in_sight array in detection_area
 	var num_in_sight : int = detection_area.get_num_in_sight()
 	
-	if is_fleeing:
-		return
 #	print(str(num_in_sight))
 	# Check for too many opponents in area
 	if num_in_sight > 4:
@@ -64,6 +46,8 @@ func handle_target_selection() -> void:
 		else:
 			set_target(detection_area.get_lowest_health_opponent(), false)
 		
+		projectile_available = is_projectile_available()
+			
 		var targetters : Array[CharacterBody3D] = detection_area.get_targetters()
 		if targetters.size() == 0:
 			pass
@@ -117,11 +101,11 @@ func handle_movement() -> void:
 		if detection_area.is_projectile_comin_for_me():
 			dodge(choose_dodge_direction())
 			return
-	
+
 	check_movement_change()
 
 	if move_forward:
-		move_to_target()
+		move_to_target(projectile_available)
 	else:
 		handle_strafe()
 
@@ -160,7 +144,7 @@ func check_current_target() -> void:
 		return
 	# Check if dead
 	if target.is_dead:
-		set_target(null, false)
+		set_target(null, true)
 		return
 	# Check if fleeing
 	if target.controller.is_fleeing:
@@ -193,69 +177,25 @@ func parse_targetters(targetters : Array[CharacterBody3D]):
 				set_target(dude, false)
 
 
-func is_health_too_low(new_target : Character) -> bool:
-	if new_target.get_health() - get_actor_health() > 50:
-		return true
-	
-	return false
+
 
 
 ########################## Movement Functions #############################
-func choose_dodge_direction() -> Vector3:
-	var rand_int : int = randi() % 2
-	if rand_int == 0:
-		return Vector3.RIGHT
-	else:
-		return Vector3.LEFT
-
-
-func check_wander_target():
-	if nav_agent.is_navigation_finished():
-		while(true):
-			var radius : float = 50.0
-			var random_position = Vector3(randf_range(-radius, radius), 0, randf_range(-radius, radius))
-			if random_position < Vector3(1, 0, 1) and random_position > Vector3(-1, 0, -1):
-				set_nav_target(Vector3(1000, 234, 2343))
-			else:
-				set_nav_target(random_position)
-			if nav_agent.is_target_reachable():
-				break
-
-
-func check_movement_change() -> void:
-	if change_movement_timer.is_stopped():
-		move_forward = !move_forward
-		if move_forward:
-			change_movement_timer.wait_time = randf_range(0.1, 0.6)
-		else:
-			change_movement_timer.wait_time = randf_range(0.05, 0.2)
-		change_movement_timer.start()
-
-
-func handle_strafe() -> void:
-	if strafe_dir_timer.is_stopped():
-		strafe_dir = randi() % 2
-		strafe_dir_timer.start()
-#		print("strafing target")
-	if strafe_dir == 0:
-		strafe_right()
-	else:
-		strafe_left()
 
 
 ########################## Attack Functions ################################
 
-func check_punch_conditions() -> bool:
-	if is_punch_available():
-		if is_target_in_punch_range():
-			return true
-	
-	return false
-
-
-func check_fire_conditions() -> bool:
-	if is_projectile_available():
-		if is_target_aimed_at():
-			return true
-	
-	return false
+#func check_punch_conditions() -> bool:
+#	if is_punch_available():
+#		if is_target_in_punch_range():
+#			return true
+#
+#	return false
+#
+#
+#func check_fire_conditions() -> bool:
+#	if is_projectile_available():
+#		if is_target_aimed_at():
+#			return true
+#
+#	return false

@@ -35,4 +35,8 @@ process_mode = 0
 wait_time = 60.0
 one_shot = true
 
+[node name="ManagerSpawnTimer" type="Timer" parent="Timers" index="3"]
+one_shot = true
+
 [connection signal="timeout" from="Timers/RoundTimer" to="." method="end_round"]
+[connection signal="timeout" from="Timers/ManagerSpawnTimer" to="." method="_on_manager_spawn_timer_timeout"]

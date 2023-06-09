@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://AI/Base/DetectionArea.gd" id="4_uobrm"]
 
 [node name="AIController" type="Node3D" groups=["Controller"]]
+top_level = true
 script = ExtResource("1_617uw")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
@@ -69,3 +70,5 @@ one_shot = true
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="timeout" from="Node/FleeTimer" to="." method="stop_fleeing"]
+[connection signal="timeout" from="Node/PunchThinkTimer" to="." method="punch"]
+[connection signal="timeout" from="Node/FireThinkTimer" to="." method="fire"]

@@ -25,5 +25,13 @@ target_position = Vector3(0, 0, -1)
 collision_mask = 3
 collide_with_areas = true
 
+[node name="TargetWaitTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="RandomThinkTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="body_entered" from="DetectionField" to="DetectionField" method="_on_body_entered"]
 [connection signal="body_exited" from="DetectionField" to="DetectionField" method="_on_body_exited"]
+[connection signal="timeout" from="RandomThinkTimer" to="." method="grab_target"]

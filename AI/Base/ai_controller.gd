@@ -5,7 +5,7 @@ extends Node3D
 
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
 
-@onready var detection_area : Area3D = $DetectionArea
+@onready var detection_area : DetectionArea = $DetectionArea
 
 @onready var strafe_dir_timer : Timer = $Node/StrafeDirTimer
 @onready var back_up_timer: Timer = $Node/BackUpTimer
@@ -23,15 +23,22 @@ var controller_positioner : Node3D = null
 
 var target : Character = null
 var flee_target : Character = null
-var frames_till_run : int = randi_range(3, 10)
+#var frames_till_run : int = randi_range(3, 10)
 
-var is_fleeing : bool = false
 var direction : Vector3 = Vector3.ZERO : set = set_direction, get = get_direction
 var y_rotation : float = 0 : set = set_y_rotation, get = get_y_rotation
 var velocity : Vector3 = Vector3.ZERO : set = set_velocity, get = get_velocity
 var dodge_direction : Vector3 = Vector3.ZERO : get = get_dodge_direction
+var strafe_dir : int = 0   # 0 = right, 1 = left
+var distance_to_target : float = 0.0
 
+var too_many_dudes : bool = false
+var is_fleeing : bool = false
+var move_forward : bool = true
 var did_i_fire : bool = false
+var projectile_available : bool = true
+
+@export var RANGE_RADIUS : float = 20
 
 signal y_rotation_computed
 signal direction_computed
@@ -40,13 +47,17 @@ signal request_action
 
 ################################# Move Actions ######################################################
 
-func move_to_target():
+func move_to_target(is_using_ranged : bool = false):
 	set_direction((nav_agent.get_next_path_position() - actor.global_position).normalized())
+	actor.move_direction = 1
 	if is_fleeing:
 		return
 	
 	if target:
-		set_nav_target(target.global_position)
+		if is_using_ranged:
+			set_nav_target(target.global_position * RANGE_RADIUS)
+		else:
+			set_nav_target(target.global_position)
 		face_enemy()
 	else:
 		face_move_direction()
@@ -77,10 +88,12 @@ func strafe_right():
 
 func back_up():
 	set_direction(transform.basis.z)
+	actor.move_direction = -1
 
 
 func stop_moving():
 	actor.velocity = Vector3.ZERO
+	actor.move_direction = 0
 
 
 func face_enemy():
@@ -183,6 +196,28 @@ func is_target_aimed_at() -> bool:
 		return false
 
 
+func is_health_too_low(new_target : Character) -> bool:
+	if new_target.get_health() - get_actor_health() > 50:
+		return true
+	
+	return false
+
+
+func check_punch_conditions() -> bool:
+	if is_punch_available():
+		if is_target_in_punch_range():
+			return true
+	
+	return false
+
+
+func check_fire_conditions() -> bool:
+	if is_projectile_available():
+		if is_target_aimed_at():
+			return true
+	
+	return false
+
 ##################################### Setters #######################################################
 
 func set_velocity(new_velocity : Vector3):
@@ -194,8 +229,8 @@ func set_direction(new_direction : Vector3):
 
 func set_y_rotation(value : float):
 #	y_rotation = lerp(y_rotation, value, 0.1)
-	y_rotation = value
-	emit_signal("y_rotation_computed", y_rotation)
+	rotation.y = value
+	emit_signal("y_rotation_computed", rotation.y)
 
 func set_detection(huh : bool):
 	detection_area.monitoring = huh
@@ -204,20 +239,12 @@ func set_nav_target(new_target : Vector3):
 	nav_agent.set_target_position(new_target)
 
 func set_target(new_target : Character, is_urgent : bool):
-	if new_target == null:
-		if is_urgent:
-			target = null
-			return
-		
+	if is_urgent:
+		target = new_target
+	else:
 		if forget_target.is_stopped():
 			forget_target.start()
 		await forget_target.timeout
-		target = null
-	else:
-		if target_think_timer.is_stopped():
-			target_think_timer.start()
-		
-		await target_think_timer.timeout
 		target = new_target
 
 
@@ -265,7 +292,7 @@ func get_is_dodging() -> bool:
 func get_y_rotation() -> float:
 	return y_rotation
 
-
+############################ Misc #########################################################
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 	set_velocity(safe_velocity)
 
@@ -298,6 +325,48 @@ func initiate(new_actor):
 	
 	# Because a target was already set for some reason?
 	set_nav_target(actor.spawn_point)
+
+
+func choose_dodge_direction() -> Vector3:
+	var rand_int : int = randi() % 2
+	if rand_int == 0:
+		return Vector3.RIGHT
+	else:
+		return Vector3.LEFT
+
+
+func check_wander_target():
+	if nav_agent.is_navigation_finished():
+		while(true):
+			var radius : float = 50.0
+			var random_position = Vector3(randf_range(-radius, radius), 0, randf_range(-radius, radius))
+			if random_position < Vector3(1, 0, 1) and random_position > Vector3(-1, 0, -1):
+				set_nav_target(Vector3(1000, 234, 2343))
+			else:
+				set_nav_target(random_position)
+			if nav_agent.is_target_reachable():
+				break
+
+
+func check_movement_change() -> void:
+	if change_movement_timer.is_stopped():
+		move_forward = !move_forward
+		if move_forward:
+			change_movement_timer.wait_time = randf_range(1.5, 2.0)
+		else:
+			change_movement_timer.wait_time = randf_range(0.2, 0.4)
+		change_movement_timer.start()
+
+
+func handle_strafe() -> void:
+	if strafe_dir_timer.is_stopped():
+		strafe_dir = randi() % 2
+		strafe_dir_timer.start()
+#		print("strafing target")
+	if strafe_dir == 0:
+		strafe_right()
+	else:
+		strafe_left()
 
 
 func die():

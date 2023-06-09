@@ -1,6 +1,6 @@
 extends Area3D
 
-@onready var line_of_sight : RayCast3D = $LineOfSight
+#@onready var line_of_sight : RayCast3D = $LineOfSight
 
 var opponents_in_sight : Array[Character] = []
 var projectiles_in_sight : Array[Projectile] = []
@@ -94,7 +94,7 @@ func _on_body_entered(body: Node3D) -> void:
 		return
 	
 	if body is Character:
-		if not check_line_of_sight(body.global_position):
+		if not check_line_of_sight(to_local(body.global_position)):
 			return
 		if body.is_dead:
 			return
@@ -110,18 +110,31 @@ func _on_body_exited(body: Node3D) -> void:
 
 
 func check_line_of_sight(body_pos : Vector3) -> bool:
+	var line_of_sight : RayCast3D = RayCast3D.new()
+	add_child(line_of_sight)
+	line_of_sight.position = position
+	
+	line_of_sight.set_collision_mask_value(1, true)
+	line_of_sight.set_collision_mask_value(2, true)
+	line_of_sight.collide_with_areas = true
+	line_of_sight.collide_with_bodies = true
 	line_of_sight.enabled = true
-	line_of_sight.look_at(body_pos)
 	
-	line_of_sight.target_position = line_of_sight.target_position.normalized()
-	var distance : float = (global_position - body_pos).length()
-	line_of_sight.target_position *= distance
+	# Determine where to point raycast
+	var vector_to_char : Vector3 = body_pos - position
+	vector_to_char = vector_to_char.normalized()
+	var distance : float = (position - body_pos).length()
+	line_of_sight.target_position = vector_to_char * distance
 
-	line_of_sight.force_raycast_update()
-	var collider = line_of_sight.get_collider()
-	
-#	line_of_sight.target_position = Vector3.ZERO
-#	line_of_sight.enabled = false
+	var collider
+	while(true):
+		line_of_sight.force_raycast_update()
+		collider = line_of_sight.get_collider()
+		if collider == actor:
+			line_of_sight.add_exception(collider)
+		else:
+			break
+	line_of_sight.queue_free()
 	
 	if collider is CharacterBody3D:
 		return true

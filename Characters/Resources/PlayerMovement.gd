@@ -137,7 +137,7 @@ func is_special_available() -> bool:
 
 func get_direction() -> Vector3:
 	var input_dir : Vector2 = Input.get_vector("MoveLeft", "MoveRight", "MoveForward", "MoveBack")
-	actor.move_direction = Vector3(input_dir.x, 0, input_dir.y)
+	actor.move_direction = input_dir.y
 	var direction : Vector3
 
 	direction = (actor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()

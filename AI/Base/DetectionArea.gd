@@ -1,3 +1,4 @@
+class_name DetectionArea
 extends Area3D
 
 #@onready var line_of_sight : RayCast3D = $LineOfSight
@@ -16,9 +17,11 @@ func populate_opponents_in_sight():
 			if thing.get_team() == actor.get_team():
 				pass
 			else:
-				opponents_in_sight.push_back(thing)
+				if check_line_of_sight(to_local(thing.global_position)):
+					opponents_in_sight.push_back(thing)
 		elif thing is Manager:
-			manager_in_sight = thing
+			if check_line_of_sight(to_local(thing.global_position)):
+				manager_in_sight = thing
 
 
 func get_lowest_health_opponent() -> Character:
@@ -108,7 +111,7 @@ func get_closest_opponent() -> Character:
 
 
 func get_targetters() -> Array[CharacterBody3D]:
-	var targetters : Array[CharacterBody3D]
+	var targetters : Array[CharacterBody3D] = []
 	for dude in opponents_in_sight:
 		if dude.controller.target == actor:
 			targetters.push_back(dude)
@@ -190,6 +193,9 @@ func check_line_of_sight(body_pos : Vector3) -> bool:
 	
 	line_of_sight.set_collision_mask_value(1, true)
 	line_of_sight.set_collision_mask_value(2, true)
+	# Enable collision with spawn-area barriers
+	for i in 7:
+		line_of_sight.set_collision_mask_value(i + 6, true)
 	line_of_sight.collide_with_areas = true
 	line_of_sight.collide_with_bodies = true
 	line_of_sight.enabled = true
