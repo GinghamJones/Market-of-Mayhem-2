@@ -7,16 +7,13 @@ extends CharacterBody3D
 @export var character_stats : CharacterData
 @export var projectile : PackedScene
 @export var special : PackedScene
-#@onready var projectile_placement : Node3D = $Human_Template_Male/ProjectilePlacement
 
 @onready var anims : AnimationTree = $CharacterAnimationTree
-@onready var anim_player = $NPC_Meat_Female2/AnimationPlayer
-@onready var right_hook = $NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/RightHook
-@onready var left_hook = $NPC_Meat_Female2/Meat_Female/Skeleton3D/LeftHookAttachment/LeftHook
-@onready var skeleton = $NPC_Meat_Female2/Meat_Female/Skeleton3D
-@onready var mesh : MeshInstance3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/Female_Meat
 @onready var projectile_placement = $ProjectilePlacement
 @onready var special_attach : Node3D = $NPC_Meat_Female2/Meat_Female/Skeleton3D/RightHookAttachment/SpecialAttachment
+@onready var projectile_aimer : RayCast3D = $ProjectileAimer
+@onready var dodge_particle: GPUParticles3D = $DodgeParticle
+@onready var controller_positioner: Node3D = $ControllerPositioner
 
 @onready var projectile_timer : Timer = $Timers/ProjectileTimer
 @onready var special_timer : Timer = $Timers/SpecialMeleeTimer
@@ -31,6 +28,13 @@ extends CharacterBody3D
 
 @onready var punch_sound : AudioStreamPlayer3D = $Sounds/PunchSound
 @onready var punch_particle : PackedScene = preload("res://Characters/Assets/punch_particle.tscn")
+
+@export var default_projectile_x_rotation : float = 0
+
+var right_hook : Area3D = null
+var left_hook : Area3D = null
+var skeleton : Skeleton3D = null
+var special_anims : AnimationPlayer = null
 
 var is_paused : bool = false
 var is_dodging : bool = false
@@ -52,9 +56,7 @@ var just_slipped : bool = false
 
 var impulse_direction : Vector3 = Vector3.ZERO
 var impulse_speed : float = 0
-var move_direction : int = 0
-var jump_force : float = 30
-#var move_direction : Vector3 = Vector3.ZERO
+var move_direction : float = 0.0
 var dodge_direction : Vector3 = Vector3.ZERO
 var hit_direction : Vector3 = Vector3.ZERO
 var mouse_delta : Vector2 = Vector2.ZERO
@@ -84,20 +86,18 @@ func _ready() -> void:
 	randomize()
 #	character_stats.current_ammo = character_stats.max_ammo
 
-# Is this alright to put it in _process vs _physics_process, ma?
-func _physics_process(delta: float) -> void:
+
+func _process(delta: float) -> void:
 	if is_paused or is_dead:
 		return
 	
 	if is_slipping:
 		if just_slipped:
 			velocity = -transform.basis.z * 20
-			print(velocity.length())
 			just_slipped = false
-		print(velocity.length())
 		velocity = velocity.lerp(velocity / 1.5, 0.2)
 		set_is_moving(false)
-		controller.global_position = $ControllerPositioner.global_position
+		controller.global_position = controller_positioner.global_position
 		move_and_slide()
 		return
 	
@@ -105,60 +105,80 @@ func _physics_process(delta: float) -> void:
 		_handle_firing()
 	
 	controller.run(delta)
-	
+
+	move_my_ass(delta, controller.get_direction())
+#	print(end_time - start_time)
 	if is_healing:
 		if heal_delay_timer.is_stopped():
 			heal_delay_timer.start()
+	
+	if player_controlled:
+		rotation.y -= controller.get_y_rotation() * delta
+		controller.rotation.y = lerp_angle(controller.rotation.y, rotation.y, delta * 15)
+	else:
+		rotation.y = lerp_angle(rotation.y, controller.rotation.y, delta * 15)
+#		controller.rotation.y = lerp_angle(controller.rotation.y, rotation.y, delta * 15)
+	
 
+
+
+## Is this alright to put it in _process vs _physics_process, ma?
+#func _physics_process(delta: float) -> void:
+#
+#	if is_paused or is_dead:
+#		return
+#
+#	if is_slipping:
+#		if just_slipped:
+#			velocity = -transform.basis.z * 20
+#			just_slipped = false
+#		velocity = velocity.lerp(velocity / 1.5, 0.2)
+#		set_is_moving(false)
+#		controller.global_position = $ControllerPositioner.global_position
+#		move_and_slide()
+#		return
+#
+#	if is_firing:
+#		_handle_firing()
+#
+#	controller.run(delta)
+#
+#	move_my_ass(delta, controller.get_direction())
+##	print(end_time - start_time)
+#	if is_healing:
+#		if heal_delay_timer.is_stopped():
+#			heal_delay_timer.start()
+	
 
 ########################## Movement functions ###########################################
 
-func move_my_ass(delta : float, direction : Vector3):
-#	if im_walloped:
-#		# Hit direction comes from the take_damage functiion
-#		velocity = hit_direction * character_stats.punch_force
-#		hit_direction = Vector3.ZERO
-#		im_walloped = false
-	
+func move_my_ass(delta : float, direction : Vector2):
+#	print(direction)
 	if impulse_applied:
-		velocity = impulse_direction * impulse_speed
+		var new_velocity : Vector3 = transform.basis * impulse_direction * impulse_speed
+		velocity = velocity.lerp(new_velocity, 0.5)
 		# Maybe??
 		set_is_moving(false)
 		move_and_slide()
 		return
 	else:
-		velocity = lerp(velocity, direction * get_speed(), get_acceleration())
+		var new_direction : Vector3 = (transform.basis * Vector3(direction.x, 0, direction.y)).normalized()
 
-#		if not player_controlled:
-#			controller.nav_agent.set_velocity(velocity)
-#			await nav_agent.velocity_computed
-#			velocity = controller.get_velocity()
+		velocity = lerp(velocity, new_direction * get_speed(), get_acceleration())
 
 		if velocity.length() > get_speed():
 			velocity = velocity.normalized() * get_speed()
 
-		if is_dodging:
-			velocity = dodge_direction * character_stats.dodge_force
-
 		handle_movement_anims(delta)
-
-#	if is_smacked:
-#		velocity = transform.basis.z * 75
-#		velocity.y += 15
 
 	if not is_on_floor():
 		velocity.y -= character_stats.gravity 
 	else:
 		velocity.y = 0
 
-#	print(velocity.length())
 	move_and_slide()
 
 
-#func move_my_ass(delta : float, new_velocity : Vector3, new_rotation : float) -> void:
-#	move_and_slide()
-#
-#	rotation.y += 
 func apply_impulse(new_direction : Vector3, new_speed : float, time : float) -> void:
 	impulse_applied = true
 	impulse_direction = new_direction
@@ -174,8 +194,6 @@ func handle_movement_anims(delta : float):
 		anims.set("parameters/TimeScale/scale", anim_speed)
 	else:
 		set_is_moving(false)
-#		anims["parameters/Movement/playback"].travel("Character_Idle")
-#		anims.set("parameters/TimeScale/scale", 1.1)
 
 
 ############################## Action functions #############################################
@@ -216,15 +234,18 @@ func request_action(action : String):
 	current_action = action
 
 
-func start_dodge(new_direction : Vector3):
+func start_dodge(new_direction : Vector2):
 	if dodge_cooldown.is_stopped():
 		dodge_timer.start()
-		dodge_direction = new_direction
-		is_dodging = true
+		dodge_particle.emitting = true
+		dodge_direction = Vector3(new_direction.x, 0, new_direction.y)
+		apply_impulse(dodge_direction, character_stats.dodge_force, 0.2)
+#		is_dodging = true
+
 
 func stop_dodge():
 	dodge_cooldown.start()
-	is_dodging = false
+#	is_dodging = false
 
 
 func attack(which_punch : int):
@@ -245,6 +266,7 @@ func handle_just_punched() -> void:
 	await get_tree().create_timer(0.5).timeout
 	punch_timer.start()
 	just_punched = false
+
 
 func block():
 	if anims.set_oneshot("parameters/BlockShot/request"):
@@ -289,6 +311,8 @@ func take_damage(damage : int, who_dunnit):
 	if is_invincible:
 		return
 	
+	play_damage_anim(damage)
+	
 	if is_blocking:
 		character_stats.current_health -= damage - 5
 	else:
@@ -312,6 +336,8 @@ func take_projectile_damage(damage : int, who_dunnit : Character, status_effect 
 	if is_invincible:
 		return
 	
+	play_damage_anim(damage)
+	
 	if status_effect != "":
 		call(status_effect)
 	
@@ -323,6 +349,12 @@ func take_projectile_damage(damage : int, who_dunnit : Character, status_effect 
 		who_dunnit.set("score", 1)
 		die()
 
+
+func play_damage_anim(force : float) -> void:
+	var anim : Animation = special_anims.get_animation("Character/Hit")
+	anim.track_set_key_value(0, 1, Vector4(1.0, 0.051, 0.0, force * 0.04))
+	
+	special_anims.play("Character/Hit")
 
 func slow():
 	if not is_slowed:
@@ -367,8 +399,9 @@ func die():
 
 ############################## Setter functions #########################################
 
-func set_y_rotation(new_rotation : float):
-	rotation.y = lerp_angle(rotation.y, new_rotation, 0.2)
+#func set_y_rotation(new_rotation : float):
+#	rotation.y = new_rotation
+##	rotation.y = lerp_angle(rotation.y, new_rotation, 0.2)
 
 
 func set_is_moving(value : bool):
@@ -461,13 +494,15 @@ func _on_left_hook_body_entered(body):
 	elif body is Character:
 		if body.get_team() == get_team():
 			return
-			
+		
 		body.take_damage(character_stats.base_damage, self)
 		body.apply_impulse(-transform.basis.z, character_stats.punch_force, 0.1)
 		spawn_punch_particle(true)
 #		$Human_Template_Male/metarig/Skeleton3D/LeftHookBone/ParticleSpawner2.spawn_particle()
 		hit_detected = true
 		left_hook.set_deferred("monitoring", false)
+		if player_controlled:
+			Engine.time_scale = 0.75
 
 
 func _on_right_hook_body_entered(body):
@@ -501,10 +536,11 @@ func spawn_punch_particle(left_hand : bool) -> void:
 
 
 func _on_animation_tree_animation_finished(anim_name):
-	if anim_name == "Character_Left_Attack":
+	if anim_name == "Character_Attack_Left" or anim_name == "Character_Attack_Right":
+#		print("anim finished")
 		left_hook.set_deferred("monitoring", false)
 		right_hook.set_deferred("monitoring", false)
-		pass
+		Engine.time_scale = 1
 	elif anim_name == "Character_Block":
 		is_blocking = false
 	
@@ -515,9 +551,17 @@ func spawn_projectile():
 	var p : Projectile = projectile.instantiate()
 	add_child(p)
 	p.set_as_top_level(true)
+#	if projectile_aimer.is_colliding():
+#		projectile_placement.look_at(projectile_aimer.get_collision_point())
+#		projectile_placement.rotation.x = default_projectile_x_rotation
+	
+#	print(projectile_placement.global_rotation)
+
 	p.global_transform = projectile_placement.global_transform
 	p.initiate(character_stats.projectile_damage, self)
 	p.fire(determine_projectile_speed())
+	
+	projectile_placement.rotation = Vector3(deg_to_rad(default_projectile_x_rotation), 0, 0)
 
 
 func determine_projectile_speed() -> float:
@@ -627,9 +671,14 @@ func _on_punch_timer_timeout() -> void:
 	left_hook.monitoring = false
 	right_hook.monitoring = false
 	current_action = ""
+	controller.can_punch = true
 
 
 func _on_impulse_timer_timeout() -> void:
 	impulse_applied = false
 	impulse_direction = Vector3.ZERO
 	impulse_speed = 0
+
+
+func _on_projectile_timer_timeout() -> void:
+	controller.can_fire = true

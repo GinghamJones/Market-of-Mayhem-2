@@ -7,4 +7,4 @@ func fire(velocity_multiplier : float):
 	super(velocity_multiplier)
 	var peel : RigidBody3D = banana_peel.instantiate()
 	get_tree().root.add_child(peel)
-	peel.global_position = global_position
+	peel.global_transform = global_transform

@@ -19,6 +19,7 @@ radius = 0.069
 height = 0.414
 
 [node name="Banana" instance=ExtResource("1_43paw")]
+continuous_cd = true
 script = ExtResource("2_t3675")
 
 [node name="CollisionShape3D" parent="." index="0"]

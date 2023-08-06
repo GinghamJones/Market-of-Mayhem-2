@@ -22,12 +22,15 @@ func run(delta : float) -> void:
 	
 	detection_area.reset()
 	global_position = controller_positioner.global_position
-	direction = direction.normalized()
-	direction_computed.emit(delta, direction)
+#	direction = direction.normalized()
+#	direction_computed.emit(delta, direction)
 
 ################################ Main Running Functions #######################################
 
 func handle_target_selection() -> void:
+#	if not forget_target.is_stopped():
+#		return
+	
 	if manager_in_sight:
 		if target:
 			set_target(null, true)
@@ -62,9 +65,10 @@ func handle_movement() -> void:
 		move_to_target()
 		return
 	
-	if actor.currently_firing:
-		rotate_while_firing()
-		return
+#	if actor.currently_firing:
+##		rotate_while_firing()
+#		move_to_target()
+#		return
 	
 	if manager_in_sight:
 		move_to_target()
@@ -120,7 +124,7 @@ func check_current_target() -> void:
 	assert(target)
 	
 	if target.is_dead:
-		set_target(null, true)
+		set_target(null, false)
 		return
 	
 	target_slowed = target.is_slowed
@@ -144,10 +148,8 @@ func parse_targetters(targetters : Array[CharacterBody3D]) -> void:
 			if target:
 				if target.get_health() < 30:
 					return
-			else:
-				# Better to switch to targetter?
-				set_target(dude, false)
-				return
+			# Better to switch to targetter?
+			set_target(dude, false)
 
 
 func _on_manager_flee_timer_timeout() -> void:
@@ -156,7 +158,7 @@ func _on_manager_flee_timer_timeout() -> void:
 
 func rotate_while_firing() -> void:
 	if firing_rotation_timer.is_stopped():
-		face_enemy()
+#		face_enemy()
 		firing_rotation_timer.start()
 		turning_left = !turning_left
 	

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bs4m175eb4cus"]
+
+[ext_resource type="PackedScene" uid="uid://b7fwx56n0jnkd" path="res://AI/Base/ai_controller.tscn" id="1_3s87k"]
+[ext_resource type="Script" path="res://AI/SpecialAI/freight_controller.gd" id="2_s5f7g"]
+
+[node name="FreightController" instance=ExtResource("1_3s87k")]
+script = ExtResource("2_s5f7g")
+
+[node name="ManagerFleeTimer" type="Timer" parent="Node" index="9"]
+wait_time = 2.0
+one_shot = true

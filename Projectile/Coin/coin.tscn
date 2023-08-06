@@ -25,6 +25,7 @@ height = 0.01
 
 [node name="Coin" instance=ExtResource("1_f0qr2")]
 physics_material_override = SubResource("PhysicsMaterial_0rv0u")
+continuous_cd = true
 script = ExtResource("2_qou0p")
 
 [node name="CollisionShape3D" parent="." index="0"]

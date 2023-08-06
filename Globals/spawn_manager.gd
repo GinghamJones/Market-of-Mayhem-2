@@ -10,8 +10,10 @@ extends Node
 	"Produce" : preload("res://Characters/Produce/produce_clerk.tscn")
 }
 @onready var player_movement = preload("res://Characters/Resources/player_movement.tscn")
-@onready var balanced_ai_controller : PackedScene = preload("res://AI/Balanced AI/balanced_ai_controller.tscn")
+#@onready var balanced_ai_controller : PackedScene = preload("res://AI/Balanced AI/balanced_ai_controller.tscn")
+@onready var ai_controller : PackedScene = preload("res://AI/Base/new_ai_controller.tscn")
 @onready var baker_controller : PackedScene = preload("res://AI/SpecialAI/baker_controller.tscn")
+@onready var freight_controller : PackedScene = preload("res://AI/SpecialAI/freight_controller.tscn")
 @onready var manager : PackedScene = preload("res://NPC/Manager/manager.tscn")
 @onready var manager_controller : PackedScene = preload("res://NPC/Manager/Manager AI/manager_controller.tscn")
 
@@ -26,11 +28,16 @@ func get_new_character(character_type : String, player_controlled : bool, spawn_
 		new_controller = player_movement.instantiate()
 		new_character.player_controlled = true
 	else:
-		# Add code for choosing random personality. Maybe weighted based on class chosen
 		if new_character is Baker:
-			new_controller = baker_controller.instantiate()
+#			new_controller = baker_controller.instantiate()
+			new_controller = ai_controller.instantiate()
+		elif new_character is Freight:
+#			new_controller = freight_controller.instantiate()
+			new_controller = ai_controller.instantiate()
 		else:
-			new_controller = balanced_ai_controller.instantiate()
+#			new_controller = balanced_ai_controller.instantiate()
+			new_controller = ai_controller.instantiate()
+		
 		new_character.player_controlled = false
 
 	new_character.add_child(new_controller)

@@ -2,7 +2,6 @@ extends RigidBody3D
 
 @onready var timer : Timer = $DeathTimer
 
-
 func _on_body_entered(body):
 	if body is Character:
 		if body is Produce:

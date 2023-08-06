@@ -1,7 +1,7 @@
 class_name ManagerController
 extends Node3D
 
-@onready var manager_ai_module : PackedScene = preload("res://NPC/Manager/Manager AI/manager_ai_module.tscn")
+#@onready var manager_ai_module : PackedScene = preload("res://NPC/Manager/Manager AI/manager_ai_module.tscn")
 @onready var detection_area : Area3D = $DetectionField
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
 @onready var target_wait_timer: Timer = $TargetWaitTimer
@@ -10,13 +10,13 @@ extends Node3D
 var actor = null
 var target : Character = null
 var controller_positioner : Node3D = null
-var cur_ai = null
+#var cur_ai = null
 var direction : Vector3 = Vector3.ZERO : set = set_direction, get = get_direction
 var y_rotation : float = 0 : set = set_y_rotation, get = get_y_rotation
 
 #var queued_action : String = ""
 #var is_waiting_to_act : bool = false
-var current_timer : Timer = null
+#var current_timer : Timer = null
 
 signal y_rotation_computed
 signal direction_computed
@@ -29,9 +29,9 @@ func initiate(new_actor) -> void:
 	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
 	direction_computed.connect(Callable(actor, "move_my_ass"))
 	
-	var new_module = manager_ai_module.instantiate()
-	add_child(new_module)
-	cur_ai = new_module
+#	var new_module = manager_ai_module.instantiate()
+#	add_child(new_module)
+#	cur_ai = new_module
 
 
 func run(delta : float):
@@ -75,6 +75,7 @@ func run(delta : float):
 func grab_target() -> void:
 	actor.fuck_em_up(target)
 	target_wait_timer.start()
+	target = null
 
 
 func move_to_target():

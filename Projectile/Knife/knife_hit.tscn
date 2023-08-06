@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwwg0ww785ebq"]
+
+[ext_resource type="Texture2D" uid="uid://jajphcxkm7rw" path="res://addons/kenney_particle_pack/trace_01.png" id="1_fhgqt"]
+[ext_resource type="Script" path="res://Projectile/Knife/knife_hit.gd" id="2_il3pm"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_syngt"]
+particle_flag_rotate_y = true
+direction = Vector3(0, 0, 1)
+spread = 13.16
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 5.5
+initial_velocity_max = 5.5
+linear_accel_min = 3.35
+linear_accel_max = 3.35
+scale_min = 0.4
+scale_max = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycj5k"]
+transparency = 1
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_fhgqt")
+
+[sub_resource type="QuadMesh" id="QuadMesh_wq0me"]
+material = SubResource("StandardMaterial3D_ycj5k")
+
+[node name="KnifeHit" type="GPUParticles3D"]
+emitting = false
+amount = 15
+lifetime = 0.3
+one_shot = true
+explosiveness = 1.0
+transform_align = 2
+process_material = SubResource("ParticleProcessMaterial_syngt")
+draw_pass_1 = SubResource("QuadMesh_wq0me")
+script = ExtResource("2_il3pm")

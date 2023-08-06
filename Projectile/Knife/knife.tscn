@@ -1,8 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://cc653p6ws20k1"]
+[gd_scene load_steps=23 format=3 uid="uid://cc653p6ws20k1"]
 
 [ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Projectile/projectile.tscn" id="1_l7yjw"]
 [ext_resource type="PackedScene" uid="uid://degfbyxwsm2vc" path="res://Projectile/Knife/KNIFE.glb" id="2_nqhok"]
+[ext_resource type="Script" path="res://Projectile/Knife/knife.gd" id="2_qga6m"]
 [ext_resource type="AudioStream" uid="uid://u11rx6pdpynx" path="res://kenney impact sounds/impact_plate_heavy_003.ogg" id="3_l3v15"]
+[ext_resource type="Texture2D" uid="uid://dany18yi7tfqu" path="res://addons/kenney_particle_pack/slash_02.png" id="5_nh2ly"]
+[ext_resource type="Texture2D" uid="uid://c7jtaxbk6kl4h" path="res://addons/kenney_particle_pack/flame_05.png" id="6_7s3ye"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_dvse7"]
 bounce = 0.07
@@ -85,22 +88,121 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_r1vlc")
 
+[sub_resource type="Gradient" id="Gradient_x5vt3"]
+offsets = PackedFloat32Array(0, 0.60177, 1)
+colors = PackedColorArray(1, 0.15, 0.15, 1, 0.19, 0.1026, 0.1026, 0.760784, 1, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_w41ke"]
+gradient = SubResource("Gradient_x5vt3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qrhm5"]
+particle_flag_rotate_y = true
+direction = Vector3(0, 0, -1)
+spread = 3.97
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+radial_accel_min = 0.8
+radial_accel_max = 0.8
+damping_min = 0.735
+damping_max = 0.735
+angle_min = -129.0
+angle_max = 106.5
+color_ramp = SubResource("GradientTexture1D_w41ke")
+hue_variation_min = -0.01
+hue_variation_max = 0.01
+sub_emitter_mode = 1
+sub_emitter_frequency = 27.9
+sub_emitter_keep_velocity = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a60pe"]
+transparency = 1
+cull_mode = 2
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_nh2ly")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_a6aiu"]
+material = SubResource("StandardMaterial3D_a60pe")
+orientation = 1
+
+[sub_resource type="Gradient" id="Gradient_1xyp2"]
+colors = PackedColorArray(1, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_54woh"]
+gradient = SubResource("Gradient_1xyp2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8kke3"]
+particle_flag_rotate_y = true
+direction = Vector3(0, 0, -1)
+spread = 9.44
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 4.1
+initial_velocity_max = 4.1
+angle_min = -100.5
+angle_max = 78.5
+color_ramp = SubResource("GradientTexture1D_54woh")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d74c1"]
+transparency = 1
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("6_7s3ye")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_4nhae"]
+material = SubResource("StandardMaterial3D_d74c1")
+
 [node name="Knife" instance=ExtResource("1_l7yjw")]
 physics_material_override = SubResource("PhysicsMaterial_dvse7")
 gravity_scale = 0.5
+continuous_cd = true
+lock_rotation = true
 angular_damp = 2.976
+script = ExtResource("2_qga6m")
 
 [node name="CollisionShape3D" parent="." index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.285793)
 shape = SubResource("BoxShape3D_qfg2y")
 
 [node name="KNIFE" parent="." index="3" instance=ExtResource("2_nqhok")]
-transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
 
 [node name="Plane" parent="KNIFE" index="0"]
 mesh = SubResource("ArrayMesh_434uc")
 
 [node name="ImpactSound" parent="." index="4"]
 stream = ExtResource("3_l3v15")
+
+[node name="GPUParticles3D" parent="." index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0302889)
+amount = 200
+speed_scale = 1.0
+transform_align = 2
+trail_lifetime = 1.0
+process_material = SubResource("ParticleProcessMaterial_qrhm5")
+draw_pass_1 = SubResource("QuadMesh_a6aiu")
+
+[node name="GPUParticles3D2" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+amount = 200
+speed_scale = 1.0
+trail_lifetime = 1.75
+process_material = SubResource("ParticleProcessMaterial_8kke3")
+draw_pass_1 = SubResource("QuadMesh_4nhae")
+
+[node name="RayCast3D" type="RayCast3D" parent="." index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.138561)
+target_position = Vector3(0, 0, -1)
+collision_mask = 3
 
 [editable path="KNIFE"]

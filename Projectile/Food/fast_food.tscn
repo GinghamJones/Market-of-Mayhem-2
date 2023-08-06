@@ -454,6 +454,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_4g6th")
 
 [node name="FastFood" instance=ExtResource("1_whhyr")]
+continuous_cd = true
 angular_damp = 12.5
 script = ExtResource("2_5sca2")
 

@@ -1,0 +1,94 @@
+[gd_scene load_steps=13 format=3 uid="uid://dq0yqf3feski6"]
+
+[ext_resource type="Texture2D" uid="uid://bw8ngcjpcab0j" path="res://addons/kenney_particle_pack/smoke_04.png" id="1_0ybu8"]
+[ext_resource type="Texture2D" uid="uid://dpyk1tk45lhpj" path="res://addons/kenney_particle_pack/smoke_08.png" id="2_81poj"]
+[ext_resource type="Script" path="res://ParticleFX/smoke_cloud.gd" id="2_csps2"]
+
+[sub_resource type="Gradient" id="Gradient_3mp7c"]
+offsets = PackedFloat32Array(0, 0.743363)
+colors = PackedColorArray(0.171875, 0.171875, 0.171875, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gsd6h"]
+gradient = SubResource("Gradient_3mp7c")
+
+[sub_resource type="Curve" id="Curve_s2ogn"]
+max_value = 1.5
+_data = [Vector2(0, 0.69833), 0.0, 0.0, 0, 0, Vector2(1, 1.33716), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_d6g5e"]
+curve = SubResource("Curve_s2ogn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yspoe"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = -0.35
+emission_ring_radius = 0.295
+emission_ring_inner_radius = 0.4
+particle_flag_rotate_y = true
+direction = Vector3(0, 0, 1)
+spread = 4.35
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.15
+initial_velocity_max = 1.15
+angular_velocity_min = 51.35
+angular_velocity_max = 51.35
+linear_accel_min = 5.4
+linear_accel_max = 5.4
+radial_accel_min = 4.55
+radial_accel_max = 4.55
+damping_min = 12.22
+damping_max = 12.22
+angle_min = -50.5
+angle_max = 64.5
+scale_curve = SubResource("CurveTexture_d6g5e")
+color_ramp = SubResource("GradientTexture1D_gsd6h")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eva6c"]
+transparency = 1
+cull_mode = 2
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_0ybu8")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_vqoyw"]
+material = SubResource("StandardMaterial3D_eva6c")
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mskqj"]
+transparency = 1
+cull_mode = 2
+shading_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 0.529412)
+albedo_texture = ExtResource("2_81poj")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_bpxuw"]
+material = SubResource("StandardMaterial3D_mskqj")
+size = Vector2(0.75, 0.75)
+
+[node name="SmokeCloud" type="GPUParticles3D"]
+cast_shadow = 0
+amount = 50
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.8
+randomness = 0.43
+process_material = SubResource("ParticleProcessMaterial_yspoe")
+draw_passes = 2
+draw_pass_1 = SubResource("QuadMesh_vqoyw")
+draw_pass_2 = SubResource("QuadMesh_bpxuw")
+script = ExtResource("2_csps2")

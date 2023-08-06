@@ -22,7 +22,7 @@ func run(controller : ManagerController):
 			return
 		if controller.is_target_in_grab_distance():
 			if think_timer.is_stopped():
-				var rand_float : float = randf_range(0.1, 0.5)
+				var rand_float : float = randf_range(0.1, 0.3)
 				think_timer.wait_time = rand_float
 				think_timer.start()
 				controller.current_timer = think_timer

@@ -1,11 +1,18 @@
-[gd_scene load_steps=11 format=3 uid="uid://dtkn4gktps451"]
+[gd_scene load_steps=19 format=3 uid="uid://dtkn4gktps451"]
 
 [ext_resource type="Texture2D" uid="uid://d1mpi212e5bd5" path="res://addons/kenney_particle_pack/star_09.png" id="1_n5peg"]
 [ext_resource type="Script" path="res://Characters/Assets/punch_particle.gd" id="2_231fx"]
 
+[sub_resource type="Gradient" id="Gradient_mm0ri"]
+offsets = PackedFloat32Array(0.00442478, 0.420354, 1)
+colors = PackedColorArray(1, 0.933333, 0, 0.2, 1, 0.84375, 0, 1, 1, 0.85, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_sgh2w"]
+gradient = SubResource("Gradient_mm0ri")
+
 [sub_resource type="Curve" id="Curve_o57jf"]
-_data = [Vector2(0, 0.154545), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 0.565762), 0.0, 0.0, 0, 0, Vector2(0.292453, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_jvy6m"]
 curve = SubResource("Curve_o57jf")
@@ -14,6 +21,7 @@ curve = SubResource("Curve_o57jf")
 direction = Vector3(0, 0, 0)
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_jvy6m")
+color_ramp = SubResource("GradientTexture1D_sgh2w")
 sub_emitter_mode = 1
 sub_emitter_frequency = 41.34
 sub_emitter_keep_velocity = true
@@ -21,29 +29,63 @@ sub_emitter_keep_velocity = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5sd8k"]
 transparency = 1
 cull_mode = 2
+vertex_color_use_as_albedo = true
 albedo_color = Color(0.96875, 1, 0, 1)
 albedo_texture = ExtResource("1_n5peg")
 emission_enabled = true
 emission = Color(0.737255, 0.631373, 0, 1)
-emission_energy_multiplier = 9.42
+emission_energy_multiplier = 9.08
+emission_operator = 1
+emission_texture = ExtResource("1_n5peg")
+billboard_mode = 2
 
 [sub_resource type="QuadMesh" id="QuadMesh_kaojt"]
 material = SubResource("StandardMaterial3D_5sd8k")
 
+[sub_resource type="Gradient" id="Gradient_gya26"]
+colors = PackedColorArray(1, 0.91875, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_omeet"]
+gradient = SubResource("Gradient_gya26")
+
+[sub_resource type="Curve" id="Curve_rw4cc"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.530189, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_2013w"]
+curve = SubResource("Curve_rw4cc")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1fnj8"]
-direction = Vector3(0, 0, -1)
-gravity = Vector3(0, -1, 0)
-initial_velocity_min = 3.82
-initial_velocity_max = 3.82
+direction = Vector3(0, 1, 0)
+spread = 20.23
+gravity = Vector3(0, 1, 0)
+initial_velocity_min = 10.52
+initial_velocity_max = 10.52
+radial_accel_min = 4.3
+radial_accel_max = 4.3
+scale_curve = SubResource("CurveTexture_2013w")
+color_ramp = SubResource("GradientTexture1D_omeet")
+hue_variation_min = -0.3
+hue_variation_max = 0.35
+
+[sub_resource type="Curve" id="Curve_mvai3"]
+_data = [Vector2(0, 0.832985), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_x7dwb"]
+curve = SubResource("Curve_mvai3")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jgamk"]
 cull_mode = 2
+vertex_color_use_as_albedo = true
 albedo_color = Color(1, 0.772549, 0, 1)
 metallic = 0.52
 roughness = 0.25
 emission_enabled = true
 emission = Color(1, 0.773438, 0, 1)
-emission_energy_multiplier = 1.94
+emission_energy_multiplier = 8.81
+emission_operator = 1
+emission_texture = SubResource("CurveTexture_x7dwb")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_m0pno"]
 material = SubResource("StandardMaterial3D_jgamk")
@@ -64,7 +106,7 @@ script = ExtResource("2_231fx")
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
 emitting = false
 amount = 15
-lifetime = 0.24
+lifetime = 0.3
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_1fnj8")

@@ -2,6 +2,7 @@ class_name Projectile
 extends RigidBody3D
 
 @onready var lifespan_timer : Timer = $LifespanTimer
+@onready var smoke_cloud = preload("res://ParticleFX/smoke_cloud.tscn")
 
 var damage : int = 0
 @export var status_effect : String = ""
@@ -12,7 +13,10 @@ var who_fired_me : Character = null
 
 
 func fire(speed : float):
-	apply_central_impulse(transform.basis.z * speed)
+#	print(global_rotation)
+	apply_central_impulse(-transform.basis.z * speed)
+	$GPUParticles3D.emitting = true
+	$GPUParticles3D2.emitting = true
 
 
 func initiate(new_damage : int, requester : Character):
@@ -33,16 +37,28 @@ func _on_body_entered(body):
 		else:
 			$ImpactSound.play()
 			body.take_projectile_damage(damage, who_fired_me, status_effect)
+			spawn_smoke(body)
+			set_is_active(false)
 	else:
 		$ImpactSound.play()
+		spawn_smoke(body)
 		set_is_active(false)
-
+		
 
 func set_is_active(value : bool) -> void:
 	is_active = value
 	if value == false:
 		set_deferred("contact_monitor", false)
+		$GPUParticles3D.emitting = false
+		$GPUParticles3D2.emitting = false
+		lock_rotation = false
 
+
+func spawn_smoke(collider) -> void:
+		var s : GPUParticles3D = smoke_cloud.instantiate()
+		get_tree().root.add_child(s)
+		s.global_position = global_position
+		
 
 func _on_lifespan_timer_timeout():
 	queue_free()

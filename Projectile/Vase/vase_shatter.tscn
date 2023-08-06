@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://coydttukr0ubi"]
+
+[ext_resource type="Shader" path="res://Projectile/Vase/vase_fragment.gdshader" id="1_av352"]
+[ext_resource type="Script" path="res://Projectile/Vase/vase_shatter.gd" id="2_5xyow"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_65awb"]
+emission_shape = 1
+emission_sphere_radius = 0.45
+particle_flag_align_y = true
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, -18, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 3.0
+radial_accel_min = 1.0
+radial_accel_max = 1.0
+angle_min = -28.5
+angle_max = 38.5
+scale_min = 0.5
+scale_max = 1.3
+hue_variation_min = -0.01
+hue_variation_max = 0.1
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.31
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ukiqp"]
+render_priority = 0
+shader = ExtResource("1_av352")
+shader_parameter/position = null
+shader_parameter/radius = 0.3
+shader_parameter/u_blur = 0.1
+shader_parameter/face_color = Color(0.905882, 0.572549, 0.156863, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_c75ed"]
+material = SubResource("ShaderMaterial_ukiqp")
+radius = 0.13
+height = 0.235
+is_hemisphere = true
+
+[node name="VaseShatter" type="GPUParticles3D"]
+amount = 20
+lifetime = 13.65
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_65awb")
+draw_pass_1 = SubResource("SphereMesh_c75ed")
+script = ExtResource("2_5xyow")
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.05264, -0.197319)
+size = Vector3(5.02185, 0.218894, 4.74818)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, -2.725, 0)

@@ -25,10 +25,11 @@ var target : Character = null
 var flee_target : Character = null
 #var frames_till_run : int = randi_range(3, 10)
 
-var direction : Vector3 = Vector3.ZERO : set = set_direction, get = get_direction
+var direction : Vector2 = Vector2.ZERO
 var y_rotation : float = 0 : set = set_y_rotation, get = get_y_rotation
+var last_y_rotation : float = 0
 var velocity : Vector3 = Vector3.ZERO : set = set_velocity, get = get_velocity
-var dodge_direction : Vector3 = Vector3.ZERO : get = get_dodge_direction
+var dodge_direction : Vector2 = Vector2.ZERO : get = get_dodge_direction
 var strafe_dir : int = 0   # 0 = right, 1 = left
 var distance_to_target : float = 0.0
 
@@ -38,12 +39,15 @@ var move_forward : bool = true
 var did_i_fire : bool = false
 var projectile_available : bool = true
 
-@export var RANGE_RADIUS : float = 20
+@export var RANGE_RADIUS : float = 8.5
 
-signal y_rotation_computed
-signal direction_computed
+#signal y_rotation_computed
+#signal direction_computed
 signal request_action
 
+
+func _process(delta: float) -> void:
+	face_direction()
 
 ################################# Move Actions ######################################################
 
@@ -57,32 +61,33 @@ func move_to_target(is_using_ranged : bool = false):
 		if is_using_ranged:
 			set_nav_target(target.global_position * RANGE_RADIUS)
 		else:
-			set_nav_target(target.global_position)
-		face_enemy()
-	else:
-		face_move_direction()
+			set_nav_target(target.global_position * 1.1) # Multiply by 1.1 for breathing space
+#	face_direction()
+#	else:
+#		face_move_direction()
 
 
 func flee():
 	var new_flee_target : Character = detection_area.get_closest_opponent()
 	if not new_flee_target:
 		set_is_fleeing(false)
+		return
 	else:
 		flee_target = new_flee_target
 	set_direction((actor.global_position - flee_target.global_position).normalized())
 #	move_to_target()
-	face_enemy()
+#	face_direction()
 
 
 func strafe_left():
 	set_direction(-actor.transform.basis.x)
-	face_enemy()
+#	face_direction()
 #	set_nav_target(-actor.transform.basis.x - 0.5)
 
 
 func strafe_right():
 	set_direction(actor.transform.basis.x)
-	face_enemy()
+#	face_direction()
 #	set_nav_target(actor.transform.basis.x + 0.5)
 
 
@@ -96,7 +101,7 @@ func stop_moving():
 	actor.move_direction = 0
 
 
-func face_enemy():
+func face_direction():
 	if target:
 		var new_direction = target.global_position - actor.global_position
 		var angle = atan2(-new_direction.x, -new_direction.z)
@@ -106,14 +111,16 @@ func face_enemy():
 		var angle = atan2(-new_direction.x, -new_direction.z)
 		set_y_rotation(angle)
 	else:
-		# Just in case...
-		face_move_direction()
+		# Face move direction if no targets
+		var cur_direction : Vector2 = get_direction()
+		var angle : float = atan2(-cur_direction.x, -cur_direction.y)
+		set_y_rotation(angle)
 
 
-func face_move_direction():
-	var cur_direction : Vector3 = get_direction()
-	var new_rotation : float = atan2(-cur_direction.x, -cur_direction.z)
-	set_y_rotation(new_rotation)
+#func face_move_direction():
+#	var cur_direction : Vector2 = get_direction()
+#	var new_rotation : float = atan2(-cur_direction.x, -cur_direction.y)
+#	set_y_rotation(new_rotation)
 
 
 ################################ Combat Actions #####################################################
@@ -134,8 +141,8 @@ func fire():
 
 
 func dodge(new_dodge_direction : Vector3):
-	face_enemy()
-	dodge_direction = new_dodge_direction
+#	face_enemy()
+	dodge_direction = Vector2(new_dodge_direction.x, new_dodge_direction.z)
 #	actor.start_dodge(dodge_direction)
 	request_action.emit("Dodge")
 
@@ -158,10 +165,14 @@ func is_special_available() -> bool:
 
 
 func is_projectile_available() -> bool:
-	if actor.projectile_timer.is_stopped() and actor.get_ammo() > 0:
-		return true
-	
-	return false
+	if actor.get_ammo() <= 0:
+		projectile_available = false
+		return false
+	else:
+		if actor.projectile_timer.is_stopped():
+			return true
+		else:
+			return false
 
 
 func is_dodge_available() -> bool:
@@ -224,13 +235,16 @@ func set_velocity(new_velocity : Vector3):
 	velocity = new_velocity
 
 func set_direction(new_direction : Vector3):
-	direction = new_direction
+	direction = Vector2(new_direction.x, new_direction.z).normalized()
 #	actor.move_direction = direction
 
 func set_y_rotation(value : float):
 #	y_rotation = lerp(y_rotation, value, 0.1)
-	rotation.y = value
-	emit_signal("y_rotation_computed", rotation.y)
+#	actor.rotation.y = lerp_angle(actor.rotation.y, value, 10 * get_physics_process_delta_time())
+	last_y_rotation = y_rotation
+	y_rotation = value
+	rotation.y = y_rotation
+#	emit_signal("y_rotation_computed", rotation.y)
 
 func set_detection(huh : bool):
 	detection_area.monitoring = huh
@@ -239,18 +253,32 @@ func set_nav_target(new_target : Vector3):
 	nav_agent.set_target_position(new_target)
 
 func set_target(new_target : Character, is_urgent : bool):
+	# Allow target to be changed immediately if fleeing
 	if is_urgent:
+		forget_target.stop()
+		target_think_timer.stop()
 		target = new_target
 	else:
-		if forget_target.is_stopped():
-			forget_target.start()
-		await forget_target.timeout
-		target = new_target
+		# Used for when losing sight of target. Still want to pursue to an extent.
+		if new_target == null:
+			target_think_timer.stop()
+			if forget_target.is_stopped():
+				forget_target.start()
+			await forget_target.timeout
+#			print("Target forgotten")
+			target = null
+		else:
+			forget_target.stop()
+			if target_think_timer.is_stopped():
+				target_think_timer.start()
+			await target_think_timer.timeout
+#			print("Target now " + str(new_target))
+			target = new_target
 
 
 func set_is_fleeing(value) -> void:
 	if value == false and flee_timer.is_stopped():
-		print("flee timer started")
+#		print("flee timer started")
 		flee_timer.start()
 	elif value == true:
 		is_fleeing = true
@@ -277,13 +305,13 @@ func get_target_pos() -> Vector3:
 func get_actor_pos() -> Vector3:
 	return actor.global_position
 
-func get_dodge_direction() -> Vector3:
+func get_dodge_direction() -> Vector2:
 	return dodge_direction
 
 func get_velocity() -> Vector3:
 	return velocity
 
-func get_direction() -> Vector3:
+func get_direction() -> Vector2:
 	return direction
 
 func get_is_dodging() -> bool:
@@ -304,8 +332,8 @@ func initiate(new_actor):
 	controller_positioner = actor.get_node("ControllerPositioner")
 	
 	detection_area.set_actor(actor)
-	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
-	direction_computed.connect(Callable(actor, "move_my_ass"))
+#	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
+#	direction_computed.connect(Callable(actor, "move_my_ass"))
 	request_action.connect(Callable(actor, "request_action"))
 	
 	if actor is Florist:
@@ -379,7 +407,7 @@ func die():
 
 func reset_ai():
 #	incoming_projectile = null
-	direction = Vector3.ZERO
+	direction = Vector2.ZERO
 	y_rotation = 0
 	forget_target.stop()
 	detection_area.set_monitoring(true)

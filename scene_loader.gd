@@ -61,6 +61,7 @@ func load_game_mode(game_mode : String, player_type : String, player_name : Stri
 	add_child(gm)
 	world.reparent(gm)
 	world.show()
+#	world.play_song()
 	current_scene = gm
 
 

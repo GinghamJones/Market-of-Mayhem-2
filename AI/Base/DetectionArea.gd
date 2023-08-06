@@ -11,50 +11,42 @@ var manager_in_sight : Manager = null
 var actor : Character = null
 
 
-func populate_opponents_in_sight():
-	for thing in get_overlapping_bodies():
-		if thing is Character:
-			if thing.get_team() == actor.get_team():
-				pass
-			else:
-				if check_line_of_sight(to_local(thing.global_position)):
-					opponents_in_sight.push_back(thing)
-		elif thing is Manager:
-			if check_line_of_sight(to_local(thing.global_position)):
-				manager_in_sight = thing
+#func populate_opponents_in_sight():
+##	var start_time = Time.get_ticks_usec()
+#	for thing in get_overlapping_bodies():
+#		if thing is Character:
+#			if thing.get_team() == actor.get_team():
+#				pass
+#			else:
+##				if check_line_of_sight(thing.global_position):
+#				opponents_in_sight.push_back(thing)
+#		elif thing is Manager:
+##			if check_line_of_sight(thing.global_position):
+#			manager_in_sight = thing
+##	var end_time = Time.get_ticks_usec()
+##	print(end_time - start_time)
 
 
 func get_lowest_health_opponent() -> Character:
 	if opponents_in_sight.size() == 0:
 		return null
 	
-#	var potential_target : Character = opponents_in_sight[0]
-#	var target_health : int = potential_target.get_health()
-	
-#	for thing in get_overlapping_bodies():
-#		if thing is Character:
-#			if thing.get_team() == actor.get_team():
-#				pass
-#			else:
-#				opponents_in_sight.push_back(thing)
-	
 	var potential_target : Character = opponents_in_sight[0]
 	var target_health : int = potential_target.get_health()
 	for dude in opponents_in_sight:
 		if dude.is_dead:
-			pass
+			return
 		else:
 			var new_target_health : int = dude.get_health()
 			if new_target_health < target_health:
 				potential_target = dude
-#	for dude in opponents_in_sight:
-#		# Just in case the array hasn't been updated...
-#		if dude.is_dead:
-#			pass
-#		else:
-#			var new_target_health : int = dude.get_health()
-#			if new_target_health < target_health:
-#				potential_target = dude
+		
+		if potential_target == opponents_in_sight[0]:
+#			if check_line_of_sight(to_local(potential_target.global_position)):
+			return potential_target
+		
+		if potential_target.get_health() == target_health:
+			return get_closest_opponent()
 
 	return potential_target
 
@@ -86,18 +78,19 @@ func is_projectile_comin_for_me() -> bool:
 
 
 func get_closest_opponent() -> Character:
+	if opponents_in_sight.size() == 0:
+		return null
+	
 	var cur_pos : Vector3 = actor.position
-#	print(cur_target_proximity)
 	var previous_proximity : float = 50.0
 	var new_target : Character = null
-	
-	if opponents_in_sight.size() == 0:
-		return new_target
 	
 	for dude in opponents_in_sight:
 		# Just in case the array hasn't been updated...
 		if dude.is_dead:
-			pass
+			continue
+#		if not check_line_of_sight(dude.global_position):
+#			continue
 		else:
 			var opponent_pos : Vector3 = dude.position
 			var new_opponent_proximity : float = (opponent_pos - cur_pos).length()
@@ -128,7 +121,7 @@ func get_opponents_in_sight() -> Array[Character]:
 
 
 func get_num_in_sight() -> int:
-	populate_opponents_in_sight()
+#	populate_opponents_in_sight()
 	return opponents_in_sight.size()
 
 
@@ -151,20 +144,22 @@ func reset():
 
 #func check_area() -> Array[Character]:
 
-#func _on_body_entered(body: Node3D) -> void:
-#	if body == actor:
-#		return
-#
-#	if body is Character:
-#		if not check_line_of_sight(to_local(body.global_position)):
+func _on_body_entered(body: Node3D) -> void:
+	if body is Projectile:
+		projectiles_in_sight.push_back(body)
+	if body == actor:
+		return
+
+	if body is Character:
+#		if not check_line_of_sight(body.global_position):
 #			return
-#		if actor.character_stats.Team == body.character_stats.Team or body.is_dead:
-#			return
-#		else:
-#			opponents_in_sight.push_back(body)
-#	elif body is Manager:
-#		manager_in_sight = body
-#		return
+		if actor.character_stats.Team == body.character_stats.Team or body.is_dead:
+			return
+		else:
+			opponents_in_sight.push_back(body)
+	elif body is Manager:
+		manager_in_sight = body
+		return
 #	elif body is Projectile:
 #		if body.is_active:
 #			projectiles_in_sight.push_back(body)
@@ -172,38 +167,54 @@ func reset():
 #		return
 #
 #
-#func _on_body_exited(body: Node3D) -> void:
-#	if body is Character:
-#		if opponents_in_sight.has(body):
-#			opponents_in_sight.erase(body)
+func _on_body_exited(body: Node3D) -> void:
+	if body is Projectile:
+		if projectiles_in_sight.has(body):
+			projectiles_in_sight.erase(body)
+	if body is Character:
+		if opponents_in_sight.has(body):
+			opponents_in_sight.erase(body)
 #		return
 #	elif body is Projectile:
 #		if projectiles_in_sight.has(body):
 #			projectiles_in_sight.erase(body)
 #		return
-#	elif body is Manager:
-#		manager_in_sight = null
-#		return
+	elif body is Manager:
+		manager_in_sight = null
+		return
 
+
+#func check_line_of_sight(body_pos : Vector3) -> bool:
+#	var space_state = PhysicsServer3D.space_get_direct_state(get_world_3d().space)
+#	var result : Dictionary = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(actor.global_position + Vector3(0.0, 1.5, 0.0), body_pos + Vector3(0.0, 1.5, 0.0), (pow(2.0, 1.0 - 1.0) + pow(2.0, 2.0 - 1.0) + pow(2.0, 3.0 - 1.0)), [actor.get_rid()]))
+##	var result : Dictionary = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(actor.global_position + Vector3(0.0, 1.5, 0.0), body_pos + Vector3(0.0, 1.5, 0.0), 2, [actor.get_rid()]))
+#	if result.size() > 0:
+#		print(result["collider"])
+#		if result["collider"] is Character:
+#			return true
+#
+#	return false
 
 func check_line_of_sight(body_pos : Vector3) -> bool:
+	body_pos += Vector3(0, 0.5, 0)
+	var actor_pos : Vector3 = actor.global_position + Vector3(0, 1.5, 0)
 	var line_of_sight : RayCast3D = RayCast3D.new()
 	add_child(line_of_sight)
-	line_of_sight.position = position
-	
+	line_of_sight.global_position = actor_pos
+
 	line_of_sight.set_collision_mask_value(1, true)
 	line_of_sight.set_collision_mask_value(2, true)
 	# Enable collision with spawn-area barriers
-	for i in 7:
-		line_of_sight.set_collision_mask_value(i + 6, true)
+#	for i in 7:
+#		line_of_sight.set_collision_mask_value(i + 6, true)
 	line_of_sight.collide_with_areas = true
 	line_of_sight.collide_with_bodies = true
 	line_of_sight.enabled = true
-	
+
 	# Determine where to point raycast
-	var vector_to_char : Vector3 = body_pos - position
+	var vector_to_char : Vector3 = body_pos - actor_pos
 	vector_to_char = vector_to_char.normalized()
-	var distance : float = (position - body_pos).length()
+	var distance : float = (actor_pos - body_pos).length()
 	line_of_sight.target_position = vector_to_char * distance
 
 	var collider
@@ -214,8 +225,9 @@ func check_line_of_sight(body_pos : Vector3) -> bool:
 			line_of_sight.add_exception(collider)
 		else:
 			break
-	line_of_sight.queue_free()
-	
+#	line_of_sight.queue_free()
+
+	print("Collided with " + str(collider))
 	if collider is CharacterBody3D:
 		return true
 	else:

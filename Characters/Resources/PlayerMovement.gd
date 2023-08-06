@@ -11,13 +11,15 @@ const MAX_LOOK_ANGLE : int = 60
 const MIN_LOOK_ANGLE : int = -60
 const MAX_ZOOM: float = 5
 const MIN_ZOOM : float = -1
-var dodge_direction : Vector3 = Vector3.ZERO : get = get_dodge_direction
+var dodge_direction : Vector2 = Vector2.ZERO : get = get_dodge_direction
 
 var controller_positioner : Node3D = null
 var actor : Character = null
 var target : Character = null
 # Maybe I could figure out how to detect if player is fleeing??
 var is_fleeing : bool = false
+var can_fire : bool = true
+var can_punch : bool = true
 
 signal y_rotation_computed
 signal direction_computed
@@ -98,31 +100,35 @@ func _unhandled_input(event):
 func _process(delta: float) -> void:
 	if actor:
 		#Rotate camera
-		rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
+#		actor.rotation.y -= mouse_delta.x * look_speed * delta
+#		actor.rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
+		rotation.x -= mouse_delta.y * look_speed * delta
 		rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
-		emit_signal("y_rotation_computed", get_y_rotation())
+#		emit_signal("y_rotation_computed", get_y_rotation())
+#		rotation.y = lerp_angle(rotation.y, actor.rotation.y, 15 * delta)
 		
 		mouse_delta = Vector2()
 		
-		global_position = controller_positioner.global_position
+		
 	else:
 		pass
 
 
 func run(delta : float):
-	var new_direction : Vector3 = get_direction()
-	
+#	var new_direction : Vector3 = get_direction()
+#	actor.move_my_ass(delta, new_direction)
 	if raycast.is_colliding():
 			var dude = raycast.get_collider()
 			if dude is Character:
 				set_target(dude)
 				hud.set_char_to_track(dude)
 	
-	direction_computed.emit(delta, new_direction)
+	global_position = controller_positioner.global_position
+#	direction_computed.emit(delta, new_direction)
 
 
 func is_projectile_available() -> bool:
-	if actor.get_ammo() <= 0 and not actor.projectile_timer.is_stopped():
+	if actor.get_ammo() <= 0 and not can_fire:
 		return false
 	
 	return true
@@ -135,14 +141,13 @@ func is_special_available() -> bool:
 	return false
 
 
-func get_direction() -> Vector3:
+func get_direction() -> Vector2:
 	var input_dir : Vector2 = Input.get_vector("MoveLeft", "MoveRight", "MoveForward", "MoveBack")
-	actor.move_direction = input_dir.y
-	var direction : Vector3
+#	actor.move_direction = input_dir.y
 
-	direction = (actor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+#	direction = (actor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	return direction
+	return input_dir
 
 
 func handle_cursor():
@@ -164,7 +169,7 @@ func update_hud(ammo : int = -1, health : int = -1, lives_left : int = -1):
 
 
 func get_y_rotation() -> float:
-	return rotation.y
+	return mouse_delta.x * look_speed
 
 
 func set_target(new_target : Character):
@@ -174,5 +179,5 @@ func get_fleeing() -> bool:
 	return is_fleeing
 
 
-func get_dodge_direction() -> Vector3:
+func get_dodge_direction() -> Vector2:
 	return get_direction()

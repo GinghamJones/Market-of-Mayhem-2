@@ -9,7 +9,6 @@ top_level = true
 script = ExtResource("1_617uw")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-path_desired_distance = 0.5
 target_desired_distance = 0.5
 path_postprocessing = 1
 avoidance_enabled = true
@@ -66,9 +65,11 @@ wait_time = 0.2
 one_shot = true
 
 [node name="ForgetTarget" type="Timer" parent="Node"]
+wait_time = 5.0
 one_shot = true
 
-[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
+[connection signal="body_entered" from="DetectionArea" to="DetectionArea" method="_on_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="DetectionArea" method="_on_body_exited"]
 [connection signal="timeout" from="Node/FleeTimer" to="." method="stop_fleeing"]
 [connection signal="timeout" from="Node/PunchThinkTimer" to="." method="punch"]
 [connection signal="timeout" from="Node/FireThinkTimer" to="." method="fire"]

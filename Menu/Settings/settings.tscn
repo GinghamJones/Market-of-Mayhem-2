@@ -1,6 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://d33cjyav8iekb"]
+[gd_scene load_steps=7 format=3 uid="uid://d33cjyav8iekb"]
 
 [ext_resource type="Script" path="res://Menu/Settings/settings.gd" id="1_31bi7"]
+[ext_resource type="Shader" path="res://Menu/Settings/settings.gdshader" id="2_4ap2s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lyqd7"]
+shader = ExtResource("2_4ap2s")
+shader_parameter/amount = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0cjod"]
+shader = ExtResource("2_4ap2s")
+shader_parameter/amount = 5.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_sv1wu"]
 font_size = 40
@@ -11,6 +20,7 @@ font_size = 30
 
 [node name="Settings" type="Control"]
 process_mode = 3
+material = SubResource("ShaderMaterial_lyqd7")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,6 +30,7 @@ grow_vertical = 2
 script = ExtResource("1_31bi7")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
+material = SubResource("ShaderMaterial_0cjod")
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
