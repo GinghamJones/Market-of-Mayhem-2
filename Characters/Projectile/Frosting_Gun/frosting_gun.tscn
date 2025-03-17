@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3 uid="uid://c0hbab3i7xk70"]
+
+[ext_resource type="Script" uid="uid://dlvkmgkxddw45" path="res://Characters/Projectile/Frosting_Gun/frosting_gun.gd" id="1_krvdw"]
+[ext_resource type="ArrayMesh" uid="uid://cu7tma56wvnlv" path="res://Characters/Projectile/Frosting_Gun/frosting_mesh.res" id="2_kiv0g"]
+
+[sub_resource type="Curve" id="Curve_c5dru"]
+_data = [Vector2(0.00682594, 1), 0.0, 0.0, 0, 0, Vector2(0.0204778, 0.5), 0.0, 0.0, 0, 0, Vector2(0.0580205, 1), 0.0, 0.0, 0, 0, Vector2(0.389078, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.0454545), -3.08982, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_8h8no"]
+curve = SubResource("Curve_c5dru")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lckb1"]
+particle_flag_rotate_y = true
+emission_shape = 3
+emission_box_extents = Vector3(0.1, 0.1, 0.1)
+angle_min = -267.1
+angle_max = 288.0
+direction = Vector3(0, 0, -1)
+spread = 0.25
+initial_velocity_min = 5.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, -5, 0)
+radial_accel_min = 6.93
+radial_accel_max = 8.86
+attractor_interaction_enabled = false
+scale_min = 0.27
+scale_max = 0.56
+scale_curve = SubResource("CurveTexture_8h8no")
+hue_variation_max = 0.03
+collision_mode = 1
+collision_friction = 0.86
+collision_bounce = 0.27
+collision_use_scale = true
+
+[node name="FrostingGun" type="Node3D"]
+script = ExtResource("1_krvdw")
+
+[node name="Frosting" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.450174, 2.59003, 0)
+emitting = false
+amount = 100
+lifetime = 10.0
+one_shot = true
+explosiveness = 0.28
+fixed_fps = 60
+interpolate = false
+process_material = SubResource("ParticleProcessMaterial_lckb1")
+draw_pass_1 = ExtResource("2_kiv0g")
+
+[node name="LifespanTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="FrostingHitDetect" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52114, -0.848127)
+enabled = false
+target_position = Vector3(0, 0, -5)
+collision_mask = 2
+debug_shape_custom_color = Color(0.137255, 0.117647, 1, 1)
+
+[node name="HitDelayTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="DeathTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
+[connection signal="timeout" from="LifespanTimer" to="." method="_on_lifespan_timer_timeout"]
+[connection signal="timeout" from="HitDelayTimer" to="." method="check_raycast"]
+[connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]

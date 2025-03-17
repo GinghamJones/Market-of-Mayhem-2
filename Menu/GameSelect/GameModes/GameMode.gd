@@ -86,8 +86,3 @@ func get_score(team : String, char_name : String) -> int:
 	
 	printerr("Couldn't find character for scoring")
 	return -1
-
-
-
-
-

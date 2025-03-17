@@ -1,0 +1,107 @@
+[gd_scene load_steps=11 format=3 uid="uid://3cq5p6lk64ii"]
+
+[ext_resource type="Script" uid="uid://catcavvysv3vl" path="res://Characters/Projectile/Lazer/Lazer.gd" id="1_avoeb"]
+
+[sub_resource type="Curve" id="Curve_jw53o"]
+_data = [Vector2(0.00341297, 0.536364), 0.0, 0.0, 0, 0, Vector2(0.245734, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_qj8tr"]
+curve = SubResource("Curve_jw53o")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sixj4"]
+direction = Vector3(0, 1, 0)
+spread = 86.83
+initial_velocity_min = 1.0
+initial_velocity_max = 1.0
+gravity = Vector3(0, 1, 0)
+scale_curve = SubResource("CurveTexture_qj8tr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3n7mq"]
+transparency = 1
+cull_mode = 2
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.909804, 0.0862745, 0, 0.733333)
+emission_enabled = true
+emission = Color(0.909804, 0.0862745, 0, 1)
+emission_energy_multiplier = 7.23
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_00dwf"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_3n7mq")
+size = Vector2(0.05, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nqhjd"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(1, 0.113725, 0.160784, 0.807843)
+emission_enabled = true
+emission = Color(0.886275, 0.129412, 0, 1)
+emission_energy_multiplier = 6.6
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_csthb"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_nqhjd")
+flip_faces = true
+radius = 0.009
+height = 0.097
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u38d1"]
+albedo_color = Color(1, 0.113725, 0.160784, 0.807843)
+emission_enabled = true
+emission = Color(0.886275, 0.129412, 0, 1)
+emission_energy_multiplier = 6.6
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_aqacq"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_u38d1")
+flip_faces = true
+radius = 0.009
+height = 0.097
+
+[node name="Lazer" type="Node3D"]
+script = ExtResource("1_avoeb")
+
+[node name="HitParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.89483, -0.357521)
+emitting = false
+amount = 25
+lifetime = 0.4
+fixed_fps = 60
+interpolate = false
+transform_align = 1
+process_material = SubResource("ParticleProcessMaterial_sixj4")
+draw_pass_1 = SubResource("PlaneMesh_00dwf")
+
+[node name="LazerHitDetect" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55072, -0.123684)
+enabled = false
+target_position = Vector3(0, 0, -10)
+collision_mask = 3
+collide_with_areas = true
+
+[node name="LazerBeamRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.0400248, 1.88354, -0.221763)
+visible = false
+mesh = SubResource("CapsuleMesh_csthb")
+
+[node name="LazerBeamLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.0387782, 1.88354, -0.222913)
+visible = false
+mesh = SubResource("CapsuleMesh_aqacq")
+
+[node name="LifespanTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
+[node name="DamFrequencyLimit" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="Raycast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86723, -0.16723)
+target_position = Vector3(0, 0, -10)
+collision_mask = 3
+
+[connection signal="timeout" from="LifespanTimer" to="." method="_on_lifespan_timer_timeout"]

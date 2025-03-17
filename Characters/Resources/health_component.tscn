@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://df2ber6wovyo1"]
+
+[ext_resource type="Script" uid="uid://bd2v0i3b0lcxo" path="res://Characters/Resources/health_component.gd" id="1_34m4u"]
+
+[node name="HitBox" type="Area3D"]
+script = ExtResource("1_34m4u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]

@@ -27,6 +27,7 @@ signal request_action
 func initiate(new_actor : Character):
 	actor = new_actor
 	controller_positioner = actor.get_node("ControllerPositioner")
+	
 	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
 	direction_computed.connect(Callable(actor, "move_my_ass"))
 	request_action.connect(Callable(actor, "request_action"))
@@ -42,35 +43,20 @@ func _unhandled_input(event):
 		mouse_delta = Vector2(JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y)
 	
 	if event.is_action_pressed("Dodge"):
-#		emit_signal("dodge_em", get_direction())
 		request_action.emit("Dodge")
 
-#	if event.is_action_pressed("Jump"):
-#		emit_signal("im_jumping")
-
 	if event.is_action_pressed("Punch"):
-#		emit_signal("punch_em")
 		request_action.emit("Attack")
-		
-	if event.is_action_pressed("Block"):
-#		emit_signal("block_me")
-		request_action.emit("Block")
-#	if event.is_action_released("Block"):
-#		emit_signal("unblock_me")
 
 	if event.is_action_pressed("FireProjectile"):
-#		emit_signal("fire_projectile", true)
-		if is_projectile_available():
-			request_action.emit("Fire")
+		request_action.emit("Fire")
+		update_hud(actor.attack_component.current_ammo)
 		
 	if event.is_action_released("FireProjectile"):
-#		emit_signal("quit_firing", false)
 		request_action.emit("StopFire")
 		
 	if event.is_action_pressed("SpecialMelee"):
-		if is_special_available():
-#		emit_signal("use_super_move")
-			request_action.emit("Special")
+		request_action.emit("Special")
 		
 	if event.is_action_pressed("ToggleCursor"):
 		handle_cursor()
@@ -96,17 +82,19 @@ func _unhandled_input(event):
 
 
 func _process(delta: float) -> void:
-	if actor:
-		#Rotate camera
-		rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
-		rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
-		emit_signal("y_rotation_computed", get_y_rotation())
-		
-		mouse_delta = Vector2()
-		
-		global_position = controller_positioner.global_position
-	else:
-		pass
+	if not actor: return
+	
+	#Rotate camera
+	rotation -= Vector3(mouse_delta.y, mouse_delta.x, 0) * look_speed * delta
+	rotation.x = clamp(rotation.x, deg_to_rad(MIN_LOOK_ANGLE), deg_to_rad(MAX_LOOK_ANGLE))
+	actor.attack_component.rotation.x = rotation.x
+	
+	# Character's Y rotation is computed and set in Character scene for control over rotation speed
+	emit_signal("y_rotation_computed", get_y_rotation())
+	
+	mouse_delta = Vector2()
+	
+	global_position = controller_positioner.global_position
 
 
 func run(delta : float):
@@ -119,20 +107,6 @@ func run(delta : float):
 				hud.set_char_to_track(dude)
 	
 	direction_computed.emit(delta, new_direction)
-
-
-func is_projectile_available() -> bool:
-	if actor.get_ammo() <= 0 and not actor.projectile_timer.is_stopped():
-		return false
-	
-	return true
-
-
-func is_special_available() -> bool:
-	if actor.special_timer.is_stopped():
-		return true
-	
-	return false
 
 
 func get_direction() -> Vector3:
@@ -169,6 +143,7 @@ func get_y_rotation() -> float:
 
 func set_target(new_target : Character):
 	target = new_target
+
 
 func get_fleeing() -> bool:
 	return is_fleeing

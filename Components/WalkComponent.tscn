@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b54sbvnww6ysu"]
+
+[ext_resource type="Script" uid="uid://bv140e1k7vq6g" path="res://Components/walk_component.gd" id="1_41eyq"]
+
+[node name="Walk" type="Node"]
+script = ExtResource("1_41eyq")
+speed = null

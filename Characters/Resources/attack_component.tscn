@@ -1,0 +1,96 @@
+[gd_scene load_steps=7 format=3 uid="uid://c2v2afg2n5nrr"]
+
+[ext_resource type="Script" uid="uid://d2cl7bkwygq3p" path="res://Characters/Resources/attack_component.gd" id="1_37vr8"]
+[ext_resource type="AudioStream" uid="uid://bxdqmvjxnmoyf" path="res://kenney impact sounds/impact_plate_heavy_004.ogg" id="2_d8ch2"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_d8ch2"]
+radius = 0.3
+
+[sub_resource type="Animation" id="Animation_rvcrv"]
+resource_name = "Punch_Left"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LeftHook:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, -1.593), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_cet2a"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LeftHook:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.233245, 2.29336, -0.657593)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LeftHook:position.z")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [null]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mso7d"]
+_data = {
+&"Punch_Left": SubResource("Animation_rvcrv"),
+&"RESET": SubResource("Animation_cet2a")
+}
+
+[node name="AttackComponent" type="Node3D"]
+script = ExtResource("1_37vr8")
+
+[node name="ProjectilePlacement" type="Marker3D" parent="."]
+
+[node name="LeftHook" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.233245, 2.29336, -0.657593)
+collision_layer = 0
+collision_mask = 4097
+max_contacts_reported = 1
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="LeftHook"]
+shape = SubResource("SphereShape3D_d8ch2")
+
+[node name="PunchAnims" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_mso7d")
+}
+
+[node name="ProjectileTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[node name="SpecialMeleeTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 5.0
+one_shot = true
+
+[node name="PunchTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_d8ch2")
+
+[connection signal="body_entered" from="LeftHook" to="." method="_on_left_hook_body_entered"]
+[connection signal="animation_finished" from="PunchAnims" to="." method="_on_punch_anims_animation_finished"]
+[connection signal="timeout" from="ProjectileTimer" to="." method="_on_projectile_timer_timeout"]
+[connection signal="timeout" from="PunchTimer" to="." method="_on_punch_timer_timeout"]

@@ -4,10 +4,10 @@ extends GameMode
 
 @onready var dev_menu : Control = $DevMenu
 @onready var start_round_timer : Timer = $Timers/StartRoundTimer
-@onready var knife : PackedScene = preload("res://Projectile/Knife/knife.tscn")
-@onready var food : PackedScene = preload("res://Projectile/Food/fast_food.tscn")
-@onready var vase : PackedScene = preload("res://Projectile/Vase/vase.tscn")
-@onready var coin : PackedScene = preload("res://Projectile/Coin/coin.tscn")
+@export var knife : PackedScene
+@export var food : PackedScene
+@export var vase : PackedScene
+@export var coin : PackedScene
 
 signal character_spawned
 
@@ -156,8 +156,8 @@ func _on_button_pressed() -> void:
 func _on_character_spawned() -> void:
 #	await get_tree().physics_frame
 	for key in current_characters.keys():
-		for character in current_characters[key]:
-			character.character_stats.current_ammo = 1000
+		for character : Character in current_characters[key]:
+			character.attack_component.current_ammo = 1000
 			character.is_paused = false
 			character.set_process(true)
 			character.set_physics_process(true)

@@ -12,6 +12,7 @@ var actor : Character = null
 
 
 func populate_opponents_in_sight():
+	var start_time : int = Time.get_ticks_usec()
 	for thing in get_overlapping_bodies():
 		if thing is Character:
 			if thing.get_team() == actor.get_team():
@@ -22,6 +23,8 @@ func populate_opponents_in_sight():
 		elif thing is Manager:
 			if check_line_of_sight(to_local(thing.global_position)):
 				manager_in_sight = thing
+	var end_time : int = Time.get_ticks_usec()
+	print("Populate took %s us" % (end_time-start_time))
 
 
 func get_lowest_health_opponent() -> Character:

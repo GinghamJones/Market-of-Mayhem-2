@@ -12,7 +12,7 @@ extends Control
 @onready var enemy_health_bar : ProgressBar = $EnemyHealth
 @onready var stats_hide_timer : Timer = $EnemyHealth/EnemyHealthText/Timer
 
-var special_timer : Timer = null
+#var special_timer : Timer = null
 var projectile_timer : Timer = null
 var actor : Character
 var char_to_track : Character = null : set = set_char_to_track
@@ -26,10 +26,10 @@ func _ready() -> void:
 func _physics_process(_delta):
 	if char_to_track:
 		if char_to_track.health_changed:
-			update_enemy_stats(char_to_track.get_team(), char_to_track.get_health())
+			update_enemy_stats(char_to_track.get_team(), char_to_track.health_component.current_health)
 	
-	if not special_timer.is_stopped():
-		update_special(special_timer.time_left)
+	#if not special_timer.is_stopped():
+		#update_special(special_timer.time_left)
 	
 	if not projectile_timer.is_stopped():
 		update_projectile_cooldown()
@@ -37,24 +37,24 @@ func _physics_process(_delta):
 
 func initiate(new_actor : Character):
 	actor = new_actor
-	special_timer = actor.special_timer
-	projectile_timer = actor.projectile_timer
+	#special_timer = actor.special_timer
+	projectile_timer = actor.attack_component.projectile_timer
 	
-	projectile_cooldown_bar.set("max_value", projectile_timer.wait_time)
+	projectile_cooldown_bar.set("max_value", actor.attack_component.projectile_timer.wait_time)
 	projectile_cooldown_bar.set("value", 0)
 	projectile_cooldown_text.text = str(0)
 	
-	ammo_bar.set("max_value", actor.character_stats.max_ammo)
-	ammo_bar.set("value", actor.character_stats.current_ammo)
+	ammo_bar.set("max_value", actor.attack_component.max_ammo)
+	ammo_bar.set("value", actor.attack_component.current_ammo)
 
-	ammo_text.text = "Ammo: " + str(actor.character_stats.current_ammo)
+	ammo_text.text = "Ammo: " + str(actor.attack_component.current_ammo)
 	
-	special_cooldown_bar.set("max_value", actor.special_timer.wait_time)
+	#special_cooldown_bar.set("max_value", actor.special_timer.wait_time)
 	special_cooldown_bar.set("value", 0)
 	special_cooldown_text.text = str(0)
 	
-	health_bar.set("max_value", actor.character_stats.max_health)
-	health_bar.set("value", actor.character_stats.current_health)
+	health_bar.set("max_value", actor.health_component.max_health)
+	health_bar.set("value", actor.health_component.current_health)
 
 
 func update_projectile_cooldown() -> void:

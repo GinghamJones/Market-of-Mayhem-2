@@ -1,19 +1,19 @@
 extends Area3D
 
-@onready var master : Character = get_parent()
+@onready var actor : Character = get_parent()
 
 func _on_body_entered(body: Node3D) -> void:
-	if body == master:
+	if body == actor:
 		pass
 	else:
-		master.is_healing = false
+		actor.is_healing = false
 
 
 func _on_body_exited(_body: Node3D) -> void:
 	if get_overlapping_bodies().size() > 1:
 		pass
 	else:
-		master.is_healing = true
+		actor.is_healing = true
 
 
 func disable() -> void:
@@ -28,4 +28,3 @@ func enable() -> void:
 #	set_process(true)
 	set_block_signals(false)
 	monitoring = true
-	

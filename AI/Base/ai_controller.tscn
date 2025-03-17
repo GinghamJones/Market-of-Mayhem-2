@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://b7fwx56n0jnkd"]
 
-[ext_resource type="Script" path="res://AI/Base/ai_controller.gd" id="1_617uw"]
+[ext_resource type="Script" uid="uid://7civlbkutsm2" path="res://AI/Base/ai_controller.gd" id="1_617uw"]
 [ext_resource type="Shape3D" uid="uid://dpvuqlxwkw00e" path="res://detection_shape.tres" id="2_krexa"]
-[ext_resource type="Script" path="res://AI/Base/DetectionArea.gd" id="4_uobrm"]
+[ext_resource type="Script" uid="uid://bhqls8mdt6kne" path="res://AI/Base/DetectionArea.gd" id="4_uobrm"]
 
 [node name="AIController" type="Node3D" groups=["Controller"]]
 top_level = true

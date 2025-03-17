@@ -1,6 +1,8 @@
 class_name BalancedAIController
 extends AIController
 
+var frame_skip : int = 0
+
 func run(delta : float) -> void:
 	if did_i_fire:
 		request_action.emit("StopFire")
@@ -24,6 +26,10 @@ func run(delta : float) -> void:
 
 func handle_target_selection() -> void:
 	if is_fleeing:
+		return
+	
+	frame_skip = randi_range(0, 1)
+	if frame_skip == 0:
 		return
 	
 	# Using this, we populate the opponents_in_sight array in detection_area
