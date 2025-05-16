@@ -66,7 +66,27 @@ wait_time = 0.2
 one_shot = true
 
 [node name="ForgetTarget" type="Timer" parent="Node"]
+wait_time = 5.0
 one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Target" type="Label" parent="CanvasLayer"]
+offset_right = 338.0
+offset_bottom = 37.0
+text = "Target"
+
+[node name="Movement" type="Label" parent="CanvasLayer"]
+offset_top = 43.0
+offset_right = 338.0
+offset_bottom = 80.0
+text = "Movement"
+
+[node name="Attacking" type="Label" parent="CanvasLayer"]
+offset_top = 89.0
+offset_right = 338.0
+offset_bottom = 126.0
+text = "Attacking"
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="timeout" from="Node/FleeTimer" to="." method="stop_fleeing"]

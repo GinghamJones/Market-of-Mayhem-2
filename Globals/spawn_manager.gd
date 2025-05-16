@@ -11,6 +11,7 @@ extends Node
 }
 @onready var player_movement = preload("res://Characters/Resources/player_movement.tscn")
 @onready var balanced_ai_controller : PackedScene = preload("res://AI/Balanced AI/balanced_ai_controller.tscn")
+@onready var AI_CONTROLLER_2 = preload("res://AI/ai_controller_2.tscn")
 @onready var baker_controller : PackedScene = preload("res://AI/SpecialAI/baker_controller.tscn")
 @onready var manager : PackedScene = preload("res://NPC/Manager/manager.tscn")
 @onready var manager_controller : PackedScene = preload("res://NPC/Manager/Manager AI/manager_controller.tscn")
@@ -30,7 +31,7 @@ func get_new_character(character_type : String, player_controlled : bool, spawn_
 		if new_character is Baker:
 			new_controller = baker_controller.instantiate()
 		else:
-			new_controller = balanced_ai_controller.instantiate()
+			new_controller = AI_CONTROLLER_2.instantiate()
 		new_character.player_controlled = false
 
 	new_character.add_child(new_controller)

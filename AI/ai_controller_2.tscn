@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bo24i50g41rbg"]
+
+[ext_resource type="Script" uid="uid://b62usjwmquirr" path="res://AI/ai_controller_2.gd" id="1_g6gxd"]
+[ext_resource type="Script" uid="uid://coo06c6b3y164" path="res://AI/actions.gd" id="2_j0eqp"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_j0eqp"]
+points = PackedVector3Array(-1.14, 0, 0, -1.14, 1.44, 0, 1.24, 0, 0, 1.24, 1.44, 0, -8.665, 0, -10.44, -8.66, 1.44, -10.49, 8.74, 0, -10.4, 8.74, 1.44, -10.4)
+
+[node name="AIController2" type="Node3D" groups=["Controller"]]
+script = ExtResource("1_g6gxd")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="DetectionArea" type="Area3D" parent="."]
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("ConvexPolygonShape3D_j0eqp")
+
+[node name="Actions" type="Node" parent="."]
+script = ExtResource("2_j0eqp")

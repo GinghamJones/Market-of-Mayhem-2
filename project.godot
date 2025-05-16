@@ -21,6 +21,8 @@ config/icon="res://icon.svg"
 
 SpawnManager="*res://Globals/spawn_manager.gd"
 NameGenerator="*res://Globals/name_generator.gd"
+BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
+BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 
 [display]
 
@@ -40,7 +42,11 @@ movie_writer/fps=35
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/SimpleTODO/plugin.cfg")
+enabled=PackedStringArray("res://addons/SimpleTODO/plugin.cfg", "res://addons/beehave/plugin.cfg")
+
+[global_group]
+
+Controller=""
 
 [input]
 

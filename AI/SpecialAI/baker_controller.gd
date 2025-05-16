@@ -164,4 +164,3 @@ func rotate_while_firing() -> void:
 		set_y_rotation(rotation.y + 0.01)
 	else:
 		set_y_rotation(rotation.y - 0.01)
-

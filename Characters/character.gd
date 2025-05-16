@@ -13,6 +13,8 @@ extends CharacterBody3D
 @export var health_component : HealthComponent
 
 @onready var anims : AnimationTree = $CharacterAnimationTree
+@onready var controller_positioner: Node3D = $ControllerPositioner
+
 
 ## Timers ##
 @onready var dodge_timer : Timer = $Timers/DodgeTimer
@@ -81,7 +83,7 @@ func _physics_process(delta: float) -> void:
 			just_slipped = false
 		velocity = velocity.lerp(velocity / 1.5, 0.2)
 		set_is_moving(false)
-		controller.global_position = $ControllerPositioner.global_position
+		controller.global_position = controller_positioner.global_position
 		move_and_slide()
 		return
 	

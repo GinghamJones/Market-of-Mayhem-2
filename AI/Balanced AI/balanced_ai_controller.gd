@@ -26,8 +26,11 @@ func run(delta : float) -> void:
 
 func handle_target_selection() -> void:
 	if is_fleeing:
+		#!!! Debugging text!!!#
+		target_text.text = "Fleeing %s" % flee_target
 		return
 	
+	# Skip randomly to save on processing
 	frame_skip = randi_range(0, 1)
 	if frame_skip == 0:
 		return
@@ -35,10 +38,13 @@ func handle_target_selection() -> void:
 	# Using this, we populate the opponents_in_sight array in detection_area
 	var num_in_sight : int = detection_area.get_num_in_sight()
 	
-#	print(str(num_in_sight))
 	# Check for too many opponents in area
 	if num_in_sight > 4:
 		# Run away if so
+		
+		#!!! Debug Text!!!#
+		target_text.text = "Too many dudes"
+		
 		too_many_dudes = true
 		set_target(null, true)
 		is_fleeing = true
@@ -46,11 +52,16 @@ func handle_target_selection() -> void:
 #		set_flee_target(check_wander_target())
 		return
 	elif num_in_sight > 0:
+		#!!! Debug Text !!!#
+		target_text.text = "Potential target"
 		# If we have a target already, make sure it's still valid
 		if target:
+			target_text.text = "Checking current target"
 			check_current_target()
 		else:
+			target_text.text = "Getting new target"
 			set_target(detection_area.get_lowest_health_opponent(), false)
+			target_text.text = "New target: %s" % target
 		
 		projectile_available = is_projectile_available()
 			
@@ -58,13 +69,16 @@ func handle_target_selection() -> void:
 		if targetters.size() == 0:
 			pass
 		else:
+			target_text.text = "Parsing targetters"
 			parse_targetters(targetters)
+			target_text.text = "Parsed targets. Now: %s" % target
 			return
 	else: #dudes_in_sight == 0:
 		# No one in sight, no need to select targets
 
 #		if is_fleeing:
 #			set_fleeing(false)
+		target_text.text = "No one in sight"
 		if target:
 			set_target(null, false)
 	
@@ -88,47 +102,59 @@ func handle_target_selection() -> void:
 
 func handle_movement() -> void:
 	if is_fleeing:
+		movement_text.text = "Fleeing"
 		flee()
 		return
 	
 	if target == null:
+		movement_text.text = "Wandering"
 		check_wander_target()
 		move_to_target()
 		return 
 	
 	if not back_up_timer.is_stopped():
+		movement_text.text = "Backing up because of timer"
 		back_up()
 		return
 	
 	if get_is_dodging():
+		movement_text.text = "Dodging"
 		return
 	
 	if is_dodge_available():
 		if detection_area.is_projectile_comin_for_me():
+			movement_text.text = "Projectile comin' for me. Gonna dodge."
 			dodge(choose_dodge_direction())
 			return
 
 	check_movement_change()
 
 	if move_forward:
+		movement_text.text = "Moving to target"
 		move_to_target(projectile_available)
 	else:
+		movement_text.text = "Strafing target"
 		handle_strafe()
 
 
 func handle_attacking() -> void:
 	if not punch_anim_timer.is_stopped() or not target:
+		attacking_text.text = "Currently attacking"
 		return
 	
 	if punch_think_timer.is_stopped():
+		attacking_text.text = "Checking punch conditions"
 		if check_punch_conditions():
 			punch_think_timer.wait_time = randf_range(0.1, 0.2)
 			punch_think_timer.start()
+			attacking_text.text = "Thinking about punching"
 	
 	if fire_think_timer.is_stopped():
+		attacking_text.text = "Checking fire conditions"
 		if check_fire_conditions():
 			fire_think_timer.wait_time = randf_range(0.1, 0.2)
 			fire_think_timer.start()
+			attacking_text.text = "Thinking about firing"
 
 
 ######################## Target Functions ##############################################

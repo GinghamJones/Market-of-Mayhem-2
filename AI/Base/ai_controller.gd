@@ -17,6 +17,9 @@ extends Node3D
 @onready var target_think_timer: Timer = $Node/TargetThinkTimer
 @onready var forget_target: Timer = $Node/ForgetTarget
 
+@onready var target_text: Label = $CanvasLayer/Target
+@onready var movement_text: Label = $CanvasLayer/Movement
+@onready var attacking_text: Label = $CanvasLayer/Attacking
 
 var projectile_timer : Timer = null
 var actor : Character = null
@@ -65,11 +68,11 @@ func move_to_target(is_using_ranged : bool = false):
 
 
 func flee():
-	var new_flee_target : Character = detection_area.get_closest_opponent()
-	if not new_flee_target:
-		set_is_fleeing(false)
-	else:
-		flee_target = new_flee_target
+	#var new_flee_target : Character = detection_area.get_closest_opponent()
+	#if not new_flee_target:
+		#set_is_fleeing(false)
+	#else:
+		#flee_target = new_flee_target
 	set_direction((actor.global_position - flee_target.global_position).normalized())
 #	move_to_target()
 	face_enemy()
@@ -137,7 +140,6 @@ func fire():
 func dodge(new_dodge_direction : Vector3):
 	face_enemy()
 	dodge_direction = new_dodge_direction
-#	actor.start_dodge(dodge_direction)
 	request_action.emit("Dodge")
 
 
@@ -159,7 +161,7 @@ func is_special_available() -> bool:
 
 
 func is_projectile_available() -> bool:
-	if actor.projectile_timer.is_stopped() and actor.get_ammo() > 0:
+	if projectile_timer and actor.attack_component.current_ammo > 0:
 		return true
 	
 	return false
@@ -264,10 +266,10 @@ func stop_fleeing() -> void:
 ##################################### Getters #######################################################
 # Is this the best way of interfacing with actor?
 func get_target_health() -> int:
-	return target.get_health()
+	return target.health_component.current_health
 
 func get_actor_health() -> int:
-	return actor.get_health()
+	return actor.health_component.current_health
 
 func get_actor_speed() -> float:
 	return actor.get_speed()
@@ -301,7 +303,7 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 func initiate(new_actor):
 	# Be sure to instantiate an AIModule and set ai_module_children to its children
 	actor = new_actor
-	projectile_timer = actor.projectile_timer
+	projectile_timer = actor.attack_component.projectile_timer
 	controller_positioner = actor.get_node("ControllerPositioner")
 	
 	detection_area.set_actor(actor)
