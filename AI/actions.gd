@@ -21,14 +21,18 @@ var actions : Dictionary = {
 var reaction_time : float
 var r : RandomNumberGenerator = RandomNumberGenerator.new()
 
+var action_scores : Dictionary[String, float] # Purely a debugging variable
+
 func _ready() -> void:
 	randomize()
 
 func get_best_action() -> String:
 	reaction_time = r.randf_range(REACTION_LOWER_BOUND, REACTION_UPPER_BOUND)
-	var best_action : String = actions.keys()[0]
+	var best_action : String = actions.keys()[1]
 	var best_score : float = actions[best_action]
 	for action : String in actions.keys():
+		action_scores[action] = actions[action] # Purely a debugging line. Really terrible for performance
+		print(action)
 		if actions[action] > best_score:
 			best_action = action
 			best_score = actions[action]

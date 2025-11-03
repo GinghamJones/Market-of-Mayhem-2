@@ -9,6 +9,8 @@ extends GameMode
 @export var vase : PackedScene
 @export var coin : PackedScene
 
+var tracked_ai_chosen : bool # Used for debugging AI
+
 signal character_spawned
 
 
@@ -124,6 +126,7 @@ func _on_manager_pressed():
 
 
 func _on_button_pressed() -> void:
+	# Just a dev-drop of shit. Spawns 100 of each object.
 	for i in 100:
 		var c = coin.instantiate()
 		add_child(c)
@@ -154,9 +157,14 @@ func _on_button_pressed() -> void:
 
 
 func _on_character_spawned() -> void:
-#	await get_tree().physics_frame
+	# What the hell are we doing here??? Like, does this reset EVERY character when we spawn one???
+	# Oh well... it is dev mode
+	
 	for key in current_characters.keys():
 		for character : Character in current_characters[key]:
+			if character.controller is AIController2 and !tracked_ai_chosen:
+				$AIDebug.tracked_char = character
+				tracked_ai_chosen = true
 			character.attack_component.current_ammo = 1000
 			character.is_paused = false
 			character.set_process(true)

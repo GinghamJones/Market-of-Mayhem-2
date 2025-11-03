@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://drn3guvtuxnsh"]
 
-[ext_resource type="Script" path="res://Menu/GameSelect/GameModes/GameMode.gd" id="1_4ikh1"]
-[ext_resource type="Script" path="res://Menu/GameSelect/GameModes/GUI.gd" id="2_sifct"]
+[ext_resource type="Script" uid="uid://dkiph3ebudr6d" path="res://Menu/GameSelect/GameModes/GameMode.gd" id="1_4ikh1"]
+[ext_resource type="Script" uid="uid://b34g2aupjcqy7" path="res://Menu/GameSelect/GameModes/GUI.gd" id="2_sifct"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4ngxw"]
 font_size = 100

@@ -246,7 +246,7 @@ func take_projectile_damage(damage : int, who_dunnit : Character, status_effect 
 	if status_effect != "":
 		call(status_effect)
 	
-	character_stats.current_health -= damage
+	health_component.current_health -= damage
 	
 	update_health()
 		

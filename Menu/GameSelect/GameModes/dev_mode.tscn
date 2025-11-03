@@ -1,10 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://ci10prtvv375s"]
+[gd_scene load_steps=4 format=3 uid="uid://ci10prtvv375s"]
 
 [ext_resource type="PackedScene" uid="uid://drn3guvtuxnsh" path="res://Menu/GameSelect/GameModes/game_mode.tscn" id="1_iyko6"]
-[ext_resource type="Script" path="res://Menu/GameSelect/GameModes/dev_mode.gd" id="2_erike"]
+[ext_resource type="Script" uid="uid://dpto8c3ayw4cx" path="res://Menu/GameSelect/GameModes/dev_mode.gd" id="2_erike"]
+[ext_resource type="Script" uid="uid://bdru1l28ehr46" path="res://Menu/GameSelect/GameModes/ai_debug.gd" id="3_7fxsg"]
 
 [node name="DevMode" instance=ExtResource("1_iyko6")]
 script = ExtResource("2_erike")
+knife = null
+food = null
+vase = null
+coin = null
 
 [node name="DevMenu" type="Control" parent="." index="0"]
 layout_mode = 3
@@ -100,6 +105,42 @@ process_mode = 3
 
 [node name="IntermissionTimer" parent="Timers" index="1"]
 wait_time = 2.0
+
+[node name="AIDebug" type="CanvasLayer" parent="." index="3"]
+script = ExtResource("3_7fxsg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AIDebug" index="0"]
+custom_minimum_size = Vector2(500, 500)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Chase" type="Label" parent="AIDebug/VBoxContainer" index="0"]
+layout_mode = 2
+text = "fdsasdfas"
+
+[node name="Wander" type="Label" parent="AIDebug/VBoxContainer" index="1"]
+layout_mode = 2
+text = "fdsasdfas"
+
+[node name="Punch" type="Label" parent="AIDebug/VBoxContainer" index="2"]
+layout_mode = 2
+text = "fdsasdfas"
+
+[node name="Dodge" type="Label" parent="AIDebug/VBoxContainer" index="3"]
+layout_mode = 2
+text = "fdsasdfas"
+
+[node name="Fire" type="Label" parent="AIDebug/VBoxContainer" index="4"]
+layout_mode = 2
+text = "fdsasdfas"
+
+[node name="Retreat" type="Label" parent="AIDebug/VBoxContainer" index="5"]
+layout_mode = 2
+text = "fdsasdfas"
 
 [connection signal="pressed" from="DevMenu/VBoxContainer/ButcherButton" to="." method="_on_butcher_button_pressed"]
 [connection signal="pressed" from="DevMenu/VBoxContainer/CookButton" to="." method="_on_cook_button_pressed"]

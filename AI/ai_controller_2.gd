@@ -5,20 +5,19 @@ var actor : Character = get_parent()
 @onready var actions: Actions = $Actions
 @onready var nav_agent : NavigationAgent3D = $NavigationAgent3D
 @onready var detection_area : Area3D = $DetectionArea
-var current_action : String
+var current_action : String = "wander"
 var wander_target : Vector3
 var target : Character
 var move_dir : Vector3
+
 
 signal request_action
 
 
 func run(delta: float) -> void:
 	var action : String = actions.get_best_action()
-	if action == current_action:
-		return
-	
-	current_action = action
+	if action != current_action:
+		current_action = action
 	
 	if action == "wander":
 		wander()
@@ -39,7 +38,7 @@ func run(delta: float) -> void:
 
 
 func wander() -> void:
-	if wander_target == Vector3.ZERO:
+	if wander_target == Vector3.ZERO or nav_agent.is_target_reached():
 		while true:
 			var r : RandomNumberGenerator = RandomNumberGenerator.new()
 			var new_target : Vector3 = Vector3(r.randf_range(-10, 10), r.randf_range(-10, 10), r.randf_range(-10, 10))
@@ -49,6 +48,7 @@ func wander() -> void:
 				break
 		
 	set_direction(wander_target)
+	face_move_dir()
 
 
 func chase() -> void:
@@ -75,6 +75,9 @@ func set_direction(target_position : Vector3) -> void:
 	var direction : Vector3 = (nav_agent.get_next_path_position() - actor.global_position).normalized()
 	move_dir = direction
 
+
+func face_move_dir() -> void:
+	rotation.y = atan2(move_dir.x, move_dir.z)
 
 func is_projectile_incoming() -> bool:
 	# A suitable hack for now #
