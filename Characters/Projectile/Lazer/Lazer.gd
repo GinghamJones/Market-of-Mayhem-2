@@ -16,7 +16,7 @@ var beam_radius : float = 0.03
 
 var actor : Character
 
-func fire(speed : float) -> void:
+func fire(_speed : float) -> void:
 	activate(0.5)
 
 func _process(_delta):

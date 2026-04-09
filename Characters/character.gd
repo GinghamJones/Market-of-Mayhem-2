@@ -77,13 +77,15 @@ func _physics_process(delta: float) -> void:
 	if is_paused or is_dead:
 		return
 	
+	controller.global_position = controller_positioner.global_position
+	
 	if is_slipping:
 		if just_slipped:
-			velocity = -transform.basis.z * 20
+			#velocity = -transform.basis.z * 20
+			velocity = velocity * 20
 			just_slipped = false
 		velocity = velocity.lerp(velocity / 1.5, 0.2)
 		set_is_moving(false)
-		controller.global_position = controller_positioner.global_position
 		move_and_slide()
 		return
 	
@@ -183,7 +185,7 @@ func request_action(action : String):
 func start_dodge(new_direction : Vector3):
 	if dodge_cooldown.is_stopped():
 		dodge_timer.start()
-		#dodge_direction = new_direction
+		dodge_direction = new_direction
 		dodge_direction = velocity.normalized()
 		is_dodging = true
 
@@ -221,38 +223,38 @@ func _handle_firing():
 ############################## Damage related functions ###########################################
 
 #!!! This will be in HealthComponent !!!#
-func take_damage(damage : int, who_dunnit):
-	if is_invincible:
-		return
+#func take_damage(damage : int, who_dunnit):
+	#if is_invincible:
+		#return
+#
+		## Set im_walloped so phys_process can calculate punched velocity
+##		im_walloped = true
+##		hit_direction = direction
+	#
+		#update_health()
+	#
+	#if character_stats.current_health <= 0:
+		#if who_dunnit is Manager:
+			#pass
+		#else:
+			#who_dunnit.set("score", 1)
+		#die()
 
-		# Set im_walloped so phys_process can calculate punched velocity
-#		im_walloped = true
-#		hit_direction = direction
-		
-		update_health()
-	
-	if character_stats.current_health <= 0:
-		if who_dunnit is Manager:
-			pass
-		else:
-			who_dunnit.set("score", 1)
-		die()
 
-
-func take_projectile_damage(damage : int, who_dunnit : Character, status_effect : String = ""):
-	if is_invincible:
-		return
-	
-	if status_effect != "":
-		call(status_effect)
-	
-	health_component.current_health -= damage
-	
-	update_health()
-		
-	if character_stats.current_health <= 0:
-		who_dunnit.set("score", 1)
-		die()
+#func take_projectile_damage(damage : int, who_dunnit : Character, status_effect : String = ""):
+	#if is_invincible:
+		#return
+	#
+	#if status_effect != "":
+		#call(status_effect)
+	#
+	#health_component.current_health -= damage
+	#
+	#update_health()
+		#
+	#if character_stats.current_health <= 0:
+		#who_dunnit.set("score", 1)
+		#die()
 
 
 func slow():
@@ -279,7 +281,7 @@ func die():
 #	set_running(false)
 	is_paused = true
 	
-	if controller is AIController:
+	if controller is AIController2:
 		controller.die()
 	
 	call_deferred("set_collision_layer_value", 2, false)
@@ -385,7 +387,7 @@ func get_team() -> String:
 
 #### Signal functions ####
 
-func _on_animation_tree_animation_finished(anim_name):
+func _on_animation_tree_animation_finished(_anim_name):
 	current_action = ""
 
 

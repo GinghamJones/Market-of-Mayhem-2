@@ -15,8 +15,8 @@ signal character_spawned
 
 
 func _ready():
+	super() # Hides countdown text
 	character_spawned.connect(Callable(self, "_on_character_spawned"))
-	super()
 	call_deferred("add_character", player_character_type, true, player_name)
 	await get_tree().physics_frame
 	character_spawned.emit()

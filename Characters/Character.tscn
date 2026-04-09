@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dklaxvd7swq26"]
+[gd_scene format=3 uid="uid://dklaxvd7swq26"]
 
 [ext_resource type="Script" uid="uid://b1pt1ndomoijx" path="res://Characters/character.gd" id="1_ldc1x"]
 [ext_resource type="PackedScene" uid="uid://c2v2afg2n5nrr" path="res://Characters/Resources/attack_component.tscn" id="3_rvcrv"]
@@ -88,6 +88,7 @@ filters = ["Meat_Female/Skeleton3D:Chest", "Meat_Female/Skeleton3D:Head", "Meat_
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_t0tf6"]
 graph_offset = Vector2(-981.723, 16.0395)
+nodes/output/position = Vector2(600, 60)
 nodes/AttackLeft/node = SubResource("AnimationNodeAnimation_rgjwp")
 nodes/AttackLeft/position = Vector2(-440, 620)
 nodes/AttackRight/node = SubResource("AnimationNodeAnimation_b12cm")
@@ -122,13 +123,12 @@ nodes/TimeScale/position = Vector2(-720, 60)
 "nodes/TimeScale 5/position" = Vector2(20, 400)
 "nodes/TimeScale 6/node" = SubResource("AnimationNodeTimeScale_43mvl")
 "nodes/TimeScale 6/position" = Vector2(-180, 400)
-nodes/output/position = Vector2(600, 60)
-node_connections = [&"BlockShot", 0, &"TimeScale", &"BlockShot", 1, &"TimeScale 3", &"LeftAttackShot", 0, &"BlockShot", &"LeftAttackShot", 1, &"TimeScale 2", &"ProjectileShot", 0, &"RightAttackShot", &"ProjectileShot", 1, &"TimeScale 5", &"RightAttackShot", 0, &"LeftAttackShot", &"RightAttackShot", 1, &"TimeScale 6", &"SpecialShot", 0, &"ProjectileShot", &"SpecialShot", 1, &"TimeScale 4", &"TimeScale", 0, &"Movement", &"TimeScale 2", 0, &"AttackLeft", &"TimeScale 3", 0, &"Block", &"TimeScale 4", 0, &"Special", &"TimeScale 5", 0, &"Projectile", &"TimeScale 6", 0, &"AttackRight", &"output", 0, &"SpecialShot"]
+node_connections = [&"output", 0, &"SpecialShot", &"BlockShot", 0, &"TimeScale", &"BlockShot", 1, &"TimeScale 3", &"LeftAttackShot", 0, &"BlockShot", &"LeftAttackShot", 1, &"TimeScale 2", &"ProjectileShot", 0, &"RightAttackShot", &"ProjectileShot", 1, &"TimeScale 5", &"RightAttackShot", 0, &"LeftAttackShot", &"RightAttackShot", 1, &"TimeScale 6", &"SpecialShot", 0, &"ProjectileShot", &"SpecialShot", 1, &"TimeScale 4", &"TimeScale", 0, &"Movement", &"TimeScale 2", 0, &"AttackLeft", &"TimeScale 3", 0, &"Block", &"TimeScale 4", 0, &"Special", &"TimeScale 5", 0, &"Projectile", &"TimeScale 6", 0, &"AttackRight"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_8rgjv"]
 radius = 10.0
 
-[node name="Character" type="CharacterBody3D" node_paths=PackedStringArray("attack_component", "health_component") groups=["Character"]]
+[node name="Character" type="CharacterBody3D" unique_id=717623073 node_paths=PackedStringArray("attack_component", "health_component") groups=["Character"]]
 process_mode = 1
 collision_layer = 2
 collision_mask = 3
@@ -136,11 +136,11 @@ script = ExtResource("1_ldc1x")
 attack_component = NodePath("AttackComponent")
 health_component = NodePath("HealthComponent")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1905153439]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32783, 0)
 shape = SubResource("CapsuleShape3D_g0x83")
 
-[node name="CharacterAnimationTree" type="AnimationTree" parent="."]
+[node name="CharacterAnimationTree" type="AnimationTree" parent="." unique_id=305482787]
 tree_root = SubResource("AnimationNodeBlendTree_t0tf6")
 advance_expression_base_node = NodePath("..")
 parameters/BlockShot/active = false
@@ -166,66 +166,69 @@ parameters/TimeScale/scale = 1.0
 "parameters/TimeScale 6/scale" = 1.5
 script = ExtResource("5_hokk0")
 
-[node name="ControllerPositioner" type="Node3D" parent="."]
+[node name="ControllerPositioner" type="Node3D" parent="." unique_id=1225328512]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.341794)
 
-[node name="Timers" type="Node" parent="."]
+[node name="Timers" type="Node" parent="." unique_id=1541307173]
 
-[node name="RespawnTimer" type="Timer" parent="Timers"]
+[node name="RespawnTimer" type="Timer" parent="Timers" unique_id=321342041]
 process_mode = 3
 process_callback = 0
 wait_time = 4.0
 one_shot = true
 
-[node name="SlowTimer" type="Timer" parent="Timers"]
+[node name="SlowTimer" type="Timer" parent="Timers" unique_id=759015225]
 process_callback = 0
 wait_time = 5.0
 one_shot = true
 
-[node name="DodgeTimer" type="Timer" parent="Timers"]
+[node name="DodgeTimer" type="Timer" parent="Timers" unique_id=762680881]
 process_callback = 0
 wait_time = 0.2
 one_shot = true
 
-[node name="DodgeCooldown" type="Timer" parent="Timers"]
+[node name="DodgeCooldown" type="Timer" parent="Timers" unique_id=1052781155]
 process_callback = 0
 wait_time = 2.0
 one_shot = true
 
-[node name="InvincibilityTimer" type="Timer" parent="Timers"]
+[node name="InvincibilityTimer" type="Timer" parent="Timers" unique_id=1912111687]
 process_callback = 0
 wait_time = 2.0
 one_shot = true
 
-[node name="PunchTimer" type="Timer" parent="Timers"]
+[node name="PunchTimer" type="Timer" parent="Timers" unique_id=764864836]
 
-[node name="HealDelayTimer" type="Timer" parent="Timers"]
+[node name="HealDelayTimer" type="Timer" parent="Timers" unique_id=914929431]
 process_callback = 0
 one_shot = true
 
-[node name="SlipTimer" type="Timer" parent="Timers"]
+[node name="SlipTimer" type="Timer" parent="Timers" unique_id=1642924074]
 wait_time = 0.5
 one_shot = true
 
-[node name="ImpulseTimer" type="Timer" parent="Timers"]
+[node name="ImpulseTimer" type="Timer" parent="Timers" unique_id=887158716]
 one_shot = true
 
-[node name="HealDetectArea" type="Area3D" parent="."]
+[node name="HealDetectArea" type="Area3D" parent="." unique_id=835199154]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28944, 0)
 collision_layer = 0
 collision_mask = 2
 input_ray_pickable = false
 script = ExtResource("7_e3b4m")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HealDetectArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HealDetectArea" unique_id=270658748]
 shape = SubResource("SphereShape3D_8rgjv")
 
-[node name="HealthComponent" parent="." instance=ExtResource("6_cet2a")]
+[node name="HealthComponent" parent="." unique_id=583604446 instance=ExtResource("6_cet2a")]
 collision_layer = 4096
 collision_mask = 0
 
-[node name="AttackComponent" parent="." instance=ExtResource("3_rvcrv")]
+[node name="AttackComponent" parent="." unique_id=1907782259 instance=ExtResource("3_rvcrv")]
 projectile_speed = 20.0
+
+[node name="LeftHook" parent="AttackComponent" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, 1.8, 0)
 
 [connection signal="animation_finished" from="CharacterAnimationTree" to="." method="_on_animation_tree_animation_finished"]
 [connection signal="timeout" from="Timers/RespawnTimer" to="." method="respawn"]
@@ -237,3 +240,5 @@ projectile_speed = 20.0
 [connection signal="timeout" from="Timers/ImpulseTimer" to="." method="_on_impulse_timer_timeout"]
 [connection signal="body_entered" from="HealDetectArea" to="HealDetectArea" method="_on_body_entered"]
 [connection signal="body_exited" from="HealDetectArea" to="HealDetectArea" method="_on_body_exited"]
+
+[editable path="AttackComponent"]

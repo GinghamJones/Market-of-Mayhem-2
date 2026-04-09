@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c3qwsbgpvcqv"]
+[gd_scene format=3 uid="uid://c3qwsbgpvcqv"]
 
 [ext_resource type="Script" uid="uid://bu3ryabno5as0" path="res://Characters/Resources/PlayerMovement.gd" id="1_wydpy"]
 [ext_resource type="Script" uid="uid://bgihh3e00hjmv" path="res://Characters/Resources/HUD.gd" id="2_ty4rr"]
@@ -24,26 +24,26 @@ font_size = 40
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o1381"]
 bg_color = Color(0.454902, 0.0666667, 0.0666667, 1)
 
-[node name="PlayerMovement" type="Node3D" groups=["Controller"]]
+[node name="PlayerMovement" type="Node3D" unique_id=1130358608 groups=["Controller"]]
 top_level = true
 script = ExtResource("1_wydpy")
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=1551347749]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.64638, -0.837237)
 target_position = Vector3(0, 0, -5)
 collision_mask = 2
 
-[node name="CameraSpringArm" type="SpringArm3D" parent="."]
+[node name="CameraSpringArm" type="SpringArm3D" parent="." unique_id=1432804547]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.910875, 3.21025, 0.715332)
 shape = SubResource("BoxShape3D_jkriw")
 spring_length = 2.7
 margin = 0.5
 
-[node name="Camera3D" type="Camera3D" parent="CameraSpringArm"]
+[node name="Camera3D" type="Camera3D" parent="CameraSpringArm" unique_id=307468839]
 current = true
 near = 0.6
 
-[node name="HUD" type="Control" parent="."]
+[node name="HUD" type="Control" parent="." unique_id=2113860725]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1919.0
@@ -51,7 +51,7 @@ offset_bottom = 1078.0
 mouse_filter = 2
 script = ExtResource("2_ty4rr")
 
-[node name="ProjectileCooldown" type="ProgressBar" parent="HUD"]
+[node name="ProjectileCooldown" type="ProgressBar" parent="HUD" unique_id=1339953149]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 952.0
@@ -60,7 +60,7 @@ offset_bottom = 1001.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_xug86")
 show_percentage = false
 
-[node name="TimeLeft" type="Label" parent="HUD/ProjectileCooldown"]
+[node name="TimeLeft" type="Label" parent="HUD/ProjectileCooldown" unique_id=531754217]
 layout_mode = 0
 offset_right = 255.0
 offset_bottom = 49.0
@@ -69,7 +69,7 @@ label_settings = SubResource("LabelSettings_n4cqr")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SpecialCooldown" type="ProgressBar" parent="HUD"]
+[node name="SpecialCooldown" type="ProgressBar" parent="HUD" unique_id=750797238]
 layout_mode = 0
 offset_left = 291.0
 offset_top = 1010.0
@@ -78,7 +78,7 @@ offset_bottom = 1059.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_xug86")
 show_percentage = false
 
-[node name="TimeLeft" type="Label" parent="HUD/SpecialCooldown"]
+[node name="TimeLeft" type="Label" parent="HUD/SpecialCooldown" unique_id=451679929]
 layout_mode = 0
 offset_right = 255.0
 offset_bottom = 49.0
@@ -87,7 +87,7 @@ label_settings = SubResource("LabelSettings_n4cqr")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AmmoBar" type="ProgressBar" parent="HUD"]
+[node name="AmmoBar" type="ProgressBar" parent="HUD" unique_id=1336355569]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 1010.0
@@ -98,7 +98,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_mcv7c")
 step = 1.0
 show_percentage = false
 
-[node name="AmmoCounter" type="Label" parent="HUD/AmmoBar"]
+[node name="AmmoCounter" type="Label" parent="HUD/AmmoBar" unique_id=842916456]
 layout_mode = 0
 offset_left = 2.0
 offset_right = 250.0
@@ -107,7 +107,7 @@ text = "Fuck me hard, plz"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HealthBar" type="ProgressBar" parent="HUD"]
+[node name="HealthBar" type="ProgressBar" parent="HUD" unique_id=770474339]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 893.0
@@ -115,7 +115,7 @@ offset_right = 376.0
 offset_bottom = 935.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_62uee")
 
-[node name="LivesLeft" type="Label" parent="HUD"]
+[node name="LivesLeft" type="Label" parent="HUD" unique_id=1769183425]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 24.0
@@ -124,7 +124,7 @@ offset_bottom = 80.0
 text = "Bill"
 label_settings = SubResource("LabelSettings_y82a3")
 
-[node name="EnemyHealth" type="ProgressBar" parent="HUD"]
+[node name="EnemyHealth" type="ProgressBar" parent="HUD" unique_id=1329150077]
 layout_mode = 0
 offset_left = 721.0
 offset_top = 84.0
@@ -136,7 +136,7 @@ allow_greater = true
 allow_lesser = true
 show_percentage = false
 
-[node name="EnemyHealthText" type="Label" parent="HUD/EnemyHealth"]
+[node name="EnemyHealthText" type="Label" parent="HUD/EnemyHealth" unique_id=714949231]
 layout_mode = 0
 offset_right = 482.0
 offset_bottom = 61.0
@@ -144,7 +144,7 @@ text = "Fuck off"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Timer" type="Timer" parent="HUD/EnemyHealth/EnemyHealthText"]
+[node name="Timer" type="Timer" parent="HUD/EnemyHealth/EnemyHealthText" unique_id=1272604677]
 wait_time = 4.0
 one_shot = true
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://wdn4h3sv3ee1"]
+[gd_scene format=3 uid="uid://wdn4h3sv3ee1"]
 
 [ext_resource type="Script" uid="uid://db6um3r20vc14" path="res://Characters/Projectile/projectile.gd" id="1_an4cv"]
 
@@ -6,24 +6,25 @@
 friction = 0.78
 bounce = 0.42
 
-[node name="Projectile" type="RigidBody3D"]
+[node name="Projectile" type="RigidBody3D" unique_id=807515027]
 collision_layer = 4
-collision_mask = 4097
+collision_mask = 4099
 physics_material_override = SubResource("PhysicsMaterial_w0nx8")
+continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_an4cv")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=571502652]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=791124483]
 
-[node name="LifespanTimer" type="Timer" parent="."]
+[node name="LifespanTimer" type="Timer" parent="." unique_id=889286275]
 wait_time = 6.997
 one_shot = true
 autostart = true
 
-[node name="ImpactSound" type="AudioStreamPlayer3D" parent="."]
+[node name="ImpactSound" type="AudioStreamPlayer3D" parent="." unique_id=2069357609]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="LifespanTimer" to="." method="_on_lifespan_timer_timeout"]

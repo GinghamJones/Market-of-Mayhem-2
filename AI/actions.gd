@@ -39,16 +39,16 @@ func get_best_action() -> String:
 	return best_action
 	
 	
-func calculate_chase_score() -> int:
+func calculate_chase_score() -> float:
 	if not controller: return 0
 	var target_available : bool = controller.target != null
 	var proximity : float = (actor.global_position - controller.target.global_position).length()
-	var chase_score : float = int(target_available) * proximity
+	var chase_score : float = float(target_available) * proximity
 	
 	return chase_score
 
 
-func calculate_wander_score() -> int:
+func calculate_wander_score() -> float:
 	if not controller: return 0
 	#!!! May want to make more sophisticated to include if others are around but not targets !!!#
 	var target_available : bool = controller.target != null
@@ -58,26 +58,26 @@ func calculate_wander_score() -> int:
 		return 10000
 
 
-func calculate_punch_score() -> int:
+func calculate_punch_score() -> float:
 	if not controller: return 0
 	var proximity : float = (actor.global_position - controller.target.global_position).length()
-	var punch_available : int = int(actor.attack_component.can_punch)
-	var is_target_visible : int = int(controller.is_target_visible())
-	var punch_score : float = (2 / proximity) * PUNCH_MOD * punch_available * is_target_visible 
+	var punch_available : float = float(actor.attack_component.can_punch)
+	var is_target_visible : float = float(controller.is_target_visible())
+	var punch_score : float = (2.0 / proximity) * PUNCH_MOD * punch_available * is_target_visible 
 	return punch_score
 
 
-func calculate_dodge_score() -> int:
+func calculate_dodge_score() -> float:
 	if not controller: return 0
-	var is_projectile_incoming : int = int(controller.is_projectile_incoming())
+	var is_projectile_incoming : float = float(controller.is_projectile_incoming())
 	var dodge_score : float = is_projectile_incoming * reaction_time * DODGE_MULT
 	return dodge_score
 
 
-func calculate_fire_score() -> int:
+func calculate_fire_score() -> float:
 	if not controller: return 0
-	var is_projectile_available : int = int(actor.attack_component.can_fire)
-	var is_target_in_range : int 
+	var is_projectile_available : float = float(actor.attack_component.can_fire)
+	var is_target_in_range : float 
 	var distance_to_target : float = (actor.global_position - controller.target.global_position).length()
 	if distance_to_target < PROJECTILE_RANGE:
 		is_target_in_range = 1
@@ -87,7 +87,7 @@ func calculate_fire_score() -> int:
 	return fire_score
 
 
-func calculate_retreat_score() -> int:
+func calculate_retreat_score() -> float:
 	if not controller: return 0
 	var distance_to_target : float = (actor.global_position - controller.target.global_position).length()
 	var can_punch : int = int(not actor.attack_component.can_punch)

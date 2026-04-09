@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://cc653p6ws20k1"]
+[gd_scene format=4 uid="uid://cc653p6ws20k1"]
 
 [ext_resource type="PackedScene" uid="uid://wdn4h3sv3ee1" path="res://Characters/Projectile/projectile.tscn" id="1_l7yjw"]
 [ext_resource type="PackedScene" uid="uid://degfbyxwsm2vc" path="res://Characters/Projectile/Knife/KNIFE.glb" id="2_nqhok"]
@@ -89,12 +89,11 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_r1vlc")
 
-[node name="Knife" instance=ExtResource("1_l7yjw")]
-collision_mask = 4097
+[node name="Knife" unique_id=1841670819 instance=ExtResource("1_l7yjw")]
 physics_material_override = SubResource("PhysicsMaterial_dvse7")
 gravity_scale = 0.5
 angular_damp = 2.976
-damage = null
+damage = 15
 status_effect = null
 
 [node name="CollisionShape3D" parent="." index="0"]
@@ -104,7 +103,7 @@ shape = SubResource("BoxShape3D_qfg2y")
 [node name="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(3.54536, 0, 0, 0, 3.54536, 0, 0, 0, 3.54536, 0, 0, 0)
 
-[node name="KNIFE" parent="." index="3" instance=ExtResource("2_nqhok")]
+[node name="KNIFE" parent="." index="3" unique_id=1958163211 instance=ExtResource("2_nqhok")]
 transform = Transform3D(4.14036e-15, 2.16695, -9.47204e-08, 9.47204e-08, -9.47204e-08, -2.16695, -2.16695, 0, -9.47204e-08, 0, 0, 0)
 
 [node name="Plane" parent="KNIFE" index="0"]

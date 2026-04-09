@@ -77,7 +77,7 @@ func set_direction(target_position : Vector3) -> void:
 
 
 func face_move_dir() -> void:
-	rotation.y = atan2(move_dir.x, move_dir.z)
+	actor.rotation.y = atan2(-move_dir.x, move_dir.z)
 
 func is_projectile_incoming() -> bool:
 	# A suitable hack for now #
@@ -102,6 +102,9 @@ func is_target_visible() -> bool:
 	
 	return true
 
+
+func die():
+	pass
 
 func initiate(new_actor):
 	# Be sure to instantiate an AIModule and set ai_module_children to its children

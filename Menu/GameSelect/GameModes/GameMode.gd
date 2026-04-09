@@ -28,7 +28,7 @@ var current_round : int = 0
 
 var is_paused : bool = false
 
-signal load_character_select
+#signal load_character_select
 signal need_settings
 signal fuck_the_settings
 

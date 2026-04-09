@@ -1,5 +1,5 @@
 class_name HealthComponent
-extends Area3D
+extends StaticBody3D
 
 @onready var actor : Character = get_parent()
 @export var max_health : int

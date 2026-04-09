@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://wg7ab83x00f2"]
+[gd_scene format=3 uid="uid://wg7ab83x00f2"]
 
 [ext_resource type="PackedScene" uid="uid://dklaxvd7swq26" path="res://Characters/Character.tscn" id="1_ex4bq"]
 [ext_resource type="Script" uid="uid://bj1mvn5l5tbbk" path="res://Characters/Meat/meat_seafood_dude.gd" id="2_qd4mi"]
@@ -6,63 +6,72 @@
 [ext_resource type="PackedScene" uid="uid://cc653p6ws20k1" path="res://Characters/Projectile/Knife/knife.tscn" id="4_5mxm1"]
 [ext_resource type="PackedScene" uid="uid://6rkn4xgndslf" path="res://Characters/Meat/Meat_NPC/NPC_Meat_Male.glb" id="4_pgh1r"]
 
-[sub_resource type="Resource" id="Resource_1hf3m"]
+[sub_resource type="Resource" id="Resource_5mxm1"]
 resource_local_to_scene = true
 script = ExtResource("3_tdnbw")
 Team = "Meat"
 move_speed = 10.0
 acceleration = 0.2
-gravity = 30.0
-dodge_force = 15.0
 
-[node name="MeatSeafoodDude" node_paths=PackedStringArray("skeleton", "mesh") instance=ExtResource("1_ex4bq")]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5mxm1"]
+height = 2.7514648
+
+[node name="MeatSeafoodDude" unique_id=859609541 node_paths=PackedStringArray("skeleton", "mesh") instance=ExtResource("1_ex4bq")]
 collision_layer = 66
 collision_mask = 4003
 script = ExtResource("2_qd4mi")
-character_stats = SubResource("Resource_1hf3m")
+character_stats = SubResource("Resource_5mxm1")
 skeleton = NodePath("NPC_Meat_Male/Meat_Male/Skeleton3D")
 mesh = NodePath("NPC_Meat_Male/Meat_Male/Skeleton3D/Male_Meat")
 
-[node name="CharacterAnimationTree" parent="." index="1"]
+[node name="CharacterAnimationTree" parent="." index="1" unique_id=305482787]
 root_node = NodePath("../NPC_Meat_Male")
 anim_player = NodePath("../NPC_Meat_Male/AnimationPlayer")
 "parameters/TimeScale 4/scale" = 1.0
 "parameters/TimeScale 5/scale" = 1.0
 "parameters/TimeScale 6/scale" = 1.0
 
-[node name="AttackComponent" parent="." index="6"]
+[node name="CollisionShape3D" parent="HealthComponent" parent_id_path=PackedInt32Array(583604446) index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3468642, 0)
+shape = SubResource("CapsuleShape3D_5mxm1")
+
+[node name="AttackComponent" parent="." index="6" unique_id=1907782259]
 punch_force = 15.0
 projectile = ExtResource("4_5mxm1")
 projectile_speed = 60.0
 
-[node name="NPC_Meat_Male" parent="." index="7" instance=ExtResource("4_pgh1r")]
+[node name="ProjectilePlacement" parent="AttackComponent" index="0" unique_id=1636194289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53685296, 1.6713521, -0.5231761)
+
+[node name="NPC_Meat_Male" parent="." index="7" unique_id=1264486529 instance=ExtResource("4_pgh1r")]
 transform = Transform3D(-0.8, 0, -1.20797e-07, 0, 0.8, 0, 1.20797e-07, 0, -0.8, 0, 0, 0)
 
 [node name="Skeleton3D" parent="NPC_Meat_Male/Meat_Male" index="0"]
-bones/0/position = Vector3(5.28339e-06, -0.390283, -0.662976)
-bones/0/rotation = Quaternion(0.115415, -0.395018, 0.0500992, 0.910017)
-bones/1/rotation = Quaternion(-0.0605221, 0.254832, -0.049531, 0.963818)
-bones/2/rotation = Quaternion(-0.0774642, 1.47834e-08, -2.14509e-10, 0.996995)
-bones/3/rotation = Quaternion(0.0016272, -7.6543e-09, -1.2455e-11, 0.999999)
-bones/5/rotation = Quaternion(-0.0943413, 0.100049, -0.029062, 0.990073)
-bones/6/rotation = Quaternion(-0.0985686, -0.0627921, 0.00458312, 0.993137)
-bones/7/position = Vector3(0.0302145, 0.226561, 0.129197)
-bones/8/position = Vector3(0.0884713, 0.319367, 0.00406386)
-bones/8/rotation = Quaternion(-0.13382, 0.473118, -0.711461, 0.502071)
-bones/9/rotation = Quaternion(0.701972, 0.292335, 0.187257, 0.621861)
-bones/10/rotation = Quaternion(0.230802, -0.112314, 0.104331, 0.960849)
-bones/11/position = Vector3(-0.0302145, 0.226561, 0.129197)
-bones/12/rotation = Quaternion(-0.268194, -0.517391, 0.668567, 0.461949)
-bones/13/rotation = Quaternion(0.641669, 0.239627, 0.487338, 0.54161)
-bones/14/rotation = Quaternion(-0.0109359, -0.215798, 0.439103, 0.872067)
-bones/17/rotation = Quaternion(0.940776, 0.185815, -0.0302261, 0.281958)
-bones/18/rotation = Quaternion(0.212213, 0.0211559, 0.132389, 0.967983)
-bones/19/rotation = Quaternion(-0.48417, -0.36159, 0.00599817, 0.796741)
-bones/20/rotation = Quaternion(-0.0477537, 0.964918, -0.258084, 0.00668463)
-bones/21/rotation = Quaternion(0.992218, -0.0322464, -0.0135399, 0.119504)
-bones/22/rotation = Quaternion(0.189142, -0.00361839, 0.111216, 0.975625)
-bones/23/rotation = Quaternion(-0.584041, 0.0345404, -0.106592, 0.803954)
-bones/24/rotation = Quaternion(0.0524675, 0.970027, -0.191667, -0.139849)
+bones/0/position = Vector3(5.2833934e-06, -0.3797851, -0.3862432)
+bones/0/rotation = Quaternion(0.11541523, -0.39501813, 0.05009922, 0.9100166)
+bones/1/rotation = Quaternion(-0.05123165, 0.25371966, -0.055211395, 0.96434087)
+bones/2/rotation = Quaternion(-0.07746417, 1.4783447e-08, -2.1450941e-10, 0.99699515)
+bones/3/rotation = Quaternion(0.0016271957, -7.654298e-09, -1.245501e-11, 0.9999987)
+bones/5/rotation = Quaternion(-0.094341315, 0.10004852, -0.029062033, 0.99007344)
+bones/6/rotation = Quaternion(-0.08291777, 1.03387565e-05, 0.000109803506, 0.99655646)
+bones/7/position = Vector3(0.030214537, 0.22656113, 0.12919745)
+bones/8/position = Vector3(0.08847133, 0.3193673, 0.004063864)
+bones/8/rotation = Quaternion(-0.13584955, 0.46888468, -0.72151726, 0.49102435)
+bones/9/rotation = Quaternion(0.6962347, 0.2558398, 0.20431978, 0.63879323)
+bones/10/rotation = Quaternion(0.22588326, -0.10147158, 0.0968677, 0.96400046)
+bones/11/position = Vector3(-0.030214492, 0.22656116, 0.12919746)
+bones/12/rotation = Quaternion(-0.25488383, -0.5330403, 0.6663058, 0.45490548)
+bones/13/rotation = Quaternion(0.6508068, 0.22975734, 0.49466372, 0.5281761)
+bones/14/rotation = Quaternion(-0.010935893, -0.21579769, 0.4391032, 0.8720667)
+bones/17/rotation = Quaternion(0.9323824, 0.20289272, -0.03265326, 0.29737434)
+bones/18/rotation = Quaternion(0.24871892, 0.025958642, 0.17225708, 0.9527815)
+bones/19/rotation = Quaternion(-0.4686767, -0.36660084, 0.013740415, 0.8035902)
+bones/20/rotation = Quaternion(-0.046869814, 0.9663646, -0.25273657, 0.008184322)
+bones/21/rotation = Quaternion(0.9937928, -0.094083026, -0.00703797, 0.05894861)
+bones/22/rotation = Quaternion(0.16189419, -0.0045087086, 0.08386421, 0.9832277)
+bones/23/rotation = Quaternion(-0.5481504, 0.017438857, -0.0664754, 0.83355147)
+bones/24/rotation = Quaternion(0.08224047, 0.9498132, -0.24133089, -0.181248)
 
+[editable path="HealthComponent"]
 [editable path="AttackComponent"]
 [editable path="NPC_Meat_Male"]

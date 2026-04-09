@@ -8,21 +8,27 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Market of Mayhem 2"
 run/main_scene="res://scene_loader.tscn"
-config/features=PackedStringArray("4.4", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 run/max_fps=160
 boot_splash/image="res://mom2 splash.png"
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="uid://bw3r1co7s8cru"
 
 [autoload]
 
 SpawnManager="*res://Globals/spawn_manager.gd"
 NameGenerator="*res://Globals/name_generator.gd"
-BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
-BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 
 [display]
 
@@ -42,7 +48,7 @@ movie_writer/fps=35
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/SimpleTODO/plugin.cfg", "res://addons/beehave/plugin.cfg")
+enabled=PackedStringArray("res://addons/SimpleTODO/plugin.cfg")
 
 [global_group]
 

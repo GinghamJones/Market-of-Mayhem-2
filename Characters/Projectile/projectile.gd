@@ -3,7 +3,7 @@ extends RigidBody3D
 
 @onready var lifespan_timer : Timer = $LifespanTimer
 
-@export var damage : int = 0
+@export var damage : int = 15
 @export var status_effect : String = ""
 
 var is_active : bool = true : set = set_is_active
@@ -27,15 +27,27 @@ func fire(speed : float):
 
 
 func _on_body_entered(body):
-	if body is Character:
-		if body.get_team() == actor.get_team():
-			pass
-		else:
-			$ImpactSound.play()
-			body.take_projectile_damage(damage, actor, status_effect)
+	if body is HealthComponent:
+		print("HealthComponent is hit")
+		if body.actor.get_team() == actor.get_team():
+			return
+		
+		$ImpactSound.play()
+		body.take_projectile_damage(damage, actor)
+		print("Damage should have been dealt")
 	else:
 		$ImpactSound.play()
 		set_is_active(false)
+	
+	#if body is Character:
+		#if body.get_team() == actor.get_team():
+			#pass
+		#else:
+			#$ImpactSound.play()
+			#body.take_projectile_damage(damage, actor, status_effect)
+	#else:
+		#$ImpactSound.play()
+		#set_is_active(false)
 
 
 func set_is_active(value : bool) -> void:

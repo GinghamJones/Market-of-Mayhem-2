@@ -84,7 +84,7 @@ func determine_projectile_speed() -> float:
 #	return projectile_speed
 
 
-func fire(speed : float):
+func fire(_speed : float):
 	firing = true
 	raycast.enabled = true
 	timer.start()

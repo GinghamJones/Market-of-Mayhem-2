@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2v2afg2n5nrr"]
+[gd_scene format=3 uid="uid://c2v2afg2n5nrr"]
 
 [ext_resource type="Script" uid="uid://d2cl7bkwygq3p" path="res://Characters/Resources/attack_component.gd" id="1_37vr8"]
 [ext_resource type="AudioStream" uid="uid://bxdqmvjxnmoyf" path="res://kenney impact sounds/impact_plate_heavy_004.ogg" id="2_d8ch2"]
@@ -7,87 +7,58 @@
 radius = 0.3
 
 [sub_resource type="Animation" id="Animation_rvcrv"]
-resource_name = "Punch_Left"
+resource_name = "Punch"
 length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("LeftHook:position")
+tracks/0/path = NodePath("LeftHook:position:z")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.3),
+"times": PackedFloat32Array(0, 0.13333334, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 0, -1.593), Vector3(0, 0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_cet2a"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("LeftHook:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0.233245, 2.29336, -0.657593)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("LeftHook:position.z")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [null]
+"values": [0.0, -1.593, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mso7d"]
 _data = {
-&"Punch_Left": SubResource("Animation_rvcrv"),
-&"RESET": SubResource("Animation_cet2a")
+&"Punch": SubResource("Animation_rvcrv")
 }
 
-[node name="AttackComponent" type="Node3D"]
+[node name="AttackComponent" type="Node3D" unique_id=650921224]
 script = ExtResource("1_37vr8")
 
-[node name="ProjectilePlacement" type="Marker3D" parent="."]
+[node name="ProjectilePlacement" type="Marker3D" parent="." unique_id=1636194289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3604655, -0.40361345)
 
-[node name="LeftHook" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.233245, 2.29336, -0.657593)
+[node name="LeftHook" type="Area3D" parent="." unique_id=1685785789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, 1.8, 0)
 collision_layer = 0
 collision_mask = 4097
-max_contacts_reported = 1
+monitorable = false
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="LeftHook"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="LeftHook" unique_id=1651810912]
 shape = SubResource("SphereShape3D_d8ch2")
 
-[node name="PunchAnims" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_mso7d")
-}
+[node name="PunchAnims" type="AnimationPlayer" parent="." unique_id=942991054]
+libraries/ = SubResource("AnimationLibrary_mso7d")
 
-[node name="ProjectileTimer" type="Timer" parent="."]
+[node name="ProjectileTimer" type="Timer" parent="." unique_id=1397032923]
 process_callback = 0
 one_shot = true
 
-[node name="SpecialMeleeTimer" type="Timer" parent="."]
+[node name="SpecialMeleeTimer" type="Timer" parent="." unique_id=1240305368]
 process_callback = 0
 wait_time = 5.0
 one_shot = true
 
-[node name="PunchTimer" type="Timer" parent="."]
+[node name="PunchTimer" type="Timer" parent="." unique_id=788415864]
 wait_time = 0.5
 one_shot = true
 
-[node name="PunchSound" type="AudioStreamPlayer3D" parent="."]
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=1977094850]
 stream = ExtResource("2_d8ch2")
 
 [connection signal="body_entered" from="LeftHook" to="." method="_on_left_hook_body_entered"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://cw8obhhnbl33s"]
+[gd_scene format=4 uid="uid://cw8obhhnbl33s"]
 
 [ext_resource type="PackedScene" uid="uid://dklaxvd7swq26" path="res://Characters/Character.tscn" id="1_gltfd"]
 [ext_resource type="Script" uid="uid://f3d7hrd5anah" path="res://Characters/Floral/florist.gd" id="2_0kib0"]
@@ -6,14 +6,15 @@
 [ext_resource type="PackedScene" uid="uid://dyrp7rfn3ut4j" path="res://Characters/Floral/NPC_Floral_Female.glb" id="4_v8qvq"]
 [ext_resource type="PackedScene" uid="uid://cwxvknjlk6sb2" path="res://Characters/Projectile/Vase/vase.tscn" id="4_vxc4d"]
 
-[sub_resource type="Resource" id="Resource_h6ea7"]
+[sub_resource type="Resource" id="Resource_vxc4d"]
 resource_local_to_scene = true
 script = ExtResource("3_qrku6")
 Team = "Floral"
 move_speed = 10.0
 acceleration = 0.3
-gravity = 30.0
-dodge_force = 15.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vxc4d"]
+height = 2.6669922
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1cj25"]
 resource_name = "Skin"
@@ -169,63 +170,67 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[node name="Florist" node_paths=PackedStringArray("skeleton", "mesh") instance=ExtResource("1_gltfd")]
+[node name="Florist" unique_id=8369543 node_paths=PackedStringArray("skeleton", "mesh") instance=ExtResource("1_gltfd")]
 collision_layer = 2050
 collision_mask = 2019
 script = ExtResource("2_0kib0")
-character_stats = SubResource("Resource_h6ea7")
+character_stats = SubResource("Resource_vxc4d")
 skeleton = NodePath("NPC_Floral_Female/Floral_Female/Skeleton3D")
 mesh = NodePath("NPC_Floral_Female/Floral_Female/Skeleton3D/Female_Floral")
 
-[node name="CharacterAnimationTree" parent="." index="1"]
+[node name="CharacterAnimationTree" parent="." index="1" unique_id=305482787]
 root_node = NodePath("../NPC_Floral_Female")
 anim_player = NodePath("../NPC_Floral_Female/AnimationPlayer")
 
-[node name="HealthComponent" parent="." index="5"]
+[node name="HealthComponent" parent="." index="5" unique_id=583604446]
 max_health = 100
 
-[node name="AttackComponent" parent="." index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.13205, -0.938681)
+[node name="CollisionShape3D" parent="HealthComponent" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3270668, 0)
+shape = SubResource("CapsuleShape3D_vxc4d")
+
+[node name="AttackComponent" parent="." index="6" unique_id=1907782259]
 punch_dam = 8
 punch_force = 8.0
 projectile = ExtResource("4_vxc4d")
 projectile_fire_delay = 0.8
 max_ammo = 15
 
-[node name="ProjectilePlacement" parent="AttackComponent" index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.945587, -0.32537, 0, 0.32537, 0.945587, 0, 0, 0.375844)
+[node name="ProjectilePlacement" parent="AttackComponent" index="0" unique_id=1636194289]
+transform = Transform3D(1, 0, 0, 0, 0.945587, -0.32537, 0, 0.32537, 0.945587, 0.42966485, 1.5825206, -0.47488075)
 
-[node name="NPC_Floral_Female" parent="." index="7" instance=ExtResource("4_v8qvq")]
+[node name="NPC_Floral_Female" parent="." index="7" unique_id=2016394409 instance=ExtResource("4_v8qvq")]
 transform = Transform3D(-0.8, 0, -1.20797e-07, 0, 0.8, 0, 1.20797e-07, 0, -0.8, 0, 0, 0)
 
 [node name="Skeleton3D" parent="NPC_Floral_Female/Floral_Female" index="0"]
-bones/0/position = Vector3(5.28339e-06, -0.444767, -0.405262)
-bones/0/rotation = Quaternion(0.115415, -0.395018, 0.0500992, 0.910017)
-bones/1/rotation = Quaternion(-0.044072, 0.252861, -0.0595852, 0.96466)
-bones/2/rotation = Quaternion(-0.0774642, 1.47834e-08, -2.14509e-10, 0.996995)
-bones/3/rotation = Quaternion(0.0016272, -7.6543e-09, -1.2455e-11, 0.999999)
-bones/5/rotation = Quaternion(-0.0943413, 0.100049, -0.029062, 0.990073)
-bones/6/rotation = Quaternion(-0.119603, -0.00336468, 0.00244845, 0.992813)
-bones/7/position = Vector3(0.0302145, 0.226561, 0.129197)
-bones/8/position = Vector3(0.0884713, 0.319367, 0.00406386)
-bones/8/rotation = Quaternion(-0.174133, 0.519597, -0.672768, 0.497071)
-bones/9/rotation = Quaternion(0.720013, 0.306392, 0.168404, 0.599454)
-bones/10/rotation = Quaternion(0.237367, -0.126916, 0.114373, 0.956278)
-bones/11/position = Vector3(-0.0302145, 0.226561, 0.129197)
-bones/12/rotation = Quaternion(-0.240943, -0.42368, 0.729977, 0.47914)
-bones/13/rotation = Quaternion(0.656737, 0.229107, 0.496097, 0.519706)
-bones/14/rotation = Quaternion(-0.0109359, -0.215798, 0.439103, 0.872067)
-bones/17/rotation = Quaternion(0.940252, 0.186919, -0.030383, 0.282956)
-bones/18/rotation = Quaternion(0.216604, 0.0217324, 0.137167, 0.966331)
-bones/19/rotation = Quaternion(-0.583956, -0.328865, -0.0456297, 0.740784)
-bones/20/rotation = Quaternion(-0.0263598, 0.990404, -0.128942, 0.0421813)
-bones/21/rotation = Quaternion(0.99244, -0.0349203, -0.0132613, 0.116909)
-bones/22/rotation = Quaternion(0.225699, -0.00239951, 0.148109, 0.96287)
-bones/23/rotation = Quaternion(-0.55017, 0.0183756, -0.0686753, 0.832021)
-bones/24/rotation = Quaternion(0.080626, 0.951052, -0.238653, -0.179013)
+bones/0/position = Vector3(5.2833934e-06, -0.3706109, -0.6307531)
+bones/0/rotation = Quaternion(0.11541523, -0.39501813, 0.05009922, 0.9100166)
+bones/1/rotation = Quaternion(-0.07435758, 0.25640976, -0.041048422, 0.9628292)
+bones/2/rotation = Quaternion(-0.07746417, 1.4783447e-08, -2.1450941e-10, 0.99699515)
+bones/3/rotation = Quaternion(0.0016271957, -7.654298e-09, -1.245501e-11, 0.9999987)
+bones/5/rotation = Quaternion(-0.094341315, 0.10004852, -0.029062033, 0.99007344)
+bones/6/rotation = Quaternion(-0.08076778, -0.112049945, 0.006345426, 0.9903944)
+bones/7/position = Vector3(0.030214537, 0.22656113, 0.12919745)
+bones/8/position = Vector3(0.08847133, 0.3193673, 0.004063864)
+bones/8/rotation = Quaternion(-0.09971207, 0.432501, -0.7407984, 0.5042005)
+bones/9/rotation = Quaternion(0.68624276, 0.28034648, 0.20272681, 0.6398271)
+bones/10/rotation = Quaternion(0.225239, -0.10005734, 0.09589381, 0.96439636)
+bones/11/position = Vector3(-0.030214492, 0.22656116, 0.12919746)
+bones/12/rotation = Quaternion(-0.28818387, -0.59035486, 0.6102436, 0.44275737)
+bones/13/rotation = Quaternion(0.6287147, 0.24820364, 0.47973007, 0.55943894)
+bones/14/rotation = Quaternion(-0.010935893, -0.21579769, 0.4391032, 0.8720667)
+bones/17/rotation = Quaternion(0.9412806, 0.18474592, -0.030074013, 0.28099018)
+bones/18/rotation = Quaternion(0.20612776, 0.02035733, 0.12577324, 0.9701948)
+bones/19/rotation = Quaternion(-0.3943249, -0.38432094, 0.049163118, 0.8332996)
+bones/20/rotation = Quaternion(-0.06499285, 0.9293914, -0.36258844, -0.023178913)
+bones/21/rotation = Quaternion(0.9921784, -0.031790163, -0.013587596, 0.11994608)
+bones/22/rotation = Quaternion(0.1583277, -0.004624175, 0.080293, 0.98410577)
+bones/23/rotation = Quaternion(-0.6106014, 0.047892917, -0.13784114, 0.7783779)
+bones/24/rotation = Quaternion(0.02883051, 0.98220366, -0.15183744, -0.106725074)
 
 [node name="Female_Floral" parent="NPC_Floral_Female/Floral_Female/Skeleton3D" index="0"]
 mesh = SubResource("ArrayMesh_4jpsk")
 
+[editable path="HealthComponent"]
 [editable path="AttackComponent"]
 [editable path="NPC_Floral_Female"]

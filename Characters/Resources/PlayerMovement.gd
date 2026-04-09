@@ -13,7 +13,7 @@ const MAX_ZOOM: float = 5
 const MIN_ZOOM : float = -1
 var dodge_direction : Vector3 = Vector3.ZERO : get = get_dodge_direction
 
-var controller_positioner : Node3D = null
+#var controller_positioner : Node3D = null
 var actor : Character = null
 var target : Character = null
 # Maybe I could figure out how to detect if player is fleeing??
@@ -26,7 +26,7 @@ signal request_action
 
 func initiate(new_actor : Character):
 	actor = new_actor
-	controller_positioner = actor.get_node("ControllerPositioner")
+	#controller_positioner = actor.get_node("ControllerPositioner")
 	
 	y_rotation_computed.connect(Callable(actor, "set_y_rotation"))
 	direction_computed.connect(Callable(actor, "move_my_ass"))
@@ -94,7 +94,7 @@ func _process(delta: float) -> void:
 	
 	mouse_delta = Vector2()
 	
-	global_position = controller_positioner.global_position
+	#global_position = controller_positioner.global_position
 
 
 func run(delta : float):
@@ -111,7 +111,7 @@ func run(delta : float):
 
 func get_direction() -> Vector3:
 	var input_dir : Vector2 = Input.get_vector("MoveLeft", "MoveRight", "MoveForward", "MoveBack")
-	actor.move_direction = input_dir.y
+	actor.move_direction = int(input_dir.y)
 	var direction : Vector3
 
 	direction = (actor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()

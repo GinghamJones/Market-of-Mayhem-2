@@ -14,7 +14,7 @@ var tracked_char_controller : AIController2
 @onready var retreat: Label = $VBoxContainer/Retreat
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not tracked_char:
 		return
 	var action_scores := tracked_char_controller.actions.action_scores

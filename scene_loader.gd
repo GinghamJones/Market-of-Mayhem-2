@@ -34,24 +34,17 @@ func load_character_select():
 func load_game_mode(game_mode : String, player_type : String, player_name : String):
 	destroy_cur_scene()
 	var gm : GameMode = null
-	
+
 	if game_mode == "DevMode":
 		gm = dev_mode.instantiate()
 	elif game_mode == "TimedMode":
 		gm = timed_mode.instantiate()
 	elif game_mode == "EliminationMode":
 		gm = elim_mode.instantiate()
-
-#	if game_mode == "DevMode":
-#		gm = dev_mode.instantiate()
-#	elif game_mode == "TimedMode":
-#		gm = timed_mode.instantiate()
-#	elif game_mode == "EliminationMode":
-#		gm = elim_mode.instantiate()
-#	else:
-#		printerr("the fuck are you trying to load???")
+	else:
+		printerr("the fuck are you trying to load???")
 	
-	gm.connect("load_character_select", Callable(self, "load_character_select"))
+	#gm.connect("load_character_select", Callable(self, "load_character_select"))
 	gm.connect("need_settings", Callable(self, "show_settings"))
 	gm.connect("fuck_the_settings", Callable(self, "hide_settings"))
 	gm.player_character_type = player_type

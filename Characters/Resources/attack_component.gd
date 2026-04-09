@@ -48,10 +48,12 @@ func punch() -> int:
 		return Punch_States.CANT_PUNCH
 	
 	# Set the physics to monitor
-	left_hook.call_deferred("set_contact_monitor", true)
-	left_hook.max_contacts_reported = 1
+	#left_hook.call_deferred("set_contact_monitor", true)
+	#left_hook.max_contacts_reported = 1
+	left_hook.call_deferred("set_monitoring", true)
 	
-	punch_anims.play("Punch_Left", -1, punch_speed)
+	
+	punch_anims.play("Punch", -1, punch_speed)
 	
 	# Currently this is borked by if you don't do a 1-2, your next punch may take forever to recover from
 	# Punches alternate and don't reset to left punch if wait a long time to punch after one punch
@@ -68,7 +70,7 @@ func punch() -> int:
 		return Punch_States.PUNCHED_LEFT
 
 
-func spawn_punch_particle(left_hand : bool) -> void:
+func spawn_punch_particle(_left_hand : bool) -> void:
 		punch_sound.play()
 		var p = punch_particle.instantiate()
 		add_child(p)
@@ -95,19 +97,17 @@ func fire():
 
 
 func determine_projectile_speed() -> float:
-	var projectile_speed = projectile_speed
+	var new_speed = projectile_speed
 	const FORWARD_SPEED = 1.25
 	const BACKWARD_SPEED = 0.6
 	
 	# Increase speed if moving forward, decrease if backward
 	if actor.move_direction > 0:
-		projectile_speed *= BACKWARD_SPEED
+		new_speed *= BACKWARD_SPEED
 	elif actor.move_direction < 0:
-		projectile_speed *= FORWARD_SPEED
-	else:
-		projectile_speed *= 1
+		new_speed *= FORWARD_SPEED
 	
-	return projectile_speed
+	return new_speed
 
 
 func _on_punch_timer_timeout() -> void:
@@ -120,8 +120,8 @@ func _on_projectile_timer_timeout() -> void:
 
 
 func _on_punch_anims_animation_finished(anim_name: StringName) -> void:
-	if anim_name == "Punch_Left":
-		left_hook.call_deferred("set_contact_monitor", false)
+	if anim_name == "Punch":
+		left_hook.call_deferred("set_monitoring", false)
 		hit_detected = false
 
 
